@@ -35,6 +35,7 @@ body {
 }
 
 @mixin info-style($color) {
+  display: flex;
   position: relative;
   width: 100%;
   color: $color;
@@ -83,7 +84,7 @@ body {
 // Breakpoint
 @mixin breakpoint($point) {
   @if $point == md {
-    @media (min-width: 768px) {
+    @media (max-width: 768px) {
       @content;
     }
   }

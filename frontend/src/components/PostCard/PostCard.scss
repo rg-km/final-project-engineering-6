@@ -42,10 +42,20 @@
   #bottom-section.forum-post {
     @include info-style($SubTitleText);
 
+    @include breakpoint(md) {
+      gap: 1rem;
+      flex-direction: column;
+    }
+
     .user-section {
       @include section-style();
       gap: 1rem;
       font-size: 0.9rem;
+
+      @include breakpoint(md) {
+        align-items: flex-start;
+        flex-direction: column;
+      }
 
       .user-info {
         display: flex;
@@ -65,6 +75,11 @@
       right: 0;
       bottom: 0;
       font-size: 0.9rem;
+
+      @include breakpoint(md) {
+        justify-content: flex-end;
+        position: relative;
+      }
 
       .like-info,
       .comment-info {
