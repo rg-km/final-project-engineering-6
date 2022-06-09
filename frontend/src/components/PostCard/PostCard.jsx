@@ -10,7 +10,9 @@ const PostCard = ({ page }) => {
   const [commentClicked, setCommentClicked] = useState(false);
 
   return (
-    <div className='post-card'>
+    <div
+      className={page === 'forum' ? 'post-card forum-post-card' : 'post-card'}
+    >
       <div
         id='top-section'
         className={page === 'forum' ? 'forum-post' : 'forum-detail'}

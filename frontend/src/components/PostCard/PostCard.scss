@@ -1,5 +1,14 @@
 @import '../../App.scss';
 
+.forum-post-card {
+  transition: all 0.2s;
+}
+
+.forum-post-card:hover {
+  cursor: pointer;
+  transform: scale(1.02);
+}
+
 .post-card {
   @include card-style();
   flex-direction: column;
