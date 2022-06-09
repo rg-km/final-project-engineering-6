@@ -1,9 +1,9 @@
 @import '../../App.scss';
 
-.forum {
+.forum-detail-page {
   @include page();
 
-  .forum-posts {
+  .forum-detail-container {
     @include post-container();
   }
 }
