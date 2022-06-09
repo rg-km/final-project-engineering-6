@@ -1,0 +1,15 @@
+.forum {
+  display: flex;
+  margin-top: 10vh;
+  margin-left: 310px;
+  padding: 3rem 2rem;
+
+  .forum-posts {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+  }
+}
