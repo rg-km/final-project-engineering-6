@@ -1,9 +1,7 @@
 package api
 
 import (
-	"fmt"
-	"net/http"
-
+	"github.com/gin-gonic/gin"
 	"github.com/rg-km/final-project-engineering-6/repository"
 )
 
@@ -13,13 +11,13 @@ type API struct {
 	notifRepo   repository.NotificationRepository
 	postRepo    repository.PostRepository
 	userRepo    repository.UserRepository
-	mux         *http.ServeMux
+	router      *gin.Engine
 }
 
 func NewAPI(commentRepo repository.CommentRepository, likeRepo repository.LikeRepository, notifRepo repository.NotificationRepository, postRepo repository.PostRepository, userRepo repository.UserRepository) API {
-	mux := http.NewServeMux()
+	router := gin.Default()
 	api := API{
-		mux:         mux,
+		router:      router,
 		commentRepo: commentRepo,
 		likeRepo:    likeRepo,
 		notifRepo:   notifRepo,
@@ -30,11 +28,10 @@ func NewAPI(commentRepo repository.CommentRepository, likeRepo repository.LikeRe
 	return api
 }
 
-func (api *API) Handler() *http.ServeMux {
-	return api.mux
+func (api *API) Handler() *gin.Engine {
+	return api.router
 }
 
 func (api *API) Start() {
-	fmt.Println("starting web server at http://localhost:8080/")
-	http.ListenAndServe(":8080", api.Handler())
+	api.Handler().Run()
 }
