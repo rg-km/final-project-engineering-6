@@ -1,6 +1,6 @@
 // Font
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;500&display=swap");
-$Roboto: "Roboto", sans-serif;
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;500&display=swap');
+$Roboto: 'Roboto', sans-serif;
 // colors
 $Light: #ffffff;
 $Background: #fafafa;
@@ -20,4 +20,28 @@ $SubTitleText: #808080;
 body {
   width: 100%;
   font-family: $Roboto;
+  background: $Background;
+}
+
+@mixin card-style() {
+  display: flex;
+  padding: 1.5rem 2rem;
+  width: 100%;
+  gap: 2rem;
+  background: $Light;
+  border: 1px solid $Border;
+  box-shadow: 2px 1px 5px rgba(0, 0, 0, 0.15);
+  border-radius: 5px;
+}
+
+@mixin info-style() {
+  position: relative;
+  width: 100%;
+  color: $SubTitleText;
+}
+
+@mixin section-style() {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }

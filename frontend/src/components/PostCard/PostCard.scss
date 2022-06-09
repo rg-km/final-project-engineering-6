@@ -1,0 +1,61 @@
+@import '../../App.scss';
+
+.post-card {
+  @include card-style();
+  flex-direction: column;
+
+  #top-section.forum-post {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+
+    .content {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      .post-info {
+        color: $SubTitleText;
+        font-size: 0.9rem;
+        margin-bottom: 0.8rem;
+      }
+
+      .post-content {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 1; /* number of lines to show */
+        -webkit-box-orient: vertical;
+      }
+    }
+  }
+
+  #bottom-section.forum-post {
+    @include info-style();
+
+    .user-section {
+      @include section-style();
+      gap: 1rem;
+      font-size: 0.9rem;
+
+      .user-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+      }
+    }
+
+    .activity-section {
+      @include section-style();
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      font-size: 0.9rem;
+
+      .like-info,
+      .comment-info {
+        @include section-style();
+      }
+    }
+  }
+}
