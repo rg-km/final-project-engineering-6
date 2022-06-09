@@ -21,3 +21,30 @@ body {
   width: 100%;
   font-family: $Roboto;
 }
+
+@mixin button($bg, $color) {
+  background-color: $bg;
+  color: $color;
+  margin-left: 1em;
+  text-decoration: none;
+  padding: 0.8rem 2rem;
+  border-radius: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: bold;
+  &:hover {
+    background: darken($bg, 8%);
+    transition: all 0.3s ease;
+  }
+  &:active {
+    background: darken($bg, 25%);
+  }
+}
+
+// Breakpoint
+@mixin breakpoint($point) {
+  @if $point == md {
+    @media (min-width: 768px) {
+      @content;
+    }
+  }
+}
