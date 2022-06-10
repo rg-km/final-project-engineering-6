@@ -72,8 +72,10 @@ body {
   border-radius: 0.5rem;
   font-size: 0.8rem;
   font-weight: bold;
+  transition: all 0.2s ease;
   &:hover {
     background: darken($bg, 8%);
+    transform: scale(1.05);
     transition: all 0.3s ease;
   }
   &:active {
