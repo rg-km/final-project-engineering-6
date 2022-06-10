@@ -97,6 +97,17 @@ CREATE TABLE IF NOT EXISTS notifications(
 	FOREIGN KEY (comment_id) REFERENCES comments(id),
 	FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
+INSERT INTO users (name, email, password, role) VALUES
+('Radit', 'resradit@gmail.com', 'radit123', 'siswa');
+
+INSERT INTO categories (name) VALUES
+('Ekonomi dan Bisnis'),
+('Matematika dan Ilmu Pengetahuan Alam'),
+('Psikologi'),
+('Sosial Politik'),
+('Teknik'),
+('Teknologi');
 `)
 
 	if err != nil {

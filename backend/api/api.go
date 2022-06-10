@@ -25,6 +25,15 @@ func NewAPI(commentRepo repository.CommentRepository, likeRepo repository.LikeRe
 		userRepo:    userRepo,
 	}
 
+	postRouter := router.Group("/api/post")
+	{
+		postRouter.POST("/", api.createPost)
+		postRouter.GET("/", api.readPosts)
+		postRouter.GET("/:id", api.readPost)
+		postRouter.PUT("/", api.updatePost)
+		postRouter.DELETE("/:id", api.deletePost)
+	}
+
 	return api
 }
 
