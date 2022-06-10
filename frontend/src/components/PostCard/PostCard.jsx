@@ -68,12 +68,10 @@ const PostCard = ({ page }) => {
         )}
         <div className='activity-section'>
           <div className='like-info'>
-            {page === 'forum' ? (
-              <FavoriteIcon />
-            ) : likeClicked ? (
+            {likeClicked ? (
               <FavoriteIcon
                 onClick={() => {
-                  setLikeClicked(false);
+                  page !== 'forum' && setLikeClicked(false);
                 }}
               />
             ) : (
@@ -86,12 +84,10 @@ const PostCard = ({ page }) => {
             123
           </div>
           <div className='comment-info'>
-            {page === 'forum' ? (
-              <ChatBubbleIcon />
-            ) : commentClicked ? (
+            {commentClicked ? (
               <ChatBubbleIcon
                 onClick={() => {
-                  setCommentClicked(false);
+                  page !== 'forum' && setCommentClicked(false);
                 }}
               />
             ) : (
@@ -105,6 +101,26 @@ const PostCard = ({ page }) => {
           </div>
         </div>
       </div>
+      {commentClicked && (
+        <form className='input-section'>
+          <div className='flex-1'></div>
+          <div className='flex-9'>
+            <textarea
+              name='comment'
+              className='comment-input'
+              rows='5'
+            ></textarea>
+            <button
+              className='comment-btn'
+              onClick={() => {
+                setCommentClicked(false);
+              }}
+            >
+              Comment
+            </button>
+          </div>
+        </form>
+      )}
     </div>
   );
 };
