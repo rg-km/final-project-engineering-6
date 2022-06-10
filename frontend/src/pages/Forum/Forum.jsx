@@ -6,9 +6,9 @@ const Forum = () => {
   return (
     <div className='forum'>
       <div className='forum-posts'>
-        <PostCard />
-        <PostCard />
-        <PostCard />
+        <PostCard page={'forum'} />
+        <PostCard page={'forum'} />
+        <PostCard page={'forum'} />
       </div>
     </div>
   );
