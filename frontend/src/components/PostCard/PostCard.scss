@@ -74,6 +74,7 @@
       flex-direction: column;
       gap: 1rem;
       font-size: 0.9rem;
+      flex: 1;
 
       .user-info {
         display: flex;
@@ -91,6 +92,7 @@
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
+      flex: 9;
 
       .post-info {
         color: $SubTitleText;
@@ -134,6 +136,43 @@
 
       .comment-info svg {
         color: $Secondary;
+      }
+    }
+  }
+
+  .input-section {
+    @include post-container();
+    flex-direction: row;
+    margin-top: 2rem;
+
+    .flex-1 {
+      flex: 1;
+
+      @include breakpoint(md) {
+        display: none;
+      }
+    }
+
+    .flex-9 {
+      flex: 9;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 1rem;
+
+      textarea {
+        resize: none;
+        flex: 9;
+        width: -webkit-fill-available;
+        // background: $Border;
+        // border: none;
+        border-radius: 5px;
+      }
+
+      .comment-btn {
+        @include button($Secondary, $Light);
+        border: none;
+        font-family: $Roboto;
       }
     }
   }
