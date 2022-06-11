@@ -25,6 +25,8 @@ func NewAPI(commentRepo repository.CommentRepository, likeRepo repository.LikeRe
 		userRepo:    userRepo,
 	}
 
+	router.POST("/api/login", api.login)
+	router.POST("/api/register", api.register)
 	return api
 }
 
