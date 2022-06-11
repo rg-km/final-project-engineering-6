@@ -129,7 +129,7 @@ func (c *CommentRepository) UpdateComment(comment Comment) (int, error) {
 	return http.StatusOK, nil
 }
 
-func (c CommentRepository) DeleteComment(commentID int) (int, error) {
+func (c *CommentRepository) DeleteComment(commentID int) (int, error) {
 	sqlStmt := `DELETE FROM comments WHERE id = ? OR comment_id = ?`
 
 	result, err := c.db.Exec(sqlStmt, commentID, commentID)
@@ -147,4 +147,17 @@ func (c CommentRepository) DeleteComment(commentID int) (int, error) {
 	}
 
 	return http.StatusOK, nil
+}
+
+func (c CommentRepository) CountComment(postID int) (int, error) {
+	sqlStmt := `SELECT COUNT(*) FROM comments WHERE post_id = ?;`
+	result := c.db.QueryRow(sqlStmt, postID)
+
+	var totalLike int
+	err := result.Scan(&totalLike)
+	if err != nil {
+		return 0, err
+	}
+
+	return totalLike, nil
 }
