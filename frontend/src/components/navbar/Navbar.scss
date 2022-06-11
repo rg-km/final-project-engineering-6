@@ -18,6 +18,13 @@ header {
 
     .link {
       display: flex;
+      .user a {
+        color: $SubTitleText;
+        margin-right: 3rem;
+      }
+      .notification a {
+        color: $SubTitleText;
+      }
       .regis {
         @include button($Primary, $Light);
       }
