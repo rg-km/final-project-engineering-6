@@ -53,6 +53,18 @@ func NewAPI(commentRepo repository.CommentRepository, likeRepo repository.LikeRe
 		commentRoutersWithAuth.DELETE("/:id", api.DeleteComment)
 	}
 
+	postLikeRouters := router.Group("/api/post-likes", AuthMiddleware())
+	{
+		postLikeRouters.POST("/", api.CreatePostLike)
+		postLikeRouters.DELETE("/", api.DeletePostLike)
+	}
+
+	commentLikeRouters := router.Group("/api/comment-likes", AuthMiddleware())
+	{
+		commentLikeRouters.POST("/", api.CreateCommentLike)
+		commentLikeRouters.DELETE("/", api.DeleteCommentLike)
+	}
+
 	needAuth := router.Use(AuthMiddleware())
 
 	// Nanti gunakan needAuth untuk route yang perlu auth

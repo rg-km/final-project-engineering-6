@@ -2,6 +2,8 @@ package repository
 
 import (
 	"database/sql"
+	"fmt"
+	"net/http"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -22,10 +24,23 @@ func (l *LikeRepository) InsertPostLike(postLike PostLike) error {
 	return err
 }
 
-func (l *LikeRepository) DeletePostLike(postLike PostLike) error {
+func (l *LikeRepository) DeletePostLike(postLike PostLike) (int, error) {
 	sqlStmt := `DELETE FROM post_likes WHERE post_id = ? AND user_id = ?;`
-	_, err := l.db.Exec(sqlStmt, postLike.PostID, postLike.UserID)
-	return err
+	result, err := l.db.Exec(sqlStmt, postLike.PostID, postLike.UserID)
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
+	count, err := result.RowsAffected()
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
+	if count == 0 {
+		return http.StatusBadRequest, fmt.Errorf("No data with given id")
+	}
+
+	return http.StatusOK, nil
 }
 
 func (l *LikeRepository) InsertCommentLike(commentLike CommentLike) error {
@@ -34,8 +49,21 @@ func (l *LikeRepository) InsertCommentLike(commentLike CommentLike) error {
 	return err
 }
 
-func (l *LikeRepository) DeleteCommentLike(commentLike CommentLike) error {
+func (l *LikeRepository) DeleteCommentLike(commentLike CommentLike) (int, error) {
 	sqlStmt := `DELETE FROM comment_likes WHERE comment_id = ? AND user_id = ?;`
-	_, err := l.db.Exec(sqlStmt, commentLike.CommentID, commentLike.UserID)
-	return err
+	result, err := l.db.Exec(sqlStmt, commentLike.CommentID, commentLike.UserID)
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
+	count, err := result.RowsAffected()
+	if err != nil {
+		return http.StatusInternalServerError, err
+	}
+
+	if count == 0 {
+		return http.StatusBadRequest, fmt.Errorf("No data with given id")
+	}
+
+	return http.StatusOK, nil
 }

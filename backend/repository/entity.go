@@ -12,3 +12,15 @@ type Comment struct {
 	AuthorName      string     `json:"author_name" db:"author_name"`
 	Reply           []Comment  `json:"reply"`
 }
+
+type PostLike struct {
+	ID     int
+	PostID int
+	UserID int
+}
+
+type CommentLike struct {
+	ID        int
+	CommentID int
+	UserID    int
+}
