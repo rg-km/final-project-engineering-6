@@ -9,7 +9,11 @@ const ForumDetail = () => {
         <div className='forum-detail-post'>
           <PostCard page={'forum detail'} />
         </div>
-        <div className='comment-post'></div>
+        <div className='comment-post'>
+          <PostCard page={'comment'} />
+          <PostCard page={'comment'} />
+          <PostCard page={'comment'} />
+        </div>
       </div>
     </div>
   );

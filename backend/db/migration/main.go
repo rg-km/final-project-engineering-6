@@ -97,6 +97,18 @@ CREATE TABLE IF NOT EXISTS notifications(
 	FOREIGN KEY (comment_id) REFERENCES comments(id),
 	FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
+INSERT INTO users(id, name, email, password, role) VALUES 
+	(1, "nadhif", "nadhif@example.com", "password", "mahasiswa");
+
+INSERT INTO comments(id, post_id, author_id, comment, comment_id, created_at) VALUES 
+	(1, 1, 1, "Comment 1", NULL, "2022-06-11 19:33:02.3861157+07:00"),
+	(2, 1, 1, "Comment 2", 1, "2022-06-11 19:33:02.3861157+07:00"),
+	(3, 1, 1, "Comment 3", 1, "2022-06-11 19:33:02.3861157+07:00"),
+	(4, 1, 1, "Comment 4", NULL, "2022-06-11 19:33:02.3861157+07:00"),
+	(5, 1, 1, "Comment 5", 4, "2022-06-11 19:33:02.3861157+07:00"),
+	(6, 1, 1, "Comment 6", 4, "2022-06-11 19:33:02.3861157+07:00"),
+	(7, 1, 1, "Comment 7", 6, "2022-06-11 19:33:02.3861157+07:00");
 `)
 
 	if err != nil {

@@ -3,6 +3,10 @@
 .forum {
   @include page();
 
+  @include breakpoint(md) {
+    margin-left: 0;
+  }
+
   .forum-posts {
     @include post-container();
   }
