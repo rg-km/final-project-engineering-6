@@ -5,5 +5,11 @@
 
   .forum-detail-container {
     @include post-container();
+    gap: 3rem;
+
+    .comment-post {
+      @include post-container();
+      gap: 1rem;
+    }
   }
 }
