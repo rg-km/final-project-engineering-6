@@ -7,10 +7,7 @@
     "@emotion/styled": "^11.8.1",
     "@mui/icons-material": "^5.8.3",
     "@mui/material": "^5.8.3",
-<<<<<<< HEAD
-=======
     "@mui/styled-engine-sc": "^5.8.0",
->>>>>>> navbar-fe
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
