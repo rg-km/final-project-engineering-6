@@ -1,0 +1,43 @@
+@import "../../App.scss";
+header {
+  border-bottom: 1px solid $Border;
+  nav {
+    height: 10vh;
+    width: 90%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .logo {
+      font-size: 1.3rem;
+      @include breakpoint(md) {
+        margin-left: -2rem;
+      }
+    }
+
+    .link {
+      display: flex;
+      .user a {
+        color: $SubTitleText;
+        margin-right: 3rem;
+      }
+      .notification a {
+        color: $SubTitleText;
+      }
+      .regis {
+        @include button($Primary, $Light);
+      }
+      .login {
+        @include button($Border, $Secondary);
+      }
+    }
+    .menu_icon {
+      margin-top: 0.2rem;
+      display: none;
+      @include breakpoint(md) {
+        display: block;
+      }
+    }
+  }
+}
