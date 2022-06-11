@@ -25,9 +25,12 @@ func NewAPI(commentRepo repository.CommentRepository, likeRepo repository.LikeRe
 		userRepo:    userRepo,
 	}
 
+	router.Static("/media", "./media")
+
 	postRouter := router.Group("/api/post")
 	{
 		postRouter.POST("/", api.createPost)
+		postRouter.POST("/images/:id", api.uploadPostImages)
 		postRouter.GET("/", api.readPosts)
 		postRouter.GET("/:id", api.readPost)
 		postRouter.PUT("/", api.updatePost)

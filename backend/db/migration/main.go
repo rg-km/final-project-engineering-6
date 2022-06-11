@@ -99,15 +99,19 @@ CREATE TABLE IF NOT EXISTS notifications(
 );
 
 INSERT INTO users (name, email, password, role) VALUES
-('Radit', 'resradit@gmail.com', 'radit123', 'siswa');
+('Radit', 'resradit@gmail.com', 'radit123', 'mahasiswa'),
+('Bocil SMA', 'bocilSMA@gmail.com', 'bocilsma', 'siswa');
+
+INSERT INTO user_details(user_id, institute, major, semester) VALUES
+	(1, 'Harvard', 'Teknik Informatika', 6);
 
 INSERT INTO categories (name) VALUES
-('Ekonomi dan Bisnis'),
-('Matematika dan Ilmu Pengetahuan Alam'),
-('Psikologi'),
-('Sosial Politik'),
-('Teknik'),
-('Teknologi');
+	('Ekonomi dan Bisnis'),
+	('Matematika dan Ilmu Pengetahuan Alam'),
+	('Psikologi'),
+	('Sosial Politik'),
+	('Teknik'),
+	('Teknologi');
 `)
 
 	if err != nil {
