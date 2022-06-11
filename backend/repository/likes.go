@@ -43,6 +43,19 @@ func (l *LikeRepository) DeletePostLike(postLike PostLike) (int, error) {
 	return http.StatusOK, nil
 }
 
+func (l *LikeRepository) CountPostLike(postID int) (int, error) {
+	sqlStmt := `SELECT COUNT(*) FROM post_likes WHERE post_id = ?;`
+	result := l.db.QueryRow(sqlStmt, postID)
+
+	var totalLike int
+	err := result.Scan(&totalLike)
+	if err != nil {
+		return 0, err
+	}
+
+	return totalLike, nil
+}
+
 func (l *LikeRepository) InsertCommentLike(commentLike CommentLike) error {
 	sqlStmt := `INSERT INTO comment_likes (comment_id, user_id) VALUES (?, ?);`
 	_, err := l.db.Exec(sqlStmt, commentLike.CommentID, commentLike.UserID)
@@ -66,4 +79,17 @@ func (l *LikeRepository) DeleteCommentLike(commentLike CommentLike) (int, error)
 	}
 
 	return http.StatusOK, nil
+}
+
+func (l *LikeRepository) CountCommentLike(postID int) (int, error) {
+	sqlStmt := `SELECT COUNT(*) FROM comment_likes WHERE post_id = ?;`
+	result := l.db.QueryRow(sqlStmt, postID)
+
+	var totalLike int
+	err := result.Scan(&totalLike)
+	if err != nil {
+		return 0, err
+	}
+
+	return totalLike, nil
 }
