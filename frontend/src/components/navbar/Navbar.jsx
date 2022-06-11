@@ -1,12 +1,16 @@
 import React from "react";
 import "./Navbar.scss";
+import MenuIcon from "@mui/icons-material/Menu";
 
 const Navbar = () => {
   return (
     <div>
       <header>
         <nav>
-          <div className="logo">BASIS</div>
+          <div className="menu_icon">
+            <MenuIcon />
+          </div>
+          <div className="logo">BASIS___</div>
           <div className="link">
             <a href="#" className="regis">
               Register

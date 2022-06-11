@@ -9,6 +9,13 @@ header {
     justify-content: space-between;
     align-items: center;
 
+    .logo {
+      font-size: 1.3rem;
+      @include breakpoint(md) {
+        margin-left: -2rem;
+      }
+    }
+
     .link {
       display: flex;
       .regis {
@@ -16,6 +23,13 @@ header {
       }
       .login {
         @include button($Border, $Secondary);
+      }
+    }
+    .menu_icon {
+      margin-top: 0.2rem;
+      display: none;
+      @include breakpoint(md) {
+        display: block;
       }
     }
   }

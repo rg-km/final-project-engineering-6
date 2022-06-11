@@ -20,6 +20,7 @@ $SubTitleText: #808080;
 body {
   width: 100%;
   font-family: $Roboto;
+  font-size: 14px;
 }
 
 @mixin button($bg, $color) {
@@ -37,5 +38,13 @@ body {
   }
   &:active {
     background: darken($bg, 25%);
+  }
+}
+
+@mixin breakpoint($point) {
+  @if $point == md {
+    @media (max-width: 768px) {
+      @content;
+    }
   }
 }
