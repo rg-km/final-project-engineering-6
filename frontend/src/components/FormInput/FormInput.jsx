@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./FormInput.scss";
 
 const FormInput = (props) => {
   const [inputType] = useState(props.type);

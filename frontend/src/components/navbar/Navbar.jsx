@@ -10,7 +10,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 
 const Navbar = ({ openSidebar }) => {
   // const [user, setUser] = useState({});
-  const [isLoggedIn, setIsloggedin] = useState(false);
+  const [isLoggedIn, setIsloggedin] = useState(true);
   return (
     <div>
       <header>
@@ -34,7 +34,7 @@ const Navbar = ({ openSidebar }) => {
             </div>
           ) : (
             <div className="link">
-              <Link to="/login">
+              <Link to="/login" className="login">
                 <Button variant={"login"}>Login</Button>
               </Link>
 

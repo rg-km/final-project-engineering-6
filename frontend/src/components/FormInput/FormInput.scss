@@ -1,0 +1,12 @@
+@import "../../App.scss";
+input {
+  width: 100%;
+  height: 4vh;
+  border: 1px solid $Border;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  color: $TitleText;
+  font-size: 1.2rem;
+  background-color: $Light;
+  margin-bottom: 1rem;
+}

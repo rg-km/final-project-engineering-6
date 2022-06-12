@@ -23,6 +23,9 @@ header {
 
     .link {
       display: flex;
+      .login {
+        margin-right: 1rem;
+      }
       .user a {
         color: $SubTitleText;
         margin-right: 3rem;

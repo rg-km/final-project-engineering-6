@@ -8,19 +8,22 @@ const Login = () => {
     console.log(event.target.value);
   }
   return (
-    <form className="login">
-      <div className="input-container">
-        <label>Email </label>
-        <FormInput type={"text"} onChange={handleChange} />
-      </div>
-      <div className="input-container">
-        <label>Password </label>
-        <FormInput type={"text"} onChange={handleChange} />
-      </div>
-      <div className="button-container">
-        <Button variant={"login"}>Login</Button>
-      </div>
-    </form>
+    <div className="form">
+      <h2>Login</h2>
+      <form>
+        <div className="input-container">
+          <label>Email </label>
+          <FormInput type={"email"} onChange={handleChange} />
+        </div>
+        <div className="input-container">
+          <label>Password </label>
+          <FormInput type={"password"} onChange={handleChange} />
+        </div>
+        <div className="button-container">
+          <Button variant={"login"}>Login</Button>
+        </div>
+      </form>
+    </div>
   );
 };
 

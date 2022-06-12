@@ -9,25 +9,37 @@ const Register = () => {
   }
   return (
     <div className="form">
+      <h2>Register</h2>
+      <p>Get more features and priviliges by joining to the most helpful community</p>
       <form>
         <div className="input-container">
-          <label>Username </label>
+          <label>Nama </label>
           <FormInput type={"text"} onChange={handleChange} />
         </div>
         <div className="input-container">
-          <label>Username </label>
+          <label>Email </label>
+          <FormInput type={"email"} onChange={handleChange} />
+        </div>
+        <div className="input-container">
+          <label>Password </label>
+          <FormInput type={"password"} onChange={handleChange} />
+        </div>
+        <div className="input-container">
+          <label>Role</label>
           <FormInput type={"text"} onChange={handleChange} />
         </div>
         <div className="input-container">
-          <label>Username </label>
+          <label>Institue </label>
           <FormInput type={"text"} onChange={handleChange} />
         </div>
         <div className="input-container">
-          <label>Username </label>
-          <FormInput type={"file"} onChange={handleChange} />
+          <label>Major </label>
+          <FormInput type={"text"} onChange={handleChange} />
         </div>
         <div className="button-container">
-          <Button variant={"regis"}>Register</Button>
+          <Button className="btn" variant={"regis"}>
+            Register
+          </Button>
         </div>
       </form>
     </div>
