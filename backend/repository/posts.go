@@ -13,6 +13,7 @@ type PostDetail struct {
 	AuthorID          int            `db:"author_id"`
 	AuthorName        string         `db:"author_name"`
 	AuthorRole        string         `db:"author_role"`
+	AuthorAvatar      sql.NullString `db:"author_avatar"`
 	AuthorInstitution sql.NullString `db:"author_institution"`
 	AuthorMajor       sql.NullString `db:"author_major"`
 	CategoryID        int            `db:"category_id"`
@@ -102,6 +103,7 @@ func (p *PostRepository) FetchAllPost(limit, offset int) ([]PostDetail, error) {
 	up.author_id,
 	up.author_name,
 	up.author_role,
+	up.author_avatar,
 	up.author_institution,
 	up.author_major,
 	up.category_id,
@@ -116,6 +118,7 @@ FROM (
 	u.id as author_id,
 	u.name as author_name,
 	u.role as author_role,
+	u.avatar as author_avatar,
 	ud.institute as author_institution,
 	ud.major as author_major,
 	p.category_id as category_id,
@@ -151,7 +154,7 @@ LEFT JOIN post_images pi ON up.id = pi.post_id;`
 		var post PostDetail
 		err := rows.Scan(
 			&post.ID,
-			&post.AuthorID, &post.AuthorName, &post.AuthorRole, &post.AuthorInstitution, &post.AuthorMajor,
+			&post.AuthorID, &post.AuthorName, &post.AuthorRole, &post.AuthorAvatar, &post.AuthorInstitution, &post.AuthorMajor,
 			&post.CategoryID, &post.Title, &post.Description, &post.CreatedAt,
 			&post.ImageID, &post.ImagePath)
 
@@ -181,6 +184,7 @@ func (p *PostRepository) FetchPostByID(postID int) ([]PostDetail, error) {
 			u.id as author_id,
 			u.name as author_name,
 			u.role as author_role,
+			u.avatar as author_avatar,
 			ud.institute as author_institution,
 			ud.major as author_major,
 			p.category_id as category_id,
@@ -216,7 +220,7 @@ func (p *PostRepository) FetchPostByID(postID int) ([]PostDetail, error) {
 		var post PostDetail
 		err := rows.Scan(
 			&post.ID,
-			&post.AuthorID, &post.AuthorName, &post.AuthorRole, &post.AuthorInstitution, &post.AuthorMajor,
+			&post.AuthorID, &post.AuthorName, &post.AuthorRole, &post.AuthorAvatar, &post.AuthorInstitution, &post.AuthorMajor,
 			&post.CategoryID, &post.Title, &post.Description, &post.CreatedAt,
 			&post.ImageID, &post.ImagePath)
 
@@ -234,6 +238,37 @@ func (p *PostRepository) FetchPostByID(postID int) ([]PostDetail, error) {
 	return posts, nil
 }
 
+func (p *PostRepository) FetchAuthorIDByPostID(postID int) (int, error) {
+	sqlStatement := `
+		SELECT author_id FROM posts WHERE id = ?;
+	`
+
+	tx, err := p.db.Begin()
+
+	if err != nil {
+		return 0, err
+	}
+
+	defer tx.Rollback()
+
+	var authorID int
+	err = tx.QueryRow(sqlStatement, postID).Scan(&authorID)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return 0, ErrPostNotFound
+		}
+
+		return 0, err
+	}
+
+	if err := tx.Commit(); err != nil {
+		return 0, err
+	}
+
+	return authorID, nil
+}
+
 func (p *PostRepository) UpdatePost(postID, categoryID int, title, description string) error {
 	sqlStatement := `
 		UPDATE posts SET category_id = ?, title = ?, desc = ? WHERE id = ?;
@@ -247,20 +282,10 @@ func (p *PostRepository) UpdatePost(postID, categoryID int, title, description s
 
 	defer tx.Rollback()
 
-	result, err := tx.Exec(sqlStatement, categoryID, title, description, postID)
+	_, err = tx.Exec(sqlStatement, categoryID, title, description, postID)
 
 	if err != nil {
 		return err
-	}
-
-	count, err := result.RowsAffected()
-
-	if err != nil {
-		return err
-	}
-
-	if count == 0 {
-		return ErrPostNotFound
 	}
 
 	if err := tx.Commit(); err != nil {
@@ -281,20 +306,10 @@ func (p *PostRepository) DeletePostByID(postID int) error {
 
 	defer tx.Rollback()
 
-	result, err := tx.Exec(sqlStatement, postID)
+	_, err = tx.Exec(sqlStatement, postID)
 
 	if err != nil {
 		return err
-	}
-
-	count, err := result.RowsAffected()
-
-	if err != nil {
-		return err
-	}
-
-	if count == 0 {
-		return ErrPostNotFound
 	}
 
 	if err := tx.Commit(); err != nil {
