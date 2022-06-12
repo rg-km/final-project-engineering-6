@@ -1,6 +1,8 @@
 package api
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/rg-km/final-project-engineering-6/repository"
 )
@@ -25,6 +27,15 @@ func NewAPI(commentRepo repository.CommentRepository, likeRepo repository.LikeRe
 		userRepo:    userRepo,
 	}
 
+	router.POST("/api/login", api.login)
+	router.POST("/api/register", api.register)
+
+	needAuth := router.Use(AuthMiddleware())
+
+	// Nanti gunakan needAuth untuk route yang perlu auth
+	needAuth.GET("/api/example", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, gin.H{"message": "success"})
+	})
 	return api
 }
 
