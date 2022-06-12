@@ -210,38 +210,60 @@ func (api *API) readPosts(ctx *gin.Context) {
 	postIDqueue := make([]int, 0)
 	postsDetail := make(map[int]PostResponse)
 
+	var wg sync.WaitGroup
 	for _, post := range posts {
 		if _, ok := postsDetail[post.ID]; !ok {
 			postIDqueue = append(postIDqueue, post.ID)
 
-			var authorMajor, authorInstitute string
-			if post.AuthorMajor.Valid {
-				authorMajor = post.AuthorMajor.String
-			}
+			wg.Add(1)
+			go func(post repository.PostDetail) {
+				defer wg.Done()
 
-			if post.AuthorInstitution.Valid {
-				authorInstitute = post.AuthorInstitution.String
-			}
+				commentCount, err := api.commentRepo.CountComment(post.ID)
 
-			postsDetail[post.ID] = PostResponse{
-				ID: post.ID,
-				Author: AuthorPostResponse{
-					ID:           post.AuthorID,
-					Name:         post.AuthorName,
-					Role:         post.AuthorRole,
-					Major:        authorMajor,
-					Institute:    authorInstitute,
-					ProfileImage: "localhost:8080/media/user/author.png",
-				},
-				CategoryID:   post.CategoryID,
-				Title:        post.Title,
-				Description:  post.Description,
-				CreatedAt:    post.CreatedAt.Format("2006-01-02 15:04:05"),
-				CommentCount: 10,
-				LikeCount:    100,
-			}
+				if err != nil {
+					ctx.JSON(http.StatusInternalServerError, ErrorPostResponse{Message: "Internal Server Error"})
+					return
+				}
+
+				likeCount, err := api.likeRepo.CountPostLike(post.ID)
+
+				if err != nil {
+					ctx.JSON(http.StatusInternalServerError, ErrorPostResponse{Message: "Internal Server Error"})
+					return
+				}
+
+				var authorMajor, authorInstitute string
+				if post.AuthorMajor.Valid {
+					authorMajor = post.AuthorMajor.String
+				}
+
+				if post.AuthorInstitution.Valid {
+					authorInstitute = post.AuthorInstitution.String
+				}
+
+				postsDetail[post.ID] = PostResponse{
+					ID: post.ID,
+					Author: AuthorPostResponse{
+						ID:           post.AuthorID,
+						Name:         post.AuthorName,
+						Role:         post.AuthorRole,
+						Major:        authorMajor,
+						Institute:    authorInstitute,
+						ProfileImage: "localhost:8080/media/user/author.png",
+					},
+					CategoryID:   post.CategoryID,
+					Title:        post.Title,
+					Description:  post.Description,
+					CreatedAt:    post.CreatedAt.Format("2006-01-02 15:04:05"),
+					CommentCount: commentCount,
+					LikeCount:    likeCount,
+				}
+
+			}(post)
 		}
 	}
+	wg.Wait()
 
 	images := make(map[int][]PostImageResponse)
 
@@ -294,6 +316,20 @@ func (api *API) readPost(ctx *gin.Context) {
 		return
 	}
 
+	commentCount, err := api.commentRepo.CountComment(postID)
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, ErrorPostResponse{Message: "Internal Server Error"})
+		return
+	}
+
+	likeCount, err := api.likeRepo.CountPostLike(postID)
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, ErrorPostResponse{Message: "Internal Server Error"})
+		return
+	}
+
 	images := make([]PostImageResponse, 0)
 
 	if posts[0].ImageID.Valid {
@@ -329,8 +365,8 @@ func (api *API) readPost(ctx *gin.Context) {
 			Title:        posts[0].Title,
 			Description:  posts[0].Description,
 			CreatedAt:    posts[0].CreatedAt.Format("2006-01-02 15:04:05"),
-			CommentCount: 10,
-			LikeCount:    100,
+			CommentCount: commentCount,
+			LikeCount:    likeCount,
 		},
 		Images: images,
 	})

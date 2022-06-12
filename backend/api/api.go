@@ -48,8 +48,8 @@ func NewAPI(commentRepo repository.CommentRepository, likeRepo repository.LikeRe
 	router.POST("/api/login", api.login)
 	router.POST("/api/register", api.register)
 
-	router.GET("/", api.readPosts)
-	router.GET("/:id", api.readPost)
+	router.GET("/api/post", api.readPosts)
+	router.GET("/api/post/:id", api.readPost)
 	postRouter := router.Group("/api/post", AuthMiddleware())
 	{
 		postRouter.POST("/", api.createPost)
