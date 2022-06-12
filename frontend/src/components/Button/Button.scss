@@ -1,0 +1,9 @@
+@import "../../App.scss";
+
+.btn-login {
+  @include button($Primary, $Light);
+}
+
+.btn-regis {
+  @include button($Border, $Secondary);
+}

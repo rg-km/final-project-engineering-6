@@ -5,6 +5,7 @@ import { MenuSidebar } from "./MenuSidebar";
 const Sidebar = ({ Sidebar }) => {
   return (
     <aside className={Sidebar ? "sidebar sidebar-open" : "sidebar"}>
+      <h3 className="judul">BASIS__</h3>
       <ul className="SidebarList">
         {MenuSidebar.map((item, index) => {
           return (

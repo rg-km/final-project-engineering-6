@@ -1,6 +1,6 @@
 // Font
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;500&display=swap');
-$Roboto: 'Roboto', sans-serif;
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;500&display=swap");
+$Roboto: "Roboto", sans-serif;
 // colors
 $Light: #ffffff;
 $Background: #fafafa;
@@ -72,7 +72,9 @@ body {
   border-radius: 0.5rem;
   font-size: 0.8rem;
   font-weight: bold;
+  border: none;
   transition: all 0.2s ease;
+  cursor: pointer;
   &:hover {
     background: darken($bg, 8%);
     transform: scale(1.05);

@@ -17,7 +17,7 @@ header {
     .logo {
       font-size: 1.3rem;
       @include breakpoint(md) {
-        margin-left: -2rem;
+        display: none;
       }
     }
 
@@ -29,12 +29,6 @@ header {
       }
       .notification a {
         color: $SubTitleText;
-      }
-      .regis {
-        @include button($Primary, $Light);
-      }
-      .login {
-        @include button($Border, $Secondary);
       }
     }
     .menu_icon {

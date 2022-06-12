@@ -2,6 +2,8 @@ import React from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Navbar.scss";
+import Button from "../Button/Button";
+
 import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import NotificationsIcon from "@mui/icons-material/Notifications";
@@ -32,11 +34,12 @@ const Navbar = ({ openSidebar }) => {
             </div>
           ) : (
             <div className="link">
-              <Link to="#" className="regis">
-                Register
+              <Link to="/login">
+                <Button variant={"login"}>Login</Button>
               </Link>
-              <Link to="#" className="login">
-                Login
+
+              <Link to="/register">
+                <Button variant={"regis"}>Register</Button>
               </Link>
             </div>
           )}
