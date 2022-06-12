@@ -145,7 +145,7 @@
       }
 
       .like-info svg {
-        color: rgb(255, 0, 106);
+        color: $Primary;
       }
 
       .comment-info svg {
@@ -175,11 +175,11 @@
       gap: 1rem;
 
       textarea {
+        @include input();
         resize: none;
         flex: 9;
         width: -webkit-fill-available;
-        // background: $Border;
-        // border: none;
+        background: $Background;
         border-radius: 5px;
       }
 

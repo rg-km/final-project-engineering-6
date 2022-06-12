@@ -51,7 +51,7 @@ body {
   display: flex;
   margin-top: 10vh;
   margin-left: 18%;
-  padding: 3rem 2rem;
+  padding: 3rem;
 }
 
 @mixin post-container() {
@@ -85,6 +85,17 @@ body {
   &:active {
     background: darken($bg, 25%);
   }
+}
+
+@mixin input() {
+  width: 100%;
+  border: 1px solid $Border;
+  border-radius: 0.5rem;
+  padding: 0.8rem;
+  color: $TitleText;
+  background-color: $Light;
+  margin-bottom: 1rem;
+  font-family: $Roboto;
 }
 
 // Breakpoint

@@ -13,7 +13,8 @@ const Sidebar = ({ Sidebar }) => {
               key={index}
               className='row'
               id={window.location.pathname === item.link ? 'active' : ''}
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault();
                 window.location.pathname = item.link;
               }}
             >
