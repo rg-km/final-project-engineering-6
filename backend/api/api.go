@@ -2,6 +2,11 @@ package api
 
 import (
 	"net/http"
+	"reflect"
+	"strings"
+
+	"github.com/gin-gonic/gin/binding"
+	"github.com/go-playground/validator/v10"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rg-km/final-project-engineering-6/repository"
@@ -27,8 +32,51 @@ func NewAPI(commentRepo repository.CommentRepository, likeRepo repository.LikeRe
 		userRepo:    userRepo,
 	}
 
+	// Untuk validasi request dengan mengembalikan nama dari tag json jika ada
+	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
+		v.RegisterTagNameFunc(func(fld reflect.StructField) string {
+			name := strings.SplitN(fld.Tag.Get("json"), ",", 2)[0]
+			if name == "-" {
+				return ""
+			}
+			return name
+		})
+	}
+
+	router.Static("/media", "./media")
+
 	router.POST("/api/login", api.login)
 	router.POST("/api/register", api.register)
+
+	router.GET("/api/post", api.readPosts)
+	router.GET("/api/post/:id", api.readPost)
+	postRouter := router.Group("/api/post", AuthMiddleware())
+	{
+		postRouter.POST("/", api.createPost)
+		postRouter.POST("/images/:id", api.uploadPostImages)
+		postRouter.PUT("/", api.updatePost)
+		postRouter.DELETE("/:id", api.deletePost)
+	}
+
+	router.GET("/api/comments", api.ReadAllComment)
+	commentRoutersWithAuth := router.Group("/api/comments", AuthMiddleware())
+	{
+		commentRoutersWithAuth.POST("/", api.CreateComment)
+		commentRoutersWithAuth.PUT("/", api.UpdateComment)
+		commentRoutersWithAuth.DELETE("/:id", api.DeleteComment)
+	}
+
+	postLikeRouters := router.Group("/api/post-likes", AuthMiddleware())
+	{
+		postLikeRouters.POST("/", api.CreatePostLike)
+		postLikeRouters.DELETE("/", api.DeletePostLike)
+	}
+
+	commentLikeRouters := router.Group("/api/comment-likes", AuthMiddleware())
+	{
+		commentLikeRouters.POST("/", api.CreateCommentLike)
+		commentLikeRouters.DELETE("/", api.DeleteCommentLike)
+	}
 
 	needAuth := router.Use(AuthMiddleware())
 
@@ -36,6 +84,7 @@ func NewAPI(commentRepo repository.CommentRepository, likeRepo repository.LikeRe
 	needAuth.GET("/api/example", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{"message": "success"})
 	})
+
 	return api
 }
 

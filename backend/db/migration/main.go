@@ -97,6 +97,30 @@ CREATE TABLE IF NOT EXISTS notifications(
 	FOREIGN KEY (comment_id) REFERENCES comments(id),
 	FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
+INSERT INTO users (name, email, password, role) VALUES
+('Radit', 'resradit@gmail.com', 'radit123', 'mahasiswa'),
+('Bocil SMA', 'bocilSMA@gmail.com', 'bocilsma', 'siswa');
+
+INSERT INTO user_details(user_id, institute, major, semester) VALUES
+	(1, 'Harvard', 'Teknik Informatika', 6);
+
+INSERT INTO categories (name) VALUES
+	('Ekonomi dan Bisnis'),
+	('Matematika dan Ilmu Pengetahuan Alam'),
+	('Psikologi'),
+	('Sosial Politik'),
+	('Teknik'),
+	('Teknologi');
+
+INSERT INTO comments(id, post_id, author_id, comment, comment_id, created_at) VALUES 
+	(1, 1, 1, "Comment 1", NULL, "2022-06-11 19:33:02.3861157+07:00"),
+	(2, 1, 1, "Comment 2", 1, "2022-06-11 19:33:02.3861157+07:00"),
+	(3, 1, 1, "Comment 3", 1, "2022-06-11 19:33:02.3861157+07:00"),
+	(4, 1, 1, "Comment 4", NULL, "2022-06-11 19:33:02.3861157+07:00"),
+	(5, 1, 1, "Comment 5", 4, "2022-06-11 19:33:02.3861157+07:00"),
+	(6, 1, 1, "Comment 6", 4, "2022-06-11 19:33:02.3861157+07:00"),
+	(7, 1, 1, "Comment 7", 6, "2022-06-11 19:33:02.3861157+07:00");
 `)
 
 	if err != nil {
