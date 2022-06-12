@@ -55,7 +55,7 @@ func NewAPI(commentRepo repository.CommentRepository, likeRepo repository.LikeRe
 		postRouter.POST("/", api.createPost)
 		postRouter.POST("/images/:id", api.uploadPostImages)
 		postRouter.PUT("/", api.updatePost)
-		postRouter.DELETE("/:id", api.deletePost)
+		postRouter.DELETE("/", api.deletePost)
 	}
 
 	router.GET("/api/comments", api.ReadAllComment)
