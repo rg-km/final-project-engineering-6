@@ -98,8 +98,20 @@ CREATE TABLE IF NOT EXISTS notifications(
 	FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
-INSERT INTO users(id, name, email, password, role) VALUES 
-	(1, "nadhif", "nadhif@example.com", "password", "mahasiswa");
+INSERT INTO users (name, email, password, role) VALUES
+('Radit', 'resradit@gmail.com', 'radit123', 'mahasiswa'),
+('Bocil SMA', 'bocilSMA@gmail.com', 'bocilsma', 'siswa');
+
+INSERT INTO user_details(user_id, institute, major, semester) VALUES
+	(1, 'Harvard', 'Teknik Informatika', 6);
+
+INSERT INTO categories (name) VALUES
+	('Ekonomi dan Bisnis'),
+	('Matematika dan Ilmu Pengetahuan Alam'),
+	('Psikologi'),
+	('Sosial Politik'),
+	('Teknik'),
+	('Teknologi');
 
 INSERT INTO comments(id, post_id, author_id, comment, comment_id, created_at) VALUES 
 	(1, 1, 1, "Comment 1", NULL, "2022-06-11 19:33:02.3861157+07:00"),

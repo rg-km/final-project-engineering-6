@@ -1,11 +1,12 @@
 package api
 
 import (
-	"github.com/gin-gonic/gin/binding"
-	"github.com/go-playground/validator/v10"
 	"net/http"
 	"reflect"
 	"strings"
+
+	"github.com/gin-gonic/gin/binding"
+	"github.com/go-playground/validator/v10"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rg-km/final-project-engineering-6/repository"
@@ -42,8 +43,20 @@ func NewAPI(commentRepo repository.CommentRepository, likeRepo repository.LikeRe
 		})
 	}
 
+	router.Static("/media", "./media")
+
 	router.POST("/api/login", api.login)
 	router.POST("/api/register", api.register)
+
+	router.GET("/api/post", api.readPosts)
+	router.GET("/api/post/:id", api.readPost)
+	postRouter := router.Group("/api/post", AuthMiddleware())
+	{
+		postRouter.POST("/", api.createPost)
+		postRouter.POST("/images/:id", api.uploadPostImages)
+		postRouter.PUT("/", api.updatePost)
+		postRouter.DELETE("/:id", api.deletePost)
+	}
 
 	router.GET("/api/comments", api.ReadAllComment)
 	commentRoutersWithAuth := router.Group("/api/comments", AuthMiddleware())
