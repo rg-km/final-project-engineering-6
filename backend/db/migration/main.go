@@ -3,6 +3,8 @@ package main
 import (
 	"database/sql"
 
+	"github.com/rg-km/final-project-engineering-6/db/seeder"
+
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -13,13 +15,16 @@ func main() {
 		panic(err)
 	}
 
+	defer db.Close()
+
 	_, err = db.Exec(`
 	CREATE TABLE IF NOT EXISTS users (
     id integer not null primary key AUTOINCREMENT,
     name varchar(255) not null,
     email varchar(255) not null,
     password varchar(255) not null,
-	role varchar(255) not null
+	role varchar(255) not null,
+	avatar varchar(255) null
 );
 
 CREATE TABLE IF NOT EXISTS user_details (
@@ -102,4 +107,6 @@ CREATE TABLE IF NOT EXISTS notifications(
 	if err != nil {
 		panic(err)
 	}
+
+	seeder.Seed(db)
 }
