@@ -6,6 +6,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -142,13 +143,14 @@ func (api *API) changeAvatar(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	fmt.Println(userId)
 
 	userData, err := api.userRepo.GetUserData(userId)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	oldFileName := userData.Avatar
 
 	folderPath := "media/avatar"
 	err = os.MkdirAll(folderPath, os.ModePerm)
@@ -158,12 +160,16 @@ func (api *API) changeAvatar(c *gin.Context) {
 	}
 
 	splitFilename := strings.Split(input.Avatar.Filename, ".")
-	filePath := fmt.Sprintf("media/avatar/%s.%s", userData.Name, splitFilename[len(splitFilename)-1])
+	filePath := filepath.Join(folderPath, fmt.Sprintf("%s_%d.%s", userData.Name, time.Now().Unix(), splitFilename[len(splitFilename)-1]))
 	err = c.SaveUploadedFile(input.Avatar, filePath)
 
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
+	}
+
+	if oldFileName != nil {
+		os.Remove(*oldFileName)
 	}
 
 	err = api.userRepo.UpdateAvatar(userId, filePath)
@@ -173,10 +179,10 @@ func (api *API) changeAvatar(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "success"})
+
 }
 
 func (api *API) getUserIdFromToken(tokenString string) (int, error) {
-
 	claim := &Claims{}
 	token, err := jwt.ParseWithClaims(tokenString, claim, func(t *jwt.Token) (interface{}, error) {
 		return jwtKey, nil
@@ -192,7 +198,6 @@ func (api *API) getUserIdFromToken(tokenString string) (int, error) {
 	} else {
 		return -1, errors.New("invalid token")
 	}
-
 }
 
 func ValidateToken(tokenString string) (*jwt.Token, error) {
