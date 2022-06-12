@@ -136,11 +136,11 @@
           font-size: 2rem;
 
           transition: all 0.2s;
-        }
 
-        svg:hover {
-          cursor: pointer;
-          transform: scale(1.05);
+          &:hover {
+            cursor: pointer;
+            transform: scale(1.05);
+          }
         }
       }
 
@@ -185,8 +185,6 @@
 
       .comment-btn {
         @include button($Secondary, $Light);
-        border: none;
-        font-family: $Roboto;
       }
     }
   }
