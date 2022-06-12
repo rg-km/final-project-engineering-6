@@ -130,6 +130,7 @@ func (api *API) uploadPostImages(ctx *gin.Context) {
 
 	files := form.File["images"]
 	var wg sync.WaitGroup
+	var mu sync.Mutex
 	for _, file := range files {
 		wg.Add(1)
 
@@ -170,10 +171,12 @@ func (api *API) uploadPostImages(ctx *gin.Context) {
 			}
 
 			filePath := Local_Post_Image_Path + fileName
+			mu.Lock()
 			if err := api.postRepo.InsertPostImage(postID, filePath); err != nil {
 				ctx.JSON(http.StatusInternalServerError, ErrorPostResponse{Message: err.Error()})
 				return
 			}
+			mu.Unlock()
 		}(file)
 	}
 
@@ -213,7 +216,10 @@ func (api *API) readPosts(ctx *gin.Context) {
 	var wg sync.WaitGroup
 	for _, post := range posts {
 		if _, ok := postsDetail[post.ID]; !ok {
-			postIDqueue = append(postIDqueue, post.ID)
+
+			if len(postIDqueue) == 0 || postIDqueue[len(postIDqueue)-1] != post.ID {
+				postIDqueue = append(postIDqueue, post.ID)
+			}
 
 			wg.Add(1)
 			go func(post repository.PostDetail) {
@@ -263,7 +269,6 @@ func (api *API) readPosts(ctx *gin.Context) {
 			}(post)
 		}
 	}
-	wg.Wait()
 
 	images := make(map[int][]PostImageResponse)
 
@@ -279,6 +284,8 @@ func (api *API) readPosts(ctx *gin.Context) {
 			})
 		}
 	}
+
+	wg.Wait()
 
 	postsReponse := make([]DetailPostResponse, 0)
 
