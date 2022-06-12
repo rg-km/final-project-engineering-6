@@ -1,9 +1,14 @@
 @import "../../App.scss";
 header {
   border-bottom: 1px solid $Border;
+  background-color: $Light;
+  position: fixed;
+  width: 100%;
+  z-index: 100;
+  // position: fixed;
   nav {
-    height: 10vh;
     width: 90%;
+    height: 10vh;
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
@@ -33,6 +38,7 @@ header {
       }
     }
     .menu_icon {
+      cursor: pointer;
       margin-top: 0.2rem;
       display: none;
       @include breakpoint(md) {

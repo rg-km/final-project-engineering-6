@@ -6,14 +6,14 @@ import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 
-const Navbar = () => {
+const Navbar = ({ openSidebar }) => {
   // const [user, setUser] = useState({});
   const [isLoggedIn, setIsloggedin] = useState(false);
   return (
     <div>
       <header>
         <nav>
-          <div className="menu_icon">
+          <div className="menu_icon" onClick={openSidebar}>
             <MenuIcon />
           </div>
           <div className="logo">BASIS___</div>
