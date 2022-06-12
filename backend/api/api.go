@@ -1,7 +1,6 @@
 package api
 
 import (
-	"net/http"
 	"reflect"
 	"strings"
 
@@ -48,6 +47,11 @@ func NewAPI(commentRepo repository.CommentRepository, likeRepo repository.LikeRe
 	router.POST("/api/login", api.login)
 	router.POST("/api/register", api.register)
 
+	profileRouter := router.Group("/api/profile", AuthMiddleware())
+	{
+		profileRouter.PUT("/avatar", api.changeAvatar)
+	}
+
 	router.GET("/api/post", api.readPosts)
 	router.GET("/api/post/:id", api.readPost)
 	postRouter := router.Group("/api/post", AuthMiddleware())
@@ -77,13 +81,6 @@ func NewAPI(commentRepo repository.CommentRepository, likeRepo repository.LikeRe
 		commentLikeRouters.POST("/", api.CreateCommentLike)
 		commentLikeRouters.DELETE("/", api.DeleteCommentLike)
 	}
-
-	needAuth := router.Use(AuthMiddleware())
-
-	// Nanti gunakan needAuth untuk route yang perlu auth
-	needAuth.GET("/api/example", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{"message": "success"})
-	})
 
 	return api
 }
