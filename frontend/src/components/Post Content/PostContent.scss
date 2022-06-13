@@ -136,16 +136,16 @@
           font-size: 2rem;
 
           transition: all 0.2s;
-        }
 
-        svg:hover {
-          cursor: pointer;
-          transform: scale(1.05);
+          &:hover {
+            cursor: pointer;
+            transform: scale(1.05);
+          }
         }
       }
 
       .like-info svg {
-        color: rgb(255, 0, 106);
+        color: $Primary;
       }
 
       .comment-info svg {
@@ -175,18 +175,16 @@
       gap: 1rem;
 
       textarea {
+        @include input();
         resize: none;
         flex: 9;
         width: -webkit-fill-available;
-        // background: $Border;
-        // border: none;
+        background: $Background;
         border-radius: 5px;
       }
 
       .comment-btn {
         @include button($Secondary, $Light);
-        border: none;
-        font-family: $Roboto;
       }
     }
   }

@@ -1,6 +1,6 @@
 // Font
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;500&display=swap");
-$Roboto: "Roboto", sans-serif;
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;500&display=swap');
+$Roboto: 'Roboto', sans-serif;
 // colors
 $Light: #ffffff;
 $Background: #fafafa;
@@ -50,8 +50,8 @@ body {
 @mixin page() {
   display: flex;
   margin-top: 10vh;
-  margin-left: 310px;
-  padding: 3rem 2rem;
+  margin-left: 18%;
+  padding: 3rem;
 }
 
 @mixin post-container() {
@@ -72,6 +72,7 @@ body {
   border-radius: 0.5rem;
   font-size: 0.8rem;
   font-weight: bold;
+  font-family: $Roboto;
   border: none;
   transition: all 0.2s ease;
   width: 100%;
@@ -84,6 +85,17 @@ body {
   &:active {
     background: darken($bg, 25%);
   }
+}
+
+@mixin input() {
+  width: 100%;
+  border: 1px solid $Border;
+  border-radius: 0.5rem;
+  padding: 0.8rem;
+  color: $TitleText;
+  background-color: $Light;
+  margin-bottom: 1rem;
+  font-family: $Roboto;
 }
 
 // Breakpoint
