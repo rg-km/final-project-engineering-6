@@ -219,7 +219,36 @@ func (api *API) readPosts(ctx *gin.Context) {
 		return
 	}
 
-	posts, err := api.postRepo.FetchAllPost(limit, offset, sortBy)
+	var filterQuery1, filterQuery2 string
+
+	searchTitle := ctx.DefaultQuery("search_title", "")
+	if searchTitle != "" {
+		filterQuery1 = fmt.Sprintf("WHERE title LIKE '%%%s%%'", searchTitle)
+	}
+
+	category_id, err := strconv.Atoi(ctx.DefaultQuery("category_id", "0"))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, ErrorPostResponse{Message: "Invalid Filter By Category ID"})
+		return
+	}
+	if category_id != 0 {
+		if filterQuery1 != "" {
+			filterQuery1 = fmt.Sprintf("%s AND category_id = %d", filterQuery1, category_id)
+		} else {
+			filterQuery1 = fmt.Sprintf("WHERE category_id = %d", category_id)
+		}
+	}
+
+	no_comment, err := strconv.ParseBool(ctx.DefaultQuery("no_comment", "false"))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, ErrorPostResponse{Message: "Invalid Filter By No Comment Value"})
+		return
+	}
+	if no_comment {
+		filterQuery2 = "Having(comment_count) = 0"
+	}
+
+	posts, err := api.postRepo.FetchAllPost(limit, offset, sortBy, filterQuery1, filterQuery2)
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, ErrorPostResponse{Message: "Internal Server Error"})

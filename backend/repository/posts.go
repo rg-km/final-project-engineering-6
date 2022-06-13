@@ -99,7 +99,7 @@ func (p *PostRepository) InsertPostImage(postID int, path string) error {
 	return nil
 }
 
-func (p *PostRepository) FetchAllPost(limit, offset int, orderBy string) ([]PostDetail, error) {
+func (p *PostRepository) FetchAllPost(limit, offset int, orderBy, filter1, filter2 string) ([]PostDetail, error) {
 	sqlStatement := fmt.Sprintf(
 		`
 		SELECT 
@@ -143,12 +143,14 @@ func (p *PostRepository) FetchAllPost(limit, offset int, orderBy string) ([]Post
 			INNER JOIN users u ON p.author_id = u.id
 			LEFT JOIN user_details ud ON u.id = ud.user_id	
 			LEFT JOIN post_likes pl ON pl.post_id = p.id
+			%s
 			GROUP BY p.id
+			%s
 			ORDER BY %s
 			LIMIT %d OFFSET %d
 		) up
 		LEFT JOIN post_images pi ON up.id = pi.post_id;`,
-		orderBy, limit, offset)
+		filter1, filter2, orderBy, limit, offset)
 
 	tx, err := p.db.Begin()
 
