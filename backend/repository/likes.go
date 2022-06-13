@@ -3,7 +3,6 @@ package repository
 import (
 	"database/sql"
 	"fmt"
-	"net/http"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -24,23 +23,10 @@ func (l *LikeRepository) InsertPostLike(postLike PostLike) error {
 	return err
 }
 
-func (l *LikeRepository) DeletePostLike(postLike PostLike) (int, error) {
+func (l *LikeRepository) DeletePostLike(postLike PostLike) error {
 	sqlStmt := `DELETE FROM post_likes WHERE post_id = ? AND user_id = ?;`
-	result, err := l.db.Exec(sqlStmt, postLike.PostID, postLike.UserID)
-	if err != nil {
-		return http.StatusInternalServerError, err
-	}
-
-	count, err := result.RowsAffected()
-	if err != nil {
-		return http.StatusInternalServerError, err
-	}
-
-	if count == 0 {
-		return http.StatusBadRequest, fmt.Errorf("No data with given id")
-	}
-
-	return http.StatusOK, nil
+	_, err := l.db.Exec(sqlStmt, postLike.PostID, postLike.UserID)
+	return err
 }
 
 func (l *LikeRepository) CountPostLike(postID int) (int, error) {
@@ -56,29 +42,38 @@ func (l *LikeRepository) CountPostLike(postID int) (int, error) {
 	return totalLike, nil
 }
 
+func (l *LikeRepository) CheckPostLikeIsExist(postLike PostLike) (bool, error) {
+	sqlStmt := `
+	SELECT  
+		COUNT(*)
+	FROM post_likes
+	WHERE post_id = ? AND user_id = ?;`
+	result := l.db.QueryRow(sqlStmt, postLike.PostID, postLike.UserID)
+
+	var totalLike int
+	err := result.Scan(&totalLike)
+	if err != nil {
+		return false, err
+	}
+
+	fmt.Println(totalLike)
+	if totalLike == 1 {
+		return true, nil
+	} else {
+		return false, nil
+	}
+}
+
 func (l *LikeRepository) InsertCommentLike(commentLike CommentLike) error {
 	sqlStmt := `INSERT INTO comment_likes (comment_id, user_id) VALUES (?, ?);`
 	_, err := l.db.Exec(sqlStmt, commentLike.CommentID, commentLike.UserID)
 	return err
 }
 
-func (l *LikeRepository) DeleteCommentLike(commentLike CommentLike) (int, error) {
+func (l *LikeRepository) DeleteCommentLike(commentLike CommentLike) error {
 	sqlStmt := `DELETE FROM comment_likes WHERE comment_id = ? AND user_id = ?;`
-	result, err := l.db.Exec(sqlStmt, commentLike.CommentID, commentLike.UserID)
-	if err != nil {
-		return http.StatusInternalServerError, err
-	}
-
-	count, err := result.RowsAffected()
-	if err != nil {
-		return http.StatusInternalServerError, err
-	}
-
-	if count == 0 {
-		return http.StatusBadRequest, fmt.Errorf("No data with given id")
-	}
-
-	return http.StatusOK, nil
+	_, err := l.db.Exec(sqlStmt, commentLike.CommentID, commentLike.UserID)
+	return err
 }
 
 func (l *LikeRepository) CountCommentLike(commentID int) (int, error) {
@@ -92,4 +87,25 @@ func (l *LikeRepository) CountCommentLike(commentID int) (int, error) {
 	}
 
 	return totalLike, nil
+}
+
+func (l *LikeRepository) CheckCommentLikeIsExist(commentLike CommentLike) (bool, error) {
+	sqlStmt := `
+	SELECT  
+		COUNT(*)
+	FROM comment_likes
+	WHERE comment_id = ? AND user_id = ?;`
+	result := l.db.QueryRow(sqlStmt, commentLike.CommentID, commentLike.UserID)
+
+	var totalLike int
+	err := result.Scan(&totalLike)
+	if err != nil {
+		return false, err
+	}
+
+	if totalLike == 1 {
+		return true, nil
+	} else {
+		return false, nil
+	}
 }
