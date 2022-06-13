@@ -3,6 +3,8 @@ package main
 import (
 	"database/sql"
 
+	"github.com/rg-km/final-project-engineering-6/db/seeder"
+
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -13,13 +15,16 @@ func main() {
 		panic(err)
 	}
 
+	defer db.Close()
+
 	_, err = db.Exec(`
 	CREATE TABLE IF NOT EXISTS users (
     id integer not null primary key AUTOINCREMENT,
     name varchar(255) not null,
     email varchar(255) not null,
     password varchar(255) not null,
-	role varchar(255) not null
+	role varchar(255) not null,
+	avatar varchar(255) null
 );
 
 CREATE TABLE IF NOT EXISTS user_details (
@@ -97,21 +102,11 @@ CREATE TABLE IF NOT EXISTS notifications(
 	FOREIGN KEY (comment_id) REFERENCES comments(id),
 	FOREIGN KEY (user_id) REFERENCES users(id)
 );
-
-INSERT INTO users(id, name, email, password, role) VALUES 
-	(1, "nadhif", "nadhif@example.com", "password", "mahasiswa");
-
-INSERT INTO comments(id, post_id, author_id, comment, comment_id, created_at) VALUES 
-	(1, 1, 1, "Comment 1", NULL, "2022-06-11 19:33:02.3861157+07:00"),
-	(2, 1, 1, "Comment 2", 1, "2022-06-11 19:33:02.3861157+07:00"),
-	(3, 1, 1, "Comment 3", 1, "2022-06-11 19:33:02.3861157+07:00"),
-	(4, 1, 1, "Comment 4", NULL, "2022-06-11 19:33:02.3861157+07:00"),
-	(5, 1, 1, "Comment 5", 4, "2022-06-11 19:33:02.3861157+07:00"),
-	(6, 1, 1, "Comment 6", 4, "2022-06-11 19:33:02.3861157+07:00"),
-	(7, 1, 1, "Comment 7", 6, "2022-06-11 19:33:02.3861157+07:00");
 `)
 
 	if err != nil {
 		panic(err)
 	}
+
+	seeder.Seed(db)
 }

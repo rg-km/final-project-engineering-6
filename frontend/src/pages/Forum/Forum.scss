@@ -2,6 +2,7 @@
 
 .forum {
   @include page();
+  position: relative;
 
   @include breakpoint(md) {
     margin-left: 0;

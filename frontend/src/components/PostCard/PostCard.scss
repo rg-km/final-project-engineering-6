@@ -1,12 +1,17 @@
 @import '../../App.scss';
 
-.forum-post-card {
-  transition: all 0.2s;
+a {
+  color: black;
+  text-decoration: none;
 }
 
-.forum-post-card:hover {
-  cursor: pointer;
-  transform: scale(1.02);
+.forum-post-card {
+  transition: all 0.2s;
+
+  &:hover {
+    cursor: pointer;
+    transform: scale(1.02);
+  }
 }
 
 .post-card {

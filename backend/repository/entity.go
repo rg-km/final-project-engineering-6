@@ -10,6 +10,8 @@ type Comment struct {
 	CreatedAt       *time.Time `json:"created_at"`
 	AuthorID        int        `json:"author_id"`
 	AuthorName      string     `json:"author_name" db:"author_name"`
+	TotalLike       int        `json:"total_like"`
+	TotalReply      int        `json:"total_reply"`
 	Reply           []Comment  `json:"reply"`
 }
 

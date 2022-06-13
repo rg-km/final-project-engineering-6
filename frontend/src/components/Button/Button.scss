@@ -1,0 +1,23 @@
+@import '../../App.scss';
+
+.btn-login,
+.btn-submit {
+  @include button($Primary, $Light);
+}
+
+.btn-regis {
+  @include button($Border, $Secondary);
+}
+
+.btn-add-post {
+  @include button($Primary, $Light);
+  position: fixed;
+  width: 60px;
+  height: 60px;
+  bottom: 50px;
+  right: 50px;
+  font-size: 1.5rem;
+  border-radius: 50px;
+  padding: 0;
+  z-index: 10;
+}

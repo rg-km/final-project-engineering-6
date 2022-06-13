@@ -23,7 +23,8 @@ func (c *CommentRepository) SelectAllCommentsByParentCommentID(parentCommentID i
 	sqlStmt := `
 	SELECT
 		c.*,
-		u.name as author_name
+		u.name as author_name,
+		(SELECT COUNT(*) FROM comment_likes WHERE comment_id = c.id) AS total_like
 	FROM comments c
 	LEFT JOIN users u ON c.author_id = u.id
 	WHERE c.comment_id = ?
@@ -47,6 +48,7 @@ func (c *CommentRepository) SelectAllCommentsByParentCommentID(parentCommentID i
 			&comment.Comment,
 			&comment.CreatedAt,
 			&comment.AuthorName,
+			&comment.TotalLike,
 		)
 		if err != nil {
 			return []Comment{}, err
@@ -54,6 +56,7 @@ func (c *CommentRepository) SelectAllCommentsByParentCommentID(parentCommentID i
 
 		reply, _ := c.SelectAllCommentsByParentCommentID(comment.ID)
 		comment.Reply = reply
+		comment.TotalReply = len(reply)
 
 		comments = append(comments, comment)
 	}
@@ -65,7 +68,8 @@ func (c *CommentRepository) SelectAllCommentsByPostID(postID int) ([]Comment, er
 	sqlStmt := `
 	SELECT
 		c.*,
-		u.name as author_name
+		u.name as author_name,
+		(SELECT COUNT(*) FROM comment_likes WHERE comment_id = c.id) AS total_like
 	FROM comments c
 	LEFT JOIN users u ON c.author_id = u.id
 	WHERE c.post_id = ? AND c.comment_id ISNULL
@@ -89,6 +93,7 @@ func (c *CommentRepository) SelectAllCommentsByPostID(postID int) ([]Comment, er
 			&comment.Comment,
 			&comment.CreatedAt,
 			&comment.AuthorName,
+			&comment.TotalLike,
 		)
 		if err != nil {
 			return []Comment{}, err
@@ -96,6 +101,7 @@ func (c *CommentRepository) SelectAllCommentsByPostID(postID int) ([]Comment, er
 
 		reply, _ := c.SelectAllCommentsByParentCommentID(comment.ID)
 		comment.Reply = reply
+		comment.TotalReply = len(reply)
 
 		comments = append(comments, comment)
 	}
@@ -129,7 +135,7 @@ func (c *CommentRepository) UpdateComment(comment Comment) (int, error) {
 	return http.StatusOK, nil
 }
 
-func (c CommentRepository) DeleteComment(commentID int) (int, error) {
+func (c *CommentRepository) DeleteComment(commentID int) (int, error) {
 	sqlStmt := `DELETE FROM comments WHERE id = ? OR comment_id = ?`
 
 	result, err := c.db.Exec(sqlStmt, commentID, commentID)
@@ -147,4 +153,17 @@ func (c CommentRepository) DeleteComment(commentID int) (int, error) {
 	}
 
 	return http.StatusOK, nil
+}
+
+func (c CommentRepository) CountComment(postID int) (int, error) {
+	sqlStmt := `SELECT COUNT(*) FROM comments WHERE post_id = ?;`
+	result := c.db.QueryRow(sqlStmt, postID)
+
+	var totalLike int
+	err := result.Scan(&totalLike)
+	if err != nil {
+		return 0, err
+	}
+
+	return totalLike, nil
 }
