@@ -81,9 +81,9 @@ func (l *LikeRepository) DeleteCommentLike(commentLike CommentLike) (int, error)
 	return http.StatusOK, nil
 }
 
-func (l *LikeRepository) CountCommentLike(postID int) (int, error) {
-	sqlStmt := `SELECT COUNT(*) FROM comment_likes WHERE post_id = ?;`
-	result := l.db.QueryRow(sqlStmt, postID)
+func (l *LikeRepository) CountCommentLike(commentID int) (int, error) {
+	sqlStmt := `SELECT COUNT(*) FROM comment_likes WHERE comment_id = ?;`
+	result := l.db.QueryRow(sqlStmt, commentID)
 
 	var totalLike int
 	err := result.Scan(&totalLike)
