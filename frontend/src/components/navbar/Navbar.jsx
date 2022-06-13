@@ -10,7 +10,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 
 const Navbar = ({ openSidebar }) => {
   // const [user, setUser] = useState({});
-  const [isLoggedIn, setIsloggedin] = useState(true);
+  const [isLoggedIn, setIsloggedin] = useState(false);
   return (
     <div>
       <header>
