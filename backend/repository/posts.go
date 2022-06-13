@@ -312,6 +312,12 @@ func (p *PostRepository) DeletePostByID(postID int) error {
 		return err
 	}
 
+	_, err = tx.Exec(`DELETE FROM post_images WHERE post_id = ?;`, postID)
+
+	if err != nil {
+		return err
+	}
+
 	if err := tx.Commit(); err != nil {
 		return err
 	}
