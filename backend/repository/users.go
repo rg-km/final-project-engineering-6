@@ -77,6 +77,12 @@ func (u *UserRepository) InsertNewUser(name string, email string, password strin
 		return -1, http.StatusBadRequest, errors.New("role must be either 'mahasiswa' or 'siswa'")
 	}
 
+	if strings.ToLower(role) == "mahasiswa" {
+		if major == nil || semester == nil {
+			return -1, http.StatusBadRequest, errors.New("please fill major and semester correctly")
+		}
+	}
+
 	isAvailable, err := u.CheckEmail(email)
 	if err != nil {
 		return -1, http.StatusBadRequest, err
