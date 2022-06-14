@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -13,12 +14,15 @@ type PostDetail struct {
 	AuthorID          int            `db:"author_id"`
 	AuthorName        string         `db:"author_name"`
 	AuthorRole        string         `db:"author_role"`
+	AuthorAvatar      sql.NullString `db:"author_avatar"`
 	AuthorInstitution sql.NullString `db:"author_institution"`
 	AuthorMajor       sql.NullString `db:"author_major"`
 	CategoryID        int            `db:"category_id"`
 	Title             string         `db:"title"`
 	Description       string         `db:"desc"`
 	CreatedAt         time.Time      `db:"created_at"`
+	CommentCount      int            `db:"comment_count"`
+	LikeCount         int            `db:"like_count"`
 	ImageID           sql.NullInt32  `db:"image_id"`
 	ImagePath         sql.NullString `db:"image_path"`
 }
@@ -95,40 +99,58 @@ func (p *PostRepository) InsertPostImage(postID int, path string) error {
 	return nil
 }
 
-func (p *PostRepository) FetchAllPost(limit, offset int) ([]PostDetail, error) {
-	sqlStatement := `
-	SELECT 
-	up.id,
-	up.author_id,
-	up.author_name,
-	up.author_role,
-	up.author_institution,
-	up.author_major,
-	up.category_id,
-	up.title,
-	up.desc,
-	up.created_at,
-	pi.id as image_id,
-	pi.path as image_path
-FROM (
-	SELECT
-	p.id as id,
-	u.id as author_id,
-	u.name as author_name,
-	u.role as author_role,
-	ud.institute as author_institution,
-	ud.major as author_major,
-	p.category_id as category_id,
-	p.title as title,
-	p.desc as desc,
-	p.created_at as created_at
-	FROM posts p
-	INNER JOIN users u ON p.author_id = u.id
-	LEFT JOIN user_details ud ON u.id = ud.user_id
-	ORDER BY created_at DESC
-	LIMIT ? OFFSET ?
-) up
-LEFT JOIN post_images pi ON up.id = pi.post_id;`
+func (p *PostRepository) FetchAllPost(limit, offset int, orderBy, filter1, filter2 string) ([]PostDetail, error) {
+	sqlStatement := fmt.Sprintf(
+		`
+		SELECT 
+		up.id,
+		up.author_id,
+		up.author_name,
+		up.author_role,
+		up.author_avatar,
+		up.author_institution,
+		up.author_major,
+		up.category_id,
+		up.title,
+		up.desc,
+		up.created_at,
+		up.comment_count,
+		up.like_count,
+		pi.id as image_id,
+		pi.path as image_path
+		FROM (
+			SELECT
+			p.id,
+			u.id as author_id,
+			u.name as author_name,
+			u.role as author_role,
+			u.avatar as author_avatar,
+			ud.institute as author_institution,
+			ud.major as author_major,
+			p.category_id,
+			p.title,
+			p.desc,
+			p.created_at,
+			p.comment_count,
+			COUNT(pl.id) as like_count
+			FROM (
+				SELECT 
+				p.id, p.author_id, p.category_id, p.title, p.desc, p.created_at, COUNT(c.id) as comment_count 
+				FROM posts p
+				LEFT JOIN comments c ON c.post_id  = p.id 
+				GROUP BY p.id
+			) p
+			INNER JOIN users u ON p.author_id = u.id
+			LEFT JOIN user_details ud ON u.id = ud.user_id	
+			LEFT JOIN post_likes pl ON pl.post_id = p.id
+			%s
+			GROUP BY p.id
+			%s
+			ORDER BY %s
+			LIMIT %d OFFSET %d
+		) up
+		LEFT JOIN post_images pi ON up.id = pi.post_id;`,
+		filter1, filter2, orderBy, limit, offset)
 
 	tx, err := p.db.Begin()
 
@@ -138,7 +160,7 @@ LEFT JOIN post_images pi ON up.id = pi.post_id;`
 
 	defer tx.Rollback()
 
-	rows, err := tx.Query(sqlStatement, limit, offset)
+	rows, err := tx.Query(sqlStatement)
 
 	if err != nil {
 		return nil, err
@@ -151,8 +173,8 @@ LEFT JOIN post_images pi ON up.id = pi.post_id;`
 		var post PostDetail
 		err := rows.Scan(
 			&post.ID,
-			&post.AuthorID, &post.AuthorName, &post.AuthorRole, &post.AuthorInstitution, &post.AuthorMajor,
-			&post.CategoryID, &post.Title, &post.Description, &post.CreatedAt,
+			&post.AuthorID, &post.AuthorName, &post.AuthorRole, &post.AuthorAvatar, &post.AuthorInstitution, &post.AuthorMajor,
+			&post.CategoryID, &post.Title, &post.Description, &post.CreatedAt, &post.CommentCount, &post.LikeCount,
 			&post.ImageID, &post.ImagePath)
 
 		if err != nil {
@@ -181,6 +203,7 @@ func (p *PostRepository) FetchPostByID(postID int) ([]PostDetail, error) {
 			u.id as author_id,
 			u.name as author_name,
 			u.role as author_role,
+			u.avatar as author_avatar,
 			ud.institute as author_institution,
 			ud.major as author_major,
 			p.category_id as category_id,
@@ -216,7 +239,7 @@ func (p *PostRepository) FetchPostByID(postID int) ([]PostDetail, error) {
 		var post PostDetail
 		err := rows.Scan(
 			&post.ID,
-			&post.AuthorID, &post.AuthorName, &post.AuthorRole, &post.AuthorInstitution, &post.AuthorMajor,
+			&post.AuthorID, &post.AuthorName, &post.AuthorRole, &post.AuthorAvatar, &post.AuthorInstitution, &post.AuthorMajor,
 			&post.CategoryID, &post.Title, &post.Description, &post.CreatedAt,
 			&post.ImageID, &post.ImagePath)
 
@@ -234,6 +257,37 @@ func (p *PostRepository) FetchPostByID(postID int) ([]PostDetail, error) {
 	return posts, nil
 }
 
+func (p *PostRepository) FetchAuthorIDByPostID(postID int) (int, error) {
+	sqlStatement := `
+		SELECT author_id FROM posts WHERE id = ?;
+	`
+
+	tx, err := p.db.Begin()
+
+	if err != nil {
+		return 0, err
+	}
+
+	defer tx.Rollback()
+
+	var authorID int
+	err = tx.QueryRow(sqlStatement, postID).Scan(&authorID)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return 0, ErrPostNotFound
+		}
+
+		return 0, err
+	}
+
+	if err := tx.Commit(); err != nil {
+		return 0, err
+	}
+
+	return authorID, nil
+}
+
 func (p *PostRepository) UpdatePost(postID, categoryID int, title, description string) error {
 	sqlStatement := `
 		UPDATE posts SET category_id = ?, title = ?, desc = ? WHERE id = ?;
@@ -247,20 +301,10 @@ func (p *PostRepository) UpdatePost(postID, categoryID int, title, description s
 
 	defer tx.Rollback()
 
-	result, err := tx.Exec(sqlStatement, categoryID, title, description, postID)
+	_, err = tx.Exec(sqlStatement, categoryID, title, description, postID)
 
 	if err != nil {
 		return err
-	}
-
-	count, err := result.RowsAffected()
-
-	if err != nil {
-		return err
-	}
-
-	if count == 0 {
-		return ErrPostNotFound
 	}
 
 	if err := tx.Commit(); err != nil {
@@ -281,20 +325,16 @@ func (p *PostRepository) DeletePostByID(postID int) error {
 
 	defer tx.Rollback()
 
-	result, err := tx.Exec(sqlStatement, postID)
+	_, err = tx.Exec(sqlStatement, postID)
 
 	if err != nil {
 		return err
 	}
 
-	count, err := result.RowsAffected()
+	_, err = tx.Exec(`DELETE FROM post_images WHERE post_id = ?;`, postID)
 
 	if err != nil {
 		return err
-	}
-
-	if count == 0 {
-		return ErrPostNotFound
 	}
 
 	if err := tx.Commit(); err != nil {

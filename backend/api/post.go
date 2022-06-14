@@ -32,9 +32,15 @@ type CreatePostRequest struct {
 
 type UpdatePostRequest struct {
 	ID          int    `json:"id"`
+	AuthorID    int    `json:"author_id"`
 	CategoryID  int    `json:"category_id"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
+}
+
+type DeletePostRequest struct {
+	ID       int `json:"id"`
+	AuthorID int `json:"author_id"`
 }
 
 type CreatePostResponse struct {
@@ -198,7 +204,51 @@ func (api *API) readPosts(ctx *gin.Context) {
 		return
 	}
 
-	posts, err := api.postRepo.FetchAllPost(limit, offset)
+	sortBy := ctx.DefaultQuery("sort_by", "newest")
+	switch sortBy {
+	case "newest":
+		sortBy = "created_at DESC"
+	case "oldest":
+		sortBy = "created_at"
+	case "most_liked":
+		sortBy = "like_count DESC"
+	case "most_commented":
+		sortBy = "comment_count DESC"
+	default:
+		ctx.JSON(http.StatusBadRequest, ErrorPostResponse{Message: "Invalid Sort By"})
+		return
+	}
+
+	var filterQuery1, filterQuery2 string
+
+	searchTitle := ctx.DefaultQuery("search_title", "")
+	if searchTitle != "" {
+		filterQuery1 = fmt.Sprintf("WHERE title LIKE '%%%s%%'", searchTitle)
+	}
+
+	category_id, err := strconv.Atoi(ctx.DefaultQuery("category_id", "0"))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, ErrorPostResponse{Message: "Invalid Filter By Category ID"})
+		return
+	}
+	if category_id != 0 {
+		if filterQuery1 != "" {
+			filterQuery1 = fmt.Sprintf("%s AND category_id = %d", filterQuery1, category_id)
+		} else {
+			filterQuery1 = fmt.Sprintf("WHERE category_id = %d", category_id)
+		}
+	}
+
+	no_comment, err := strconv.ParseBool(ctx.DefaultQuery("no_comment", "false"))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, ErrorPostResponse{Message: "Invalid Filter By No Comment Value"})
+		return
+	}
+	if no_comment {
+		filterQuery2 = "Having(comment_count) = 0"
+	}
+
+	posts, err := api.postRepo.FetchAllPost(limit, offset, sortBy, filterQuery1, filterQuery2)
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, ErrorPostResponse{Message: "Internal Server Error"})
@@ -213,7 +263,6 @@ func (api *API) readPosts(ctx *gin.Context) {
 	postIDqueue := make([]int, 0)
 	postsDetail := make(map[int]PostResponse)
 
-	var wg sync.WaitGroup
 	for _, post := range posts {
 		if _, ok := postsDetail[post.ID]; !ok {
 
@@ -221,52 +270,36 @@ func (api *API) readPosts(ctx *gin.Context) {
 				postIDqueue = append(postIDqueue, post.ID)
 			}
 
-			wg.Add(1)
-			go func(post repository.PostDetail) {
-				defer wg.Done()
+			var authorMajor, authorInstitute, authorImage string
+			if post.AuthorMajor.Valid {
+				authorMajor = post.AuthorMajor.String
+			}
 
-				commentCount, err := api.commentRepo.CountComment(post.ID)
+			if post.AuthorInstitution.Valid {
+				authorInstitute = post.AuthorInstitution.String
+			}
 
-				if err != nil {
-					ctx.JSON(http.StatusInternalServerError, ErrorPostResponse{Message: "Internal Server Error"})
-					return
-				}
+			if post.AuthorAvatar.Valid {
+				authorImage = post.AuthorAvatar.String
+			}
 
-				likeCount, err := api.likeRepo.CountPostLike(post.ID)
-
-				if err != nil {
-					ctx.JSON(http.StatusInternalServerError, ErrorPostResponse{Message: "Internal Server Error"})
-					return
-				}
-
-				var authorMajor, authorInstitute string
-				if post.AuthorMajor.Valid {
-					authorMajor = post.AuthorMajor.String
-				}
-
-				if post.AuthorInstitution.Valid {
-					authorInstitute = post.AuthorInstitution.String
-				}
-
-				postsDetail[post.ID] = PostResponse{
-					ID: post.ID,
-					Author: AuthorPostResponse{
-						ID:           post.AuthorID,
-						Name:         post.AuthorName,
-						Role:         post.AuthorRole,
-						Major:        authorMajor,
-						Institute:    authorInstitute,
-						ProfileImage: "localhost:8080/media/user/author.png",
-					},
-					CategoryID:   post.CategoryID,
-					Title:        post.Title,
-					Description:  post.Description,
-					CreatedAt:    post.CreatedAt.Format("2006-01-02 15:04:05"),
-					CommentCount: commentCount,
-					LikeCount:    likeCount,
-				}
-
-			}(post)
+			postsDetail[post.ID] = PostResponse{
+				ID: post.ID,
+				Author: AuthorPostResponse{
+					ID:           post.AuthorID,
+					Name:         post.AuthorName,
+					Role:         post.AuthorRole,
+					Major:        authorMajor,
+					Institute:    authorInstitute,
+					ProfileImage: authorImage,
+				},
+				CategoryID:   post.CategoryID,
+				Title:        post.Title,
+				Description:  post.Description,
+				CreatedAt:    post.CreatedAt.Format("2006-01-02 15:04:05"),
+				CommentCount: post.CommentCount,
+				LikeCount:    post.LikeCount,
+			}
 		}
 	}
 
@@ -284,8 +317,6 @@ func (api *API) readPosts(ctx *gin.Context) {
 			})
 		}
 	}
-
-	wg.Wait()
 
 	postsReponse := make([]DetailPostResponse, 0)
 
@@ -348,13 +379,17 @@ func (api *API) readPost(ctx *gin.Context) {
 		}
 	}
 
-	var authorMajor, authorInstitute string
+	var authorMajor, authorInstitute, authorImage string
 	if posts[0].AuthorMajor.Valid {
 		authorMajor = posts[0].AuthorMajor.String
 	}
 
 	if posts[0].AuthorInstitution.Valid {
 		authorInstitute = posts[0].AuthorInstitution.String
+	}
+
+	if posts[0].AuthorAvatar.Valid {
+		authorImage = posts[0].AuthorAvatar.String
 	}
 
 	ctx.JSON(http.StatusOK, DetailPostResponse{
@@ -366,7 +401,7 @@ func (api *API) readPost(ctx *gin.Context) {
 				Role:         posts[0].AuthorRole,
 				Major:        authorMajor,
 				Institute:    authorInstitute,
-				ProfileImage: "localhost:8080/media/user/author.png",
+				ProfileImage: authorImage,
 			},
 			CategoryID:   posts[0].CategoryID,
 			Title:        posts[0].Title,
@@ -389,13 +424,19 @@ func (api *API) updatePost(ctx *gin.Context) {
 		return
 	}
 
-	if err := api.postRepo.UpdatePost(req.ID, req.CategoryID, req.Title, req.Description); err != nil {
-
+	if authorID, err := api.postRepo.FetchAuthorIDByPostID(req.ID); err != nil {
 		if errors.Is(err, repository.ErrPostNotFound) {
 			ctx.JSON(http.StatusNotFound, ErrorPostResponse{Message: "Post Not Found"})
 			return
 		}
+		ctx.JSON(http.StatusInternalServerError, ErrorPostResponse{Message: "Internal Server Error"})
+		return
+	} else if authorID != req.AuthorID {
+		ctx.JSON(http.StatusForbidden, ErrorPostResponse{Message: "Forbidden"})
+		return
+	}
 
+	if err := api.postRepo.UpdatePost(req.ID, req.CategoryID, req.Title, req.Description); err != nil {
 		ctx.JSON(http.StatusInternalServerError, ErrorPostResponse{Message: "Internal Server Error"})
 		return
 	}
@@ -406,22 +447,27 @@ func (api *API) updatePost(ctx *gin.Context) {
 
 func (api *API) deletePost(ctx *gin.Context) {
 	var (
-		postID int
-		err    error
+		req = DeletePostRequest{}
 	)
 
-	if postID, err = strconv.Atoi(ctx.Param("id")); err != nil {
-		ctx.JSON(http.StatusBadRequest, ErrorPostResponse{Message: "Invalid Post ID"})
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, ErrorPostResponse{Message: "Invalid Request Body"})
 		return
 	}
 
-	if err := api.postRepo.DeletePostByID(postID); err != nil {
-
+	if authorID, err := api.postRepo.FetchAuthorIDByPostID(req.ID); err != nil {
 		if errors.Is(err, repository.ErrPostNotFound) {
 			ctx.JSON(http.StatusNotFound, ErrorPostResponse{Message: "Post Not Found"})
 			return
 		}
+		ctx.JSON(http.StatusInternalServerError, ErrorPostResponse{Message: "Internal Server Error"})
+		return
+	} else if authorID != req.AuthorID {
+		ctx.JSON(http.StatusForbidden, ErrorPostResponse{Message: "Forbidden"})
+		return
+	}
 
+	if err := api.postRepo.DeletePostByID(req.ID); err != nil {
 		ctx.JSON(http.StatusInternalServerError, ErrorPostResponse{Message: "Internal Server Error"})
 		return
 	}

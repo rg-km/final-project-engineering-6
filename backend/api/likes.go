@@ -38,6 +38,25 @@ func (api API) CreatePostLike(c *gin.Context) {
 		return
 	}
 
+	isExist, err := api.likeRepo.CheckPostLikeIsExist(repository.PostLike{
+		PostID: postLikeRequest.PostID,
+		UserID: postLikeRequest.UserID,
+	})
+	if err != nil {
+		c.AbortWithStatusJSON(
+			http.StatusInternalServerError,
+			gin.H{"error": err.Error()},
+		)
+		return
+	}
+	if isExist {
+		c.AbortWithStatusJSON(
+			http.StatusBadRequest,
+			gin.H{"error": "User with given id already like this post"},
+		)
+		return
+	}
+
 	err = api.likeRepo.InsertPostLike(repository.PostLike{
 		PostID: postLikeRequest.PostID,
 		UserID: postLikeRequest.UserID,
@@ -74,13 +93,32 @@ func (api API) DeletePostLike(c *gin.Context) {
 		return
 	}
 
-	codeResponse, err := api.likeRepo.DeletePostLike(repository.PostLike{
+	isExist, err := api.likeRepo.CheckPostLikeIsExist(repository.PostLike{
 		PostID: postLikeRequest.PostID,
 		UserID: postLikeRequest.UserID,
 	})
 	if err != nil {
 		c.AbortWithStatusJSON(
-			codeResponse,
+			http.StatusInternalServerError,
+			gin.H{"error": err.Error()},
+		)
+		return
+	}
+	if !isExist {
+		c.AbortWithStatusJSON(
+			http.StatusBadRequest,
+			gin.H{"error": "No data with given id"},
+		)
+		return
+	}
+
+	err = api.likeRepo.DeletePostLike(repository.PostLike{
+		PostID: postLikeRequest.PostID,
+		UserID: postLikeRequest.UserID,
+	})
+	if err != nil {
+		c.AbortWithStatusJSON(
+			http.StatusInternalServerError,
 			gin.H{"error": err.Error()},
 		)
 		return
@@ -107,6 +145,25 @@ func (api API) CreateCommentLike(c *gin.Context) {
 				gin.H{"error": err.Error()},
 			)
 		}
+		return
+	}
+
+	isExist, err := api.likeRepo.CheckCommentLikeIsExist(repository.CommentLike{
+		CommentID: commentLikeRequest.CommentID,
+		UserID:    commentLikeRequest.UserID,
+	})
+	if err != nil {
+		c.AbortWithStatusJSON(
+			http.StatusInternalServerError,
+			gin.H{"error": err.Error()},
+		)
+		return
+	}
+	if isExist {
+		c.AbortWithStatusJSON(
+			http.StatusInternalServerError,
+			gin.H{"error": "User with given id already like this comment"},
+		)
 		return
 	}
 
@@ -146,13 +203,32 @@ func (api API) DeleteCommentLike(c *gin.Context) {
 		return
 	}
 
-	codeResponse, err := api.likeRepo.DeleteCommentLike(repository.CommentLike{
+	isExist, err := api.likeRepo.CheckCommentLikeIsExist(repository.CommentLike{
 		CommentID: commentLikeRequest.CommentID,
 		UserID:    commentLikeRequest.UserID,
 	})
 	if err != nil {
 		c.AbortWithStatusJSON(
-			codeResponse,
+			http.StatusInternalServerError,
+			gin.H{"error": err.Error()},
+		)
+		return
+	}
+	if !isExist {
+		c.AbortWithStatusJSON(
+			http.StatusInternalServerError,
+			gin.H{"error": "User with given id already like this comment"},
+		)
+		return
+	}
+
+	err = api.likeRepo.DeleteCommentLike(repository.CommentLike{
+		CommentID: commentLikeRequest.CommentID,
+		UserID:    commentLikeRequest.UserID,
+	})
+	if err != nil {
+		c.AbortWithStatusJSON(
+			http.StatusInternalServerError,
 			gin.H{"error": err.Error()},
 		)
 		return
