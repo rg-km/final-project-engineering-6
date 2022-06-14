@@ -10,7 +10,7 @@ const PostPage = ({ page, type }) => {
         {type === 'post' ? (
           <PostCard page={page} type={type} />
         ) : (
-          type === 'form' && <ForumForm />
+          type === 'form' && <ForumForm page={page} />
         )}
       </div>
     </div>

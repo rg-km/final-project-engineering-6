@@ -3,7 +3,7 @@ import Button from '../Button/Button';
 import FormInput from '../FormInput/FormInput';
 import './ForumForm.scss';
 
-const ForumForm = () => {
+const ForumForm = ({ page }) => {
   const handleChange = (e) => {
     console.log(e.target.value);
   };
@@ -32,6 +32,17 @@ const ForumForm = () => {
             onChange={handleChange}
           ></textarea>
         </div>
+        {page === 'survey' && (
+          <div className='input-container'>
+            <label>Survey Link</label>
+            <FormInput
+              type={'text'}
+              placeholder={'Survey Link'}
+              name={'link'}
+              onChange={handleChange}
+            />
+          </div>
+        )}
         <div className='input-container'>
           <label>Category</label>
           <select
@@ -51,9 +62,23 @@ const ForumForm = () => {
             <option value='Technology'>Technology</option>
           </select>
         </div>
+        {page === 'survey' && (
+          <div className='input-container'>
+            <div className='desc'>
+              <label>Reward</label>
+              <span>*optional</span>
+            </div>
+            <FormInput
+              type={'number'}
+              placeholder={'Reward'}
+              name={'reward'}
+              onChange={handleChange}
+            />
+          </div>
+        )}
         <div className='input-container'>
-          <div className='image-desc'>
-            <label>Image: </label>
+          <div className='desc'>
+            <label>Image</label>
             <span>*optional</span>
           </div>
           <input

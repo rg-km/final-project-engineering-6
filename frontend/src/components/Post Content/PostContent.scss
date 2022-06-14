@@ -72,7 +72,8 @@
       }
 
       .like-info,
-      .comment-info {
+      .comment-info,
+      .reward-info {
         @include section-style();
       }
     }
@@ -93,10 +94,7 @@
       gap: 1rem;
       font-size: 0.9rem;
       flex: 1;
-
-      @include breakpoint(md) {
-        align-items: flex-start;
-      }
+      align-items: flex-start;
 
       .user-info {
         display: flex;
@@ -116,10 +114,22 @@
       gap: 0.5rem;
       flex: 9;
 
-      .info-content {
+      .content-info {
         color: $SubTitleText;
         font-size: 0.9rem;
         margin-bottom: 0.8rem;
+      }
+
+      .content-link,
+      .content-reward {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        a {
+          color: blue;
+          text-decoration: underline;
+        }
       }
     }
   }

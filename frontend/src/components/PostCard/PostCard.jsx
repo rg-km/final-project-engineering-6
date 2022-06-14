@@ -5,7 +5,13 @@ import './PostCard.scss';
 
 const PostCard = ({ page, type }) => {
   return type === 'post' ? (
-    <Link to={page === 'forum' && '/forum-detail'}>
+    <Link
+      to={
+        page === 'forum'
+          ? '/forum-detail'
+          : page === 'survey' && '/survey-detail'
+      }
+    >
       <div className='detail-card post-card'>
         <PostContent page={page} type={type} />
       </div>

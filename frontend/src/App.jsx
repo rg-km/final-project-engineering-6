@@ -27,9 +27,7 @@ function App() {
           <Sidebar Sidebar={sidebar} />
         </div>
 
-        <Button variant={'add-post'} link={'/post-forum'}>
-          +
-        </Button>
+        <Button variant={'add-post'}>+</Button>
 
         <Routes>
           <Route
@@ -43,7 +41,23 @@ function App() {
             path='/forum-detail'
             element={<DetailPage page={'forum'} type={'detail'} />}
           />
-          <Route path='/post-forum' element={<PostPage type={'form'} />} />
+          <Route
+            path='/post-forum'
+            element={<PostPage page={'forum'} type={'form'} />}
+          />
+          <Route
+            path='/survey'
+            default
+            element={<PostPage page={'survey'} type={'post'} />}
+          />
+          <Route
+            path='/survey-detail'
+            element={<DetailPage page={'survey'} type={'detail'} />}
+          />
+          <Route
+            path='/post-survey'
+            element={<PostPage page={'survey'} type={'form'} />}
+          />
         </Routes>
       </BrowserRouter>
     </div>

@@ -3,6 +3,8 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
+import LinkIcon from '@mui/icons-material/Link';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import './PostContent.scss';
 
 const PostContent = ({ page, type }) => {
@@ -50,6 +52,24 @@ const PostContent = ({ page, type }) => {
             ipsam, odio ratione animi incidunt est voluptate voluptatum natus
             mollitia tempore.
           </p>
+          {page === 'survey' && type === 'detail' && (
+            <>
+              <div className='content-link'>
+                <LinkIcon />
+                <a
+                  href='https://forms.google.com'
+                  target='_blank'
+                  rel='noreferrer'
+                >
+                  https://forms.google.com
+                </a>
+              </div>
+              <p className='content-reward'>
+                <EmojiEventsIcon />
+                100000
+              </p>
+            </>
+          )}
         </div>
       </div>
       <div
@@ -70,7 +90,14 @@ const PostContent = ({ page, type }) => {
             </div>
           </div>
         )}
+
         <div className='activity-section'>
+          {page === 'survey' && type === 'post' && (
+            <p className='reward-info'>
+              <EmojiEventsIcon />
+              100000
+            </p>
+          )}
           <div className='like-info'>
             {likeClicked ? (
               <FavoriteIcon

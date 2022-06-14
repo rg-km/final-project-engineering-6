@@ -13,9 +13,10 @@
     .input-container {
       width: 100%;
 
-      .image-desc span {
+      .desc span {
         font-size: 0.9rem;
         color: $SubTitleText;
+        margin-left: 0.5rem;
       }
 
       input,
