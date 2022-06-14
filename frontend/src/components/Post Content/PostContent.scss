@@ -1,9 +1,9 @@
 @import '../../App.scss';
 
-.post-content-container {
+.content-container {
   @include post-container();
 
-  #top-section.forum-post {
+  #top-section.post-content {
     display: flex;
     justify-content: space-between;
     gap: 1rem;
@@ -13,13 +13,13 @@
       flex-direction: column;
       gap: 0.5rem;
 
-      .post-info {
+      .content-info {
         color: $SubTitleText;
         font-size: 0.9rem;
         margin-bottom: 0.8rem;
       }
 
-      .post-content {
+      .content-description {
         overflow: hidden;
         text-overflow: ellipsis;
         display: -webkit-box;
@@ -29,7 +29,7 @@
     }
   }
 
-  #bottom-section.forum-post {
+  #bottom-section.post-content {
     @include info-style($SubTitleText);
 
     @include breakpoint(md) {
@@ -78,10 +78,14 @@
     }
   }
 
-  #top-section.forum-detail {
+  #top-section.detail-content {
     display: flex;
     justify-content: space-between;
     gap: 2rem;
+
+    @include breakpoint(md) {
+      flex-direction: column;
+    }
 
     .user-section {
       @include section-style();
@@ -89,6 +93,10 @@
       gap: 1rem;
       font-size: 0.9rem;
       flex: 1;
+
+      @include breakpoint(md) {
+        align-items: flex-start;
+      }
 
       .user-info {
         display: flex;
@@ -108,7 +116,7 @@
       gap: 0.5rem;
       flex: 9;
 
-      .post-info {
+      .info-content {
         color: $SubTitleText;
         font-size: 0.9rem;
         margin-bottom: 0.8rem;
@@ -116,7 +124,7 @@
     }
   }
 
-  #bottom-section.forum-detail {
+  #bottom-section.detail-content {
     @include info-style($TitleText);
     margin-top: 2rem;
 

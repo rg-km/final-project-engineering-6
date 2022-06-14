@@ -3,16 +3,20 @@ import { Link } from 'react-router-dom';
 import PostContent from '../Post Content/PostContent';
 import './PostCard.scss';
 
-const PostCard = ({ page }) => {
-  return (
-    <Link to={'/forum-detail'}>
-      <div
-        className={page === 'forum' ? 'post-card forum-post-card' : 'post-card'}
-        style={{ backgroundColor: page === 'comment' && '#f4f4f4' }}
-      >
-        <PostContent page={page} />
+const PostCard = ({ page, type }) => {
+  return type === 'post' ? (
+    <Link to={page === 'forum' && '/forum-detail'}>
+      <div className='detail-card post-card'>
+        <PostContent page={page} type={type} />
       </div>
     </Link>
+  ) : (
+    <div
+      className='detail-card'
+      style={{ backgroundColor: type === 'comment' && '#f4f4f4' }}
+    >
+      <PostContent page={page} type={type} />
+    </div>
   );
 };
 

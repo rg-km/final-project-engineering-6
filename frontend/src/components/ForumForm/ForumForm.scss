@@ -1,0 +1,33 @@
+@import '../../App.scss';
+
+.forum-form {
+  @include card-style();
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .input-section {
+    @include post-container();
+    gap: 0;
+
+    .input-container {
+      width: 100%;
+
+      .image-desc span {
+        font-size: 0.9rem;
+        color: $SubTitleText;
+      }
+
+      input,
+      select,
+      textarea {
+        @include input();
+        resize: none;
+
+        option {
+          font-family: $Roboto;
+        }
+      }
+    }
+  }
+}
