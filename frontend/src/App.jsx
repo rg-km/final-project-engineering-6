@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import './App.scss';
-import Forum from './pages/Forum/Forum';
-import ForumDetail from './pages/ForumDetail/ForumDetail';
 import { BrowserRouter } from 'react-router-dom';
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/navbar/Navbar';
@@ -9,8 +7,9 @@ import Sidebar from './components/Sidebar/Sidebar';
 import Backdrop from './components/Sidebar/Backdrop';
 import Register from './pages/Register/Register';
 import Login from './pages/Login/Login';
-import PostForm from './pages/PostForm/PostForm';
 import Button from './components/Button/Button';
+import PostPage from './pages/PostPage/PostPage';
+import DetailPage from './pages/DetailPage/DetailPage';
 
 function App() {
   const [sidebar, setSidebar] = useState(false);
@@ -28,16 +27,37 @@ function App() {
           <Sidebar Sidebar={sidebar} />
         </div>
 
-        <Button variant={'add-post'} link={'/post-forum'}>
-          +
-        </Button>
+        <Button variant={'add-post'}>+</Button>
 
         <Routes>
-          <Route path='/' default element={<Forum />} />
+          <Route
+            path='/'
+            default
+            element={<PostPage page={'forum'} type={'post'} />}
+          />
           <Route path='/register' element={<Register />} />
           <Route path='/login' element={<Login />} />
-          <Route path='/forum-detail' element={<ForumDetail />} />
-          <Route path='/post-forum' element={<PostForm />} />
+          <Route
+            path='/forum-detail'
+            element={<DetailPage page={'forum'} type={'detail'} />}
+          />
+          <Route
+            path='/post-forum'
+            element={<PostPage page={'forum'} type={'form'} />}
+          />
+          <Route
+            path='/survey'
+            default
+            element={<PostPage page={'survey'} type={'post'} />}
+          />
+          <Route
+            path='/survey-detail'
+            element={<DetailPage page={'survey'} type={'detail'} />}
+          />
+          <Route
+            path='/post-survey'
+            element={<PostPage page={'survey'} type={'form'} />}
+          />
         </Routes>
       </BrowserRouter>
     </div>
