@@ -15,17 +15,6 @@ type UserRepository struct {
 	db *sql.DB
 }
 
-type User struct {
-	Id        int     `json:"id"`
-	Name      string  `json:"name"`
-	Email     string  `json:"email"`
-	Role      string  `json:"role"`
-	Institute string  `json:"institute"`
-	Major     string  `json:"major"`
-	Semester  int     `json:"semester"`
-	Avatar    *string `json:"avatar"`
-}
-
 func NewUserRepository(db *sql.DB) *UserRepository {
 	return &UserRepository{
 		db: db,
@@ -45,10 +34,10 @@ func (u *UserRepository) Login(email string, password string) (*int, error) {
 }
 
 func (u *UserRepository) GetUserData(id int) (*User, error) {
-	statement := "SELECT users.id, name, email, role, avatar, institute, major, semester FROM user_details JOIN users ON users.id = user_details.user_id WHERE users.id = ?"
+	statement := "SELECT users.id, name, email, role, avatar, institute, major, batch FROM user_details JOIN users ON users.id = user_details.user_id WHERE users.id = ?"
 	var user User
 	res := u.db.QueryRow(statement, id)
-	err := res.Scan(&user.Id, &user.Name, &user.Email, &user.Role, &user.Avatar, &user.Institute, &user.Major, &user.Semester)
+	err := res.Scan(&user.Id, &user.Name, &user.Email, &user.Role, &user.Avatar, &user.Institute, &user.Major, &user.Batch)
 	return &user, err
 }
 
@@ -72,14 +61,14 @@ func (u *UserRepository) CheckEmail(email string) (bool, error) {
 	return true, err
 }
 
-func (u *UserRepository) InsertNewUser(name string, email string, password string, role string, institute string, major *string, semester *int) (userId int, responseCode int, err error) {
+func (u *UserRepository) InsertNewUser(name string, email string, password string, role string, institute string, major *string, batch *int) (userId int, responseCode int, err error) {
 	if strings.ToLower(role) != "mahasiswa" && strings.ToLower(role) != "siswa" {
 		return -1, http.StatusBadRequest, errors.New("role must be either 'mahasiswa' or 'siswa'")
 	}
 
 	if strings.ToLower(role) == "mahasiswa" {
-		if major == nil || semester == nil {
-			return -1, http.StatusBadRequest, errors.New("please fill major and semester correctly")
+		if major == nil || batch == nil {
+			return -1, http.StatusBadRequest, errors.New("please fill major and batch correctly")
 		}
 	}
 
@@ -111,8 +100,8 @@ func (u *UserRepository) InsertNewUser(name string, email string, password strin
 		return -1, http.StatusInternalServerError, err
 	}
 
-	statement = "INSERT INTO user_details (user_id, institute, major, semester) VALUES (?, ?, ?, ?)"
-	_, err = u.db.Exec(statement, resId, institute, major, semester)
+	statement = "INSERT INTO user_details (user_id, institute, major, batch) VALUES (?, ?, ?, ?)"
+	_, err = u.db.Exec(statement, resId, institute, major, batch)
 
 	return int(resId), http.StatusOK, err
 }

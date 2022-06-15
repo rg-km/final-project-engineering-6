@@ -40,3 +40,14 @@ type Category struct {
 	ID   int    `json:"id"`
 	Name string `json:"name"`
 }
+
+type User struct {
+	Id        int     `json:"id"`
+	Name      string  `json:"name"`
+	Email     string  `json:"email"`
+	Role      string  `json:"role"`
+	Institute string  `json:"institute"`
+	Major     string  `json:"major"`
+	Batch     int     `json:"batch"`
+	Avatar    *string `json:"avatar"`
+}

@@ -75,9 +75,9 @@ var _ = Describe("Login Register Test", func() {
 						It("should return user id", func() {
 
 							major := "Informatika"
-							semester := 6
+							batch := 6
 
-							userId, _, err := userRepo.InsertNewUser("user 1", "user1@gmail.com", "password", "mahasiswa", "institute 1", &major, &semester)
+							userId, _, err := userRepo.InsertNewUser("user 1", "user1@gmail.com", "password", "mahasiswa", "institute 1", &major, &batch)
 
 							Expect(err).ToNot(HaveOccurred())
 							Expect(userId).ToNot(Equal(nil))
@@ -99,11 +99,11 @@ var _ = Describe("Login Register Test", func() {
 				When("Email is already registered", func() {
 					It("should return error", func() {
 						major := "Informatika"
-						semester := 6
-						_, _, err := userRepo.InsertNewUser("user 1", "user1@gmail.com", "password", "mahasiswa", "institute 1", &major, &semester)
+						batch := 6
+						_, _, err := userRepo.InsertNewUser("user 1", "user1@gmail.com", "password", "mahasiswa", "institute 1", &major, &batch)
 						Expect(err).ToNot(HaveOccurred())
 
-						_, _, err = userRepo.InsertNewUser("user 2", "user1@gmail.com", "password", "mahasiswa", "institute 1", &major, &semester)
+						_, _, err = userRepo.InsertNewUser("user 2", "user1@gmail.com", "password", "mahasiswa", "institute 1", &major, &batch)
 						Expect(err).To(HaveOccurred())
 						Expect(err.Error()).To(Equal("email has been used"))
 					})
