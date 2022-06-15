@@ -26,3 +26,12 @@ type CommentLike struct {
 	CommentID int
 	UserID    int
 }
+
+type Notification struct {
+	ID          int       `json:"id"`
+	Name        string    `json:"name"`
+	CommentID   int       `json:"comment_id"`
+	PostID      int       `json:"post_id"`
+	AlreadyRead bool      `json:"already_read"`
+	CreatedAt   time.Time `json:"created_at"`
+}
