@@ -1,10 +1,63 @@
 @import "../../App.scss";
 
-.form {
+.container-reg {
   width: 100%;
   height: 100vh;
   display: flex;
-  justify-content: center;
   align-items: center;
-  flex-direction: column;
+  justify-content: center;
+  background-color: $Light;
+  position: relative;
+  @include breakpoint(md) {
+    flex-direction: column;
+  }
+  .form-register {
+    width: 40%;
+    height: 100vh;
+    background-color: $Border;
+    position: relative;
+    align-items: center;
+    display: flex;
+    @include breakpoint(md) {
+      width: 100%;
+    }
+    .form-reg {
+      // background-color: aqua;
+      width: 60%;
+      margin: 0 auto;
+      @include breakpoint(md) {
+        width: 80%;
+      }
+      select {
+        @include input();
+        resize: none;
+        color: $SubTitleText;
+        option {
+          font-family: $Roboto;
+        }
+      }
+      h2 {
+        transform: translateX(0);
+        padding: 1rem 0;
+        font-size: 2rem;
+      }
+
+      p {
+        padding: 1rem 0;
+      }
+      form {
+        width: 100%;
+        transition: all 0.5s ease;
+      }
+    }
+  }
+  .gambar {
+    width: 60%;
+    height: 100vh;
+    background-image: url("./register.svg");
+    background-size: cover;
+    @include breakpoint(md) {
+      display: none;
+    }
+  }
 }

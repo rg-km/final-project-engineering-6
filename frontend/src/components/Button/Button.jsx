@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import './Button.scss';
+import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import "./Button.scss";
 
 const Button = (props) => {
   const [variant] = useState(props.variant);
@@ -9,20 +9,20 @@ const Button = (props) => {
   const location = useLocation();
 
   useEffect(() => {
-    if (location.pathname === '/') {
+    if (location.pathname === "/") {
       setShowButton(true);
     } else {
       setShowButton(false);
     }
   }, [location]);
 
-  return variant === 'add-post' ? (
+  return variant === "add-post" ? (
     showButton && (
       <Link to={link}>
         <button className={`btn-${variant}`}>{props.children}</button>
       </Link>
     )
-  ) : variant === 'submit' ? (
+  ) : variant === "submit" ? (
     <Link to={link}>
       <button className={`btn-${variant}`}>{props.children}</button>
     </Link>
