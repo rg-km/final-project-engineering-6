@@ -35,3 +35,8 @@ type Notification struct {
 	AlreadyRead bool      `json:"already_read"`
 	CreatedAt   time.Time `json:"created_at"`
 }
+
+type Category struct {
+	ID   int    `json:"id"`
+	Name string `json:"name"`
+}

@@ -12,23 +12,25 @@ import (
 )
 
 type API struct {
-	commentRepo repository.CommentRepository
-	likeRepo    repository.LikeRepository
-	notifRepo   repository.NotificationRepository
-	postRepo    repository.PostRepository
-	userRepo    repository.UserRepository
-	router      *gin.Engine
+	commentRepo  repository.CommentRepository
+	likeRepo     repository.LikeRepository
+	notifRepo    repository.NotificationRepository
+	postRepo     repository.PostRepository
+	userRepo     repository.UserRepository
+	categoryRepo repository.CategoryRepository
+	router       *gin.Engine
 }
 
-func NewAPI(commentRepo repository.CommentRepository, likeRepo repository.LikeRepository, notifRepo repository.NotificationRepository, postRepo repository.PostRepository, userRepo repository.UserRepository) API {
+func NewAPI(commentRepo repository.CommentRepository, likeRepo repository.LikeRepository, notifRepo repository.NotificationRepository, postRepo repository.PostRepository, userRepo repository.UserRepository, categoryRepo repository.CategoryRepository) API {
 	router := gin.Default()
 	api := API{
-		router:      router,
-		commentRepo: commentRepo,
-		likeRepo:    likeRepo,
-		notifRepo:   notifRepo,
-		postRepo:    postRepo,
-		userRepo:    userRepo,
+		router:       router,
+		commentRepo:  commentRepo,
+		likeRepo:     likeRepo,
+		notifRepo:    notifRepo,
+		postRepo:     postRepo,
+		userRepo:     userRepo,
+		categoryRepo: categoryRepo,
 	}
 
 	// Untuk validasi request dengan mengembalikan nama dari tag json jika ada
@@ -46,6 +48,7 @@ func NewAPI(commentRepo repository.CommentRepository, likeRepo repository.LikeRe
 
 	router.POST("/api/login", api.login)
 	router.POST("/api/register", api.register)
+	router.GET("/api/category", api.GetAllCategories)
 
 	profileRouter := router.Group("/api/profile", AuthMiddleware())
 	{
