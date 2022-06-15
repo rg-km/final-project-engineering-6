@@ -127,12 +127,21 @@ func (api *API) login(c *gin.Context) {
 
 func (api *API) changeAvatar(c *gin.Context) {
 	var input AvatarReqBody
+	maxFileSize := int64(1024 * 1024 * 2)
 
-	var fileSizeLimit int64 = 1024 * 1024 * 2 //2MB
-	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, fileSizeLimit)
 	err := c.ShouldBind(&input)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if input.Avatar.Size > maxFileSize {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "file size too large"})
+		return
+	}
+
+	if !strings.Contains(input.Avatar.Header.Get("Content-Type"), "image") {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "please upload an image"})
 		return
 	}
 
