@@ -20,7 +20,8 @@ func main() {
 	notifRepo := repository.NewNotificationRepository(db)
 	postsRepo := repository.NewPostRepository(db)
 	userRepo := repository.NewUserRepository(db)
+	categoryRepo := repository.NewCategoryRepository(db)
 
-	mainAPI := api.NewAPI(*commentRepo, *likeRepo, *notifRepo, *postsRepo, *userRepo)
+	mainAPI := api.NewAPI(*commentRepo, *likeRepo, *notifRepo, *postsRepo, *userRepo, *categoryRepo)
 	mainAPI.Start()
 }
