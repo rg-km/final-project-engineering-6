@@ -69,14 +69,3 @@ func Seed(db *sql.DB) {
 	(7, $1, $2, "Comment 7", 6, "2022-06-11 19:33:02.3861157+07:00");`, postId, userMahasiswaId)
 
 }
-
-func main() {
-	db, err := sql.Open("sqlite3", "basis-app.db")
-	if err != nil {
-		panic(err)
-	}
-
-	defer db.Close()
-
-	Seed(db)
-}

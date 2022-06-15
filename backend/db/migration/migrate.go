@@ -15,7 +15,7 @@ func Migrate(db *sql.DB) {
 	CREATE TABLE IF NOT EXISTS users (
     id integer not null primary key AUTOINCREMENT,
     name varchar(255) not null,
-    email varchar(255) not null,
+    email varchar(255) not null UNIQUE,
     password varchar(255) not null,
 	role varchar(255) not null,
 	avatar varchar(255) null
@@ -103,14 +103,4 @@ CREATE TABLE IF NOT EXISTS notifications(
 	}
 
 	seeder.Seed(db)
-}
-func main() {
-	db, err := sql.Open("sqlite3", "basis-app.db")
-	if err != nil {
-		panic(err)
-	}
-
-	defer db.Close()
-
-	Migrate(db)
 }
