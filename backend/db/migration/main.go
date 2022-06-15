@@ -1,4 +1,4 @@
-package main
+package migration
 
 import (
 	"database/sql"
@@ -9,15 +9,9 @@ import (
 )
 
 // Run This Script for migration db
-func main() {
-	db, err := sql.Open("sqlite3", "basis-app.db")
-	if err != nil {
-		panic(err)
-	}
+func Migrate(db *sql.DB) {
 
-	defer db.Close()
-
-	_, err = db.Exec(`
+	_, err := db.Exec(`
 	CREATE TABLE IF NOT EXISTS users (
     id integer not null primary key AUTOINCREMENT,
     name varchar(255) not null,
@@ -109,4 +103,14 @@ CREATE TABLE IF NOT EXISTS notifications(
 	}
 
 	seeder.Seed(db)
+}
+func main() {
+	db, err := sql.Open("sqlite3", "basis-app.db")
+	if err != nil {
+		panic(err)
+	}
+
+	defer db.Close()
+
+	Migrate(db)
 }

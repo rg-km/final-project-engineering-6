@@ -1,14 +1,19 @@
 @import '../../App.scss';
 
-.forum {
+.detail-page {
   @include page();
-  position: relative;
 
   @include breakpoint(md) {
     margin-left: 0;
   }
 
-  .forum-posts {
+  .detail-container {
     @include post-container();
+    gap: 3rem;
+
+    .comment-container {
+      @include post-container();
+      gap: 1rem;
+    }
   }
 }

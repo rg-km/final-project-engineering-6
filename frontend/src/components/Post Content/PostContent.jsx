@@ -3,19 +3,21 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
+import LinkIcon from '@mui/icons-material/Link';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import './PostContent.scss';
 
-const PostContent = ({ page }) => {
+const PostContent = ({ page, type }) => {
   const [likeClicked, setLikeClicked] = useState(false);
   const [commentClicked, setCommentClicked] = useState(false);
 
   return (
-    <div className='post-content-container'>
+    <div className='content-container'>
       <div
         id='top-section'
-        className={page === 'forum' ? 'forum-post' : 'forum-detail'}
+        className={type === 'post' ? 'post-content' : 'detail-content'}
       >
-        {(page === 'forum detail' || page === 'comment') && (
+        {type !== 'post' && (
           <div className='user-section'>
             <div className='user-avatar'>
               <img src='' alt='user' />
@@ -30,13 +32,13 @@ const PostContent = ({ page }) => {
           </div>
         )}
         <div className='content'>
-          {page !== 'comment' && (
+          {type !== 'comment' && (
             <>
-              <h2 className='post-title'>Lorem ipsum dolor sit amet.</h2>
-              <div className='post-info'>posted 3 days ago</div>
+              <h2 className='content-title'>Lorem ipsum dolor sit amet.</h2>
+              <div className='content-info'>posted 3 days ago</div>
             </>
           )}
-          <p className='post-content'>
+          <p className='content-description'>
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi quos
             est harum modi enim corporis alias error tempora perspiciatis
             quaerat. Harum sequi modi at quod obcaecati veritatis. Illo,
@@ -50,13 +52,31 @@ const PostContent = ({ page }) => {
             ipsam, odio ratione animi incidunt est voluptate voluptatum natus
             mollitia tempore.
           </p>
+          {page === 'survey' && type === 'detail' && (
+            <>
+              <div className='content-link'>
+                <LinkIcon />
+                <a
+                  href='https://forms.google.com'
+                  target='_blank'
+                  rel='noreferrer'
+                >
+                  https://forms.google.com
+                </a>
+              </div>
+              <p className='content-reward'>
+                <EmojiEventsIcon />
+                100000
+              </p>
+            </>
+          )}
         </div>
       </div>
       <div
         id='bottom-section'
-        className={page === 'forum' ? 'forum-post' : 'forum-detail'}
+        className={type === 'post' ? 'post-content' : 'detail-content'}
       >
-        {page === 'forum' && (
+        {type === 'post' && (
           <div className='user-section'>
             <div className='user-avatar'>
               <img src='' alt='user' />
@@ -70,12 +90,19 @@ const PostContent = ({ page }) => {
             </div>
           </div>
         )}
+
         <div className='activity-section'>
+          {page === 'survey' && type === 'post' && (
+            <p className='reward-info'>
+              <EmojiEventsIcon />
+              100000
+            </p>
+          )}
           <div className='like-info'>
             {likeClicked ? (
               <FavoriteIcon
                 onClick={() => {
-                  page !== 'forum' && setLikeClicked(false);
+                  type !== 'post' && setLikeClicked(false);
                 }}
               />
             ) : (
@@ -91,7 +118,7 @@ const PostContent = ({ page }) => {
             {commentClicked ? (
               <ChatBubbleIcon
                 onClick={() => {
-                  page !== 'forum' && setCommentClicked(false);
+                  type !== 'post' && setCommentClicked(false);
                 }}
               />
             ) : (

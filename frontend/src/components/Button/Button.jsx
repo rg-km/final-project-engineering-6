@@ -4,15 +4,24 @@ import "./Button.scss";
 
 const Button = (props) => {
   const [variant] = useState(props.variant);
-  const [link] = useState(props.link);
+  const [link, setLink] = useState(props.link);
   const [showButton, setShowButton] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
     if (location.pathname === "/") {
       setShowButton(true);
+      setLink('/post-forum');
+    } else if (location.pathname === '/survey') {
+      setShowButton(true);
+      setLink('/post-survey');
     } else {
       setShowButton(false);
+    }
+    if (location.pathname === '/post-forum') {
+      setLink('/');
+    } else if (location.pathname === '/post-survey') {
+      setLink('/survey');
     }
   }, [location]);
 
