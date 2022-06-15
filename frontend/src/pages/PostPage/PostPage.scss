@@ -1,0 +1,14 @@
+@import '../../App.scss';
+
+.page {
+  @include page();
+  position: relative;
+
+  @include breakpoint(md) {
+    margin-left: 0;
+  }
+
+  .post-container {
+    @include post-container();
+  }
+}
