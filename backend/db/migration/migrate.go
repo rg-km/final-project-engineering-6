@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS user_details (
     user_id integer NOT NULL,
 	institute varchar(255) NOT NULL,
 	major varchar(255) NULL,
-	semester smallint UNSIGNED NULL,
+	batch smallint UNSIGNED NULL,
 	FOREIGN KEY (user_id) REFERENCES users(id)
 );
 

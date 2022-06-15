@@ -20,7 +20,7 @@ func Seed(db *sql.DB) {
 		panic(err)
 	}
 
-	db.Exec("INSERT INTO user_details (user_id, institute, major, semester) VALUES (?, 'Harvard', 'Teknik Informatika', 6)", userMahasiswaId)
+	db.Exec("INSERT INTO user_details (user_id, institute, major, batch) VALUES (?, 'Harvard', 'Teknik Informatika', 2019)", userMahasiswaId)
 
 	// User Siswa
 	rowUserSiswa, err := db.Exec("INSERT INTO users (name, email, password, role) VALUES ('Bocil SMA', 'bocilSMA@gmail.com', ?, 'siswa')", hashedPassword)
