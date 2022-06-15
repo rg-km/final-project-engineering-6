@@ -5,7 +5,7 @@ a {
   text-decoration: none;
 }
 
-.forum-post-card {
+.post-card {
   transition: all 0.2s;
 
   &:hover {
@@ -14,7 +14,7 @@ a {
   }
 }
 
-.post-card {
+.detail-card {
   @include card-style();
   flex-direction: column;
 }
