@@ -13,16 +13,15 @@ import DetailPage from './pages/DetailPage/DetailPage';
 
 function App() {
   const [sidebar, setSidebar] = useState(false);
-
   const toogleSidebar = () => {
     setSidebar((prevState) => !prevState);
   };
 
   return (
-    <div className='App'>
+    <div className="App">
       <BrowserRouter>
         <Navbar openSidebar={toogleSidebar} />
-        <div style={{ display: 'flex' }}>
+        <div style={{ display: "flex" }}>
           <Backdrop Sidebar={sidebar} closeSidebar={toogleSidebar} />
           <Sidebar Sidebar={sidebar} />
         </div>

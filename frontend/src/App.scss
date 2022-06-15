@@ -1,6 +1,6 @@
 // Font
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;500&display=swap');
-$Roboto: 'Roboto', sans-serif;
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;500&display=swap");
+$Roboto: "Roboto", sans-serif;
 // colors
 $Light: #ffffff;
 $Background: #fafafa;
@@ -85,6 +85,9 @@ body {
   &:active {
     background: darken($bg, 25%);
   }
+  &:disabled {
+    opacity: 0.5;
+  }
 }
 
 @mixin input() {
@@ -96,6 +99,9 @@ body {
   background-color: $Light;
   margin-bottom: 1rem;
   font-family: $Roboto;
+  &:focus {
+    outline-color: $Primary;
+  }
 }
 
 // Breakpoint
