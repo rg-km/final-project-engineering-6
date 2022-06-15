@@ -82,6 +82,11 @@ func NewAPI(commentRepo repository.CommentRepository, likeRepo repository.LikeRe
 		commentLikeRouters.DELETE("/", api.DeleteCommentLike)
 	}
 
+	notifRouter := router.Group("/api/notifications", AuthMiddleware())
+	{
+		notifRouter.GET("/", api.GetAllNotifications)
+		notifRouter.PUT("/read", api.SetReadNotif)
+	}
 	return api
 }
 

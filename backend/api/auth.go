@@ -136,9 +136,7 @@ func (api *API) changeAvatar(c *gin.Context) {
 		return
 	}
 
-	tokenString := c.GetHeader("Authorization")[(len("Bearer ")):]
-
-	userId, err := api.getUserIdFromToken(tokenString)
+	userId, err := api.getUserIdFromToken(c)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -182,7 +180,8 @@ func (api *API) changeAvatar(c *gin.Context) {
 
 }
 
-func (api *API) getUserIdFromToken(tokenString string) (int, error) {
+func (api *API) getUserIdFromToken(c *gin.Context) (int, error) {
+	tokenString := c.GetHeader("Authorization")[(len("Bearer ")):]
 	claim := &Claims{}
 	token, err := jwt.ParseWithClaims(tokenString, claim, func(t *jwt.Token) (interface{}, error) {
 		return jwtKey, nil
