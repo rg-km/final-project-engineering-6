@@ -28,7 +28,7 @@ type RegisterReqBody struct {
 	Role      string  `json:"role" binding:"required,lowercase,oneof=siswa mahasiswa"`
 	Institute string  `json:"institute" binding:"required"`
 	Major     *string `json:"major" binding:"required_if=Role mahasiswa"`
-	Semester  *int    `json:"semester" binding:"required_if=Role mahasiswa"`
+	Batch     *int    `json:"batch" binding:"required_if=Role mahasiswa"`
 }
 
 type AvatarReqBody struct {
@@ -71,7 +71,7 @@ func (api *API) register(c *gin.Context) {
 		return
 	}
 
-	userId, responseCode, err := api.userRepo.InsertNewUser(input.Name, input.Email, input.Password, input.Role, input.Institute, input.Major, input.Semester)
+	userId, responseCode, err := api.userRepo.InsertNewUser(input.Name, input.Email, input.Password, input.Role, input.Institute, input.Major, input.Batch)
 	if err != nil {
 		c.AbortWithStatusJSON(responseCode, gin.H{"error": err.Error()})
 		return
