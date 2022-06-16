@@ -1,4 +1,4 @@
-@import '../../App.scss';
+@import "../../App.scss";
 header {
   border-bottom: 1px solid $Border;
   background-color: $Light;
@@ -13,11 +13,15 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    @include breakpoint(md) {
+      padding: 0 1rem;
+    }
 
     .logo {
       font-size: 1.3rem;
       @include breakpoint(md) {
         display: none;
+        padding: 0 1rem;
       }
     }
 
