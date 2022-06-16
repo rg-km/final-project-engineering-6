@@ -70,7 +70,6 @@ const ProfilePage = () => {
   return (
     <div className="profile-page">
       <div className="post-user">
-        Post User
         <PostPage page={"forum"} type={"post"} width="100%" className="post" />
       </div>
       <div className="profile">
@@ -94,23 +93,21 @@ const ProfilePage = () => {
               <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose}>
                 Update Your Profile
               </BootstrapDialogTitle>
-              <form>
-                <DialogContent dividers>
-                  <img src={FotoProfile} alt="" width={"60px"} height={"65px"} style={{ borderRadius: "50%" }} />
-                  Change photo profile
-                  <FormInput type={"file"} />
-                  <FormInput value={"Mawar Melati"} />
-                  <FormInput value={"mawarmelati@gmail.com"} />
-                  <FormInput placeholder={"Old Password"} />
-                  <FormInput placeholder={"New Password"} />
-                </DialogContent>
-                <DialogActions>
-                  {/* <Button autoFocus onClick={handleClose} variant="login">
+              <DialogContent dividers>
+                <img src={FotoProfile} alt="" width={"60px"} height={"65px"} style={{ borderRadius: "50%" }} />
+                Change photo profile
+                <FormInput type={"file"} />
+                <FormInput value={"Mawar Melati"} />
+                <FormInput value={"mawarmelati@gmail.com"} />
+                <FormInput placeholder={"Old Password"} />
+                <FormInput placeholder={"New Password"} />
+              </DialogContent>
+              <DialogActions>
+                {/* <Button autoFocus onClick={handleClose} variant="login">
                   Save changes
                 </Button> */}
-                  <Btn variant="login">Save Changes</Btn>
-                </DialogActions>
-              </form>
+                <Btn variant="login">Save Changes</Btn>
+              </DialogActions>
             </BootstrapDialog>
           </div>
         </div>

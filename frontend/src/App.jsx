@@ -11,6 +11,7 @@ import Button from "./components/Button/Button";
 import PostPage from "./pages/PostPage/PostPage";
 import DetailPage from "./pages/DetailPage/DetailPage";
 import ProfilePage from "./pages/ProfilePage/ProfilePage";
+import NotificationsPage from "./pages/NotificationsPage/NotificationsPage";
 
 function App() {
   const [sidebar, setSidebar] = useState(false);
@@ -40,6 +41,7 @@ function App() {
           <Route path="/post-survey" element={<PostPage page={"survey"} type={"form"} />} />
           {/* <Route path="/profile" element={<PostPage page={"forum"} type={"post"} />} /> */}
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/notifications" element={<NotificationsPage />} />
         </Routes>
       </BrowserRouter>
     </div>
