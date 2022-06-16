@@ -21,7 +21,8 @@ func main() {
 	postsRepo := repository.NewPostRepository(db)
 	userRepo := repository.NewUserRepository(db)
 	categoryRepo := repository.NewCategoryRepository(db)
+	questionnaireRepo := repository.NewQuestionnaireRepository(db)
 
-	mainAPI := api.NewAPI(*commentRepo, *likeRepo, *notifRepo, *postsRepo, *userRepo, *categoryRepo)
+	mainAPI := api.NewAPI(*commentRepo, *likeRepo, *notifRepo, *postsRepo, *userRepo, *categoryRepo, *questionnaireRepo)
 	mainAPI.Start()
 }
