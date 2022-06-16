@@ -49,6 +49,12 @@ const Register = () => {
               <div className="input-container">
                 <FormInput type={"text"} placeholder={"Mayor"} onChange={handleChange} />
               </div>
+              <div className="input-container">
+                <FormInput type={"text"} placeholder={"Batch"} onChange={handleChange} />
+              </div>
+            </div>
+            <div className="input-container">
+              <FormInput type={"text"} placeholder={"Institue"} onChange={handleChange} />
             </div>
             <div className="button-container">
               <Button className="btn" variant={"login"}>

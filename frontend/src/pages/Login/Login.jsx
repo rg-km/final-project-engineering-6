@@ -10,13 +10,15 @@ const Login = () => {
   // const [isConfirmPwdError, setIsConfirmPwdError] = useState(true);
 
   const handleInputChange = (eventValue, eventName) => {
-    console.log(eventValue, eventName);
+    console.log(eventName, eventValue);
     if (eventName === "username") {
       setIsNameError(!eventValue.match(/^[a-zA-Z0-9]*$/));
     }
 
     if (eventName === "password") {
-      setIsPwdError(!eventValue.match(/^(?=.[a-z])(?=.[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/));
+      // setIsPwdError(!eventValue.match(/^(?=.[a-z])(?=.[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/));
+      setIsPwdError(!eventValue.match(/^[a-zA-Z0-9]*$/));
+      setIsPwdError(eventValue.length < 8);
     }
 
     setUserData((previousValues) => {
@@ -25,6 +27,12 @@ const Login = () => {
         [eventName]: eventValue,
       };
     });
+  };
+
+  const showPwd = () => {
+    const pwd = document.getElementById("pwd");
+    // console.log(pwd);
+    pwd.type === "password" ? (pwd.type = "text") : (pwd.type = "password");
   };
 
   const handleSubmit = (e) => {
@@ -42,13 +50,17 @@ const Login = () => {
               <FormInput className="username" type={"username"} placeholder={"username"} onChange={handleInputChange} name={"username"} value={userData.username ? userData.username : ""} />
             </div>
             <div className="input-container">
-              <FormInput className="pwd" id="pwd" type={"password"} name={"password"} placeholder={"Password"} onChange={handleInputChange} />
+              <FormInput className="pwd" id={"pwd"} type={"password"} name={"password"} placeholder={"Password"} onChange={handleInputChange} value={userData.password ? userData.password : ""} />
+            </div>
+            <div className="show-pwd">
+              <input type="checkbox" className="check-pwd" onClick={showPwd} />
+              Show password
             </div>
             <div className="button-container">
               {/* <Button variant={"login"} type="submit" disabled={isNameError}>
                 Login
               </Button> */}
-              <button type="submit" className="submit-btn" disabled={isNameError}>
+              <button type="submit" className="submit-btn" disabled={isNameError || isPwdError}>
                 login
               </button>
             </div>
