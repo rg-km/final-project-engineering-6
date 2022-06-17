@@ -2,15 +2,17 @@ import React from "react";
 import "./ProfilePage.scss";
 import FotoProfile from "./img-profile.png";
 import EditIcon from "@mui/icons-material/Edit";
-import PostPage from "../PostPage/PostPage";
-
+import PostUser from "../PostUser/PostUser";
 import FormInput from "../../components/FormInput/FormInput";
 import Btn from "../../components/Button/Button";
+
+import Tabs from "../../components/Tabs/Tabs";
+import TabPane from "../../components/Tabs/TabPane";
 
 import { Link } from "react-router-dom";
 
 import PropTypes from "prop-types";
-import Button from "@mui/material/Button";
+// import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -18,8 +20,9 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import Typography from "@mui/material/Typography";
+// import Typography from "@mui/material/Typography";
 
+// Modals Edit Profile
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
     padding: theme.spacing(2),
@@ -58,6 +61,8 @@ BootstrapDialogTitle.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
+// End Modals Edit Profile
+
 const ProfilePage = () => {
   const [open, setOpen] = React.useState(false);
   const handleClickOpen = () => {
@@ -70,7 +75,25 @@ const ProfilePage = () => {
   return (
     <div className="profile-page">
       <div className="post-user">
-        <PostPage page={"forum"} type={"post"} width="100%" className="post" />
+        <p>List of posts that you have made</p>
+        <Tabs>
+          <TabPane name="Post" key="1">
+            <div className="post">
+              <PostUser page={"forum"} type={"post"} />
+              <PostUser page={"forum"} type={"post"} />
+              <PostUser page={"forum"} type={"post"} />
+            </div>
+            {/* Post */}
+          </TabPane>
+          <TabPane name="Survey" key="2">
+            {/* Content of Tab Pane 2 */}
+            {<PostUser page={"survey"} type={"post"} />}
+            {<PostUser page={"survey"} type={"post"} />}
+          </TabPane>
+          <TabPane name="Event" key="3">
+            You've never done a post event
+          </TabPane>
+        </Tabs>
       </div>
       <div className="profile">
         <div className="profile-image">
