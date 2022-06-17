@@ -1,0 +1,28 @@
+@import "../../App.scss";
+
+.tab-header {
+  li {
+    border-bottom: 0.1rem solid $Primary;
+    // width: 10rem;
+    display: inline;
+    padding: 0.4rem 3rem;
+    line-height: 35px;
+    transition: all;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    &:active {
+      background: $Border;
+    }
+    &:hover {
+      background: $Border;
+    }
+    @include breakpoint(md) {
+      padding: 0.4rem 2rem;
+    }
+  }
+}
+
+.tab-header li.active,
+.tab-header li:hover {
+  background: $Border;
+}
