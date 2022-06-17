@@ -20,7 +20,7 @@ func Seed(db *sql.DB) {
 		panic(err)
 	}
 
-	db.Exec("INSERT INTO user_details (user_id, institute, major, semester) VALUES (?, 'Harvard', 'Teknik Informatika', 6)", userMahasiswaId)
+	db.Exec("INSERT INTO user_details (user_id, institute, major, batch) VALUES (?, 'Harvard', 'Teknik Informatika', 2019)", userMahasiswaId)
 
 	// User Siswa
 	rowUserSiswa, err := db.Exec("INSERT INTO users (name, email, password, role) VALUES ('Bocil SMA', 'bocilSMA@gmail.com', ?, 'siswa')", hashedPassword)
@@ -68,15 +68,4 @@ func Seed(db *sql.DB) {
 	(6, $1, $2, "Comment 6", 4, "2022-06-11 19:33:02.3861157+07:00"),
 	(7, $1, $2, "Comment 7", 6, "2022-06-11 19:33:02.3861157+07:00");`, postId, userMahasiswaId)
 
-}
-
-func main() {
-	db, err := sql.Open("sqlite3", "basis-app.db")
-	if err != nil {
-		panic(err)
-	}
-
-	defer db.Close()
-
-	Seed(db)
 }

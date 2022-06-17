@@ -1,0 +1,36 @@
+@import "../../App.scss";
+
+.notif {
+  // margin-left: 18%;
+  // margin-top: 10vh;
+  // width: 100%;
+  @include page();
+  padding: 2rem;
+  flex-direction: column;
+  .title {
+    @include card-style();
+    box-shadow: 1px 0px 0px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+  }
+
+  .notif-info {
+    @include card-style();
+    box-shadow: 1px 0px 0px rgba(0, 0, 0, 0.1);
+    &:hover {
+      background-color: $Border;
+    }
+    // flex-direction: column;
+    .user {
+      color: $Primary;
+    }
+
+    .user-komen {
+      font-weight: 390;
+    }
+    .time {
+      margin-top: 0.5rem;
+      color: $Secondary;
+      font-weight: 390;
+    }
+  }
+}
