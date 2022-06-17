@@ -4,12 +4,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net/http"
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/rg-km/final-project-engineering-6/helper"
 	"github.com/rg-km/final-project-engineering-6/repository"
-	"net/http"
-	"strconv"
 )
 
 type CreateQuestionnaireRequest struct {
@@ -31,7 +32,25 @@ type UpdateQuestionnaireRequest struct {
 }
 
 func (api *API) ReadAllQuestionnaires(c *gin.Context) {
-	questionnaires, err := api.questionnaireRepo.ReadAllQuestionnaires()
+	var filterQuery string
+
+	me, err := strconv.ParseBool(c.DefaultQuery("me", "false"))
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if me {
+		userID, err := api.getUserIdFromToken(c)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+			return
+		}
+
+		filterQuery = fmt.Sprintf("WHERE author_id = %d", userID)
+	}
+
+	questionnaires, err := api.questionnaireRepo.ReadAllQuestionnaires(filterQuery)
 	if err != nil {
 		c.AbortWithStatusJSON(
 			http.StatusInternalServerError,

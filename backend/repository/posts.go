@@ -146,7 +146,8 @@ func (p *PostRepository) FetchAllPost(limit, offset int, orderBy, filter string)
 			INNER JOIN users u ON p.author_id = u.id
 			LEFT JOIN user_details ud ON u.id = ud.user_id	
 			LEFT JOIN post_likes pl ON pl.post_id = p.id
-			%s
+			LEFT JOIN questionnaires q ON q.post_id = p.id
+			WHERE q.link IS NULL %s
 			GROUP BY p.id
 			ORDER BY %s
 			LIMIT %d OFFSET %d
