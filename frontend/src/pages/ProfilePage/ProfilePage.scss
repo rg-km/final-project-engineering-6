@@ -1,7 +1,6 @@
 @import "../../App.scss";
 
 .profile-page {
-  // flex-wrap: wrap;
   position: relative;
   gap: 3rem;
   margin: 0 auto;
@@ -16,12 +15,13 @@
 
   .post-user {
     @include card-style();
-    width: 100%;
-    height: 100%;
     flex-direction: column;
     // margin-right: 3rem;
     @include breakpoint(md) {
       width: 100%;
+    }
+    p {
+      color: $SubTitleText;
     }
   }
   .profile {
