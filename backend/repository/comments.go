@@ -109,10 +109,23 @@ func (c *CommentRepository) SelectAllCommentsByPostID(postID int) ([]Comment, er
 	return comments, nil
 }
 
-func (c *CommentRepository) InsertComment(comment Comment) error {
+func (c *CommentRepository) FetchCommentAuthorId(commentID int) (int, error) {
+	sqlStmt := `
+	SELECT author_id FROM comments WHERE id = ?;`
+
+	var authorID int
+	err := c.db.QueryRow(sqlStmt, commentID).Scan(&authorID)
+	return authorID, err
+}
+
+func (c *CommentRepository) InsertComment(comment Comment) (int64, error) {
 	sqlStmt := `INSERT INTO comments (post_id, author_id, comment, comment_id, created_at) VALUES (?, ?, ?, ?, ?);`
-	_, err := c.db.Exec(sqlStmt, comment.PostID, comment.AuthorID, comment.Comment, comment.ParentCommentID, time.Now())
-	return err
+	res, err := c.db.Exec(sqlStmt, comment.PostID, comment.AuthorID, comment.Comment, comment.ParentCommentID, time.Now())
+	if err != nil {
+		return -1, err
+	}
+	rowId, err := res.LastInsertId()
+	return rowId, err
 }
 
 func (c *CommentRepository) UpdateComment(comment Comment) (int, error) {

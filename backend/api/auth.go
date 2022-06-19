@@ -28,7 +28,7 @@ type RegisterReqBody struct {
 	Role      string  `json:"role" binding:"required,lowercase,oneof=siswa mahasiswa"`
 	Institute string  `json:"institute" binding:"required"`
 	Major     *string `json:"major" binding:"required_if=Role mahasiswa"`
-	Semester  *int    `json:"semester" binding:"required_if=Role mahasiswa"`
+	Batch     *int    `json:"batch" binding:"required_if=Role mahasiswa"`
 }
 
 type AvatarReqBody struct {
@@ -71,7 +71,7 @@ func (api *API) register(c *gin.Context) {
 		return
 	}
 
-	userId, responseCode, err := api.userRepo.InsertNewUser(input.Name, input.Email, input.Password, input.Role, input.Institute, input.Major, input.Semester)
+	userId, responseCode, err := api.userRepo.InsertNewUser(input.Name, input.Email, input.Password, input.Role, input.Institute, input.Major, input.Batch)
 	if err != nil {
 		c.AbortWithStatusJSON(responseCode, gin.H{"error": err.Error()})
 		return
@@ -127,18 +127,25 @@ func (api *API) login(c *gin.Context) {
 
 func (api *API) changeAvatar(c *gin.Context) {
 	var input AvatarReqBody
+	maxFileSize := int64(1024 * 1024 * 2)
 
-	var fileSizeLimit int64 = 1024 * 1024 * 2 //2MB
-	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, fileSizeLimit)
 	err := c.ShouldBind(&input)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	tokenString := c.GetHeader("Authorization")[(len("Bearer ")):]
+	if input.Avatar.Size > maxFileSize {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "file size too large"})
+		return
+	}
 
-	userId, err := api.getUserIdFromToken(tokenString)
+	if !strings.Contains(input.Avatar.Header.Get("Content-Type"), "image") {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "please upload an image"})
+		return
+	}
+
+	userId, err := api.getUserIdFromToken(c)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -182,7 +189,8 @@ func (api *API) changeAvatar(c *gin.Context) {
 
 }
 
-func (api *API) getUserIdFromToken(tokenString string) (int, error) {
+func (api *API) getUserIdFromToken(c *gin.Context) (int, error) {
+	tokenString := c.GetHeader("Authorization")[(len("Bearer ")):]
 	claim := &Claims{}
 	token, err := jwt.ParseWithClaims(tokenString, claim, func(t *jwt.Token) (interface{}, error) {
 		return jwtKey, nil

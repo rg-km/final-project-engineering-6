@@ -2,12 +2,13 @@ package api
 
 import (
 	"errors"
+	"net/http"
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/rg-km/final-project-engineering-6/helper"
 	"github.com/rg-km/final-project-engineering-6/repository"
-	"net/http"
-	"strconv"
 )
 
 type CreateCommentRequest struct {
@@ -66,7 +67,7 @@ func (api API) CreateComment(c *gin.Context) {
 		return
 	}
 
-	err = api.commentRepo.InsertComment(repository.Comment{
+	commentId, err := api.commentRepo.InsertComment(repository.Comment{
 		PostID:          createCommentRequest.PostID,
 		ParentCommentID: createCommentRequest.ParentCommentID,
 		AuthorID:        createCommentRequest.AuthorID,
@@ -79,6 +80,24 @@ func (api API) CreateComment(c *gin.Context) {
 		)
 		return
 	}
+
+	var authorId int
+
+	if createCommentRequest.ParentCommentID != nil {
+		authorId, err = api.commentRepo.FetchCommentAuthorId(*createCommentRequest.ParentCommentID)
+	} else {
+		authorId, err = api.postRepo.FetchAuthorIDByPostID(*createCommentRequest.ParentCommentID)
+	}
+
+	if err != nil {
+		c.AbortWithStatusJSON(
+			http.StatusInternalServerError,
+			gin.H{"error": err.Error()},
+		)
+		return
+	}
+
+	api.notifRepo.CreateNotification(authorId, int(commentId))
 
 	c.JSON(
 		http.StatusOK,

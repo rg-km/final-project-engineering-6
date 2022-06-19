@@ -18,9 +18,15 @@
 .env.test.local
 .env.production.local
 
+# debugging folder
+.vscode
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
 #db
 *.db
+
+# Any media that uploaded to the server
+/backend/media
