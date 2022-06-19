@@ -53,8 +53,8 @@ const Login = () => {
               <FormInput className="pwd" id={"pwd"} type={"password"} name={"password"} placeholder={"Password"} onChange={handleInputChange} value={userData.password ? userData.password : ""} />
             </div>
             <div className="show-pwd">
-              <input type="checkbox" className="check-pwd" onClick={showPwd} />
-              Show password
+              <input type="checkbox" className="" onClick={showPwd} />
+              <p>Show Password</p>
             </div>
             <div className="button-container">
               {/* <Button variant={"login"} type="submit" disabled={isNameError}>

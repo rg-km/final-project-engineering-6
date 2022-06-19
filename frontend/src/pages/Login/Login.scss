@@ -33,6 +33,20 @@
         button {
           @include button($Primary, $Light);
         }
+        .show-pwd {
+          display: flex;
+          width: 100%;
+          // background-color: aqua;
+          align-items: center;
+          input {
+            margin-left: -11.5rem;
+          }
+          p {
+            margin-left: -11.5rem;
+            font-size: 0.8rem;
+            margin-top: -1rem;
+          }
+        }
       }
       h2 {
         transform: translateX(0);
