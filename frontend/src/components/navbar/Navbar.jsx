@@ -21,6 +21,7 @@ const Navbar = ({ openSidebar }) => {
           <div className="logo">BASIS___</div>
           {isLoggedIn ? (
             <div className="link">
+              <span className="badge"></span>
               <div className="user">
                 <Link to="/notifications">
                   <NotificationsIcon style={{ fontSize: "2rem" }} />

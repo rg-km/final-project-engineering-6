@@ -5,10 +5,12 @@ import NotificationImportantIcon from "@mui/icons-material/NotificationImportant
 const NotificationsPage = () => {
   return (
     <div className="notif">
-      <div className="title">
+      <div className="header">
         <h2>Notifications</h2>
+        <p className="read">Mark all as read</p>
       </div>
-      <div className="notif-info">
+      <div className="notif-info info-read">
+        <span className="badge"></span>
         <NotificationImportantIcon />
         <div className="info-info">
           <p>
