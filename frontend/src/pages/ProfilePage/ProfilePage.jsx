@@ -75,7 +75,7 @@ const ProfilePage = () => {
   return (
     <div className="profile-page">
       <div className="post-user">
-        <p>List of posts that you have made</p>
+        <p>My Post</p>
         <Tabs>
           <TabPane name="Post" key="1">
             <div className="post">
