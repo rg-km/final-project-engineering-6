@@ -86,7 +86,7 @@ func (api API) CreateComment(c *gin.Context) {
 	if createCommentRequest.ParentCommentID != nil {
 		authorId, err = api.commentRepo.FetchCommentAuthorId(*createCommentRequest.ParentCommentID)
 	} else {
-		authorId, err = api.postRepo.FetchAuthorIDByPostID(*createCommentRequest.ParentCommentID)
+		authorId, err = api.postRepo.FetchAuthorIDByPostID(createCommentRequest.PostID)
 	}
 
 	if err != nil {
