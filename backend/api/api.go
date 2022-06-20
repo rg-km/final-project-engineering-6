@@ -4,6 +4,7 @@ import (
 	"reflect"
 	"strings"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
 
@@ -42,6 +43,7 @@ func NewAPI(
 		categoryRepo:      categoryRepo,
 		questionnaireRepo: questionnaireRepo,
 	}
+	router.Use(cors.Default())
 
 	// Untuk validasi request dengan mengembalikan nama dari tag json jika ada
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
