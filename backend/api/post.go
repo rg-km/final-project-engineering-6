@@ -16,6 +16,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/rg-km/final-project-engineering-6/repository"
+	"github.com/rg-km/final-project-engineering-6/service"
 )
 
 const (
@@ -94,6 +95,13 @@ func (api *API) createPost(ctx *gin.Context) {
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, ErrorPostResponse{Message: "Invalid Request Body"})
+		return
+	}
+
+	isTitleOK := service.GetValidationInstance().Validate(req.Title)
+	isDescriptionOK := service.GetValidationInstance().Validate(req.Description)
+	if !isTitleOK || !isDescriptionOK {
+		ctx.JSON(http.StatusBadRequest, ErrorPostResponse{Message: "Your post contains bad words"})
 		return
 	}
 
@@ -454,6 +462,13 @@ func (api *API) updatePost(ctx *gin.Context) {
 		return
 	} else if authorID != req.AuthorID {
 		ctx.JSON(http.StatusForbidden, ErrorPostResponse{Message: "Forbidden"})
+		return
+	}
+
+	isTitleOK := service.GetValidationInstance().Validate(req.Title)
+	isDescriptionOK := service.GetValidationInstance().Validate(req.Description)
+	if !isTitleOK || !isDescriptionOK {
+		ctx.JSON(http.StatusBadRequest, ErrorPostResponse{Message: "Your post contains bad words"})
 		return
 	}
 
