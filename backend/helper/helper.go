@@ -38,6 +38,8 @@ func GetErrorMessage(ve validator.ValidationErrors) []JSONRequestErrorResponse {
 			message = fmt.Sprintf("This field is required if %s", requiredMessage)
 		case "oneof":
 			message = fmt.Sprintf("Value must be one of %s", strings.Replace(fe.Param(), " ", ", ", -1))
+		case "url":
+			message = "Should be an url"
 		default:
 			message = "Unknown error"
 		}

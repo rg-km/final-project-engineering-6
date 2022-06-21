@@ -1,0 +1,14 @@
+@import "../../App.scss";
+
+.user {
+  @include page();
+  position: relative;
+
+  @include breakpoint(md) {
+    margin-left: 0;
+  }
+
+  .user-container {
+    @include post-container();
+  }
+}

@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	db, err := sql.Open("sqlite3", "basis-app.db")
+	db, err := sql.Open("sqlite3", "file:basis-app.db")
 	if err != nil {
 		panic(err)
 	}
@@ -20,7 +20,9 @@ func main() {
 	notifRepo := repository.NewNotificationRepository(db)
 	postsRepo := repository.NewPostRepository(db)
 	userRepo := repository.NewUserRepository(db)
+	categoryRepo := repository.NewCategoryRepository(db)
+	questionnaireRepo := repository.NewQuestionnaireRepository(db)
 
-	mainAPI := api.NewAPI(*commentRepo, *likeRepo, *notifRepo, *postsRepo, *userRepo)
+	mainAPI := api.NewAPI(*commentRepo, *likeRepo, *notifRepo, *postsRepo, *userRepo, *categoryRepo, *questionnaireRepo)
 	mainAPI.Start()
 }

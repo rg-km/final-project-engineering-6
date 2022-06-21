@@ -17,6 +17,7 @@ type PostDetail struct {
 	AuthorAvatar      sql.NullString `db:"author_avatar"`
 	AuthorInstitution sql.NullString `db:"author_institution"`
 	AuthorMajor       sql.NullString `db:"author_major"`
+	AuthorBatch       sql.NullInt32  `db:"author_batch"`
 	CategoryID        int            `db:"category_id"`
 	Title             string         `db:"title"`
 	Description       string         `db:"desc"`
@@ -99,7 +100,7 @@ func (p *PostRepository) InsertPostImage(postID int, path string) error {
 	return nil
 }
 
-func (p *PostRepository) FetchAllPost(limit, offset int, orderBy, filter1, filter2 string) ([]PostDetail, error) {
+func (p *PostRepository) FetchAllPost(limit, offset int, orderBy, filter string) ([]PostDetail, error) {
 	sqlStatement := fmt.Sprintf(
 		`
 		SELECT 
@@ -110,6 +111,7 @@ func (p *PostRepository) FetchAllPost(limit, offset int, orderBy, filter1, filte
 		up.author_avatar,
 		up.author_institution,
 		up.author_major,
+		up.author_batch,
 		up.category_id,
 		up.title,
 		up.desc,
@@ -127,6 +129,7 @@ func (p *PostRepository) FetchAllPost(limit, offset int, orderBy, filter1, filte
 			u.avatar as author_avatar,
 			ud.institute as author_institution,
 			ud.major as author_major,
+			ud.batch as author_batch,
 			p.category_id,
 			p.title,
 			p.desc,
@@ -143,14 +146,14 @@ func (p *PostRepository) FetchAllPost(limit, offset int, orderBy, filter1, filte
 			INNER JOIN users u ON p.author_id = u.id
 			LEFT JOIN user_details ud ON u.id = ud.user_id	
 			LEFT JOIN post_likes pl ON pl.post_id = p.id
-			%s
+			LEFT JOIN questionnaires q ON q.post_id = p.id
+			WHERE q.link IS NULL %s
 			GROUP BY p.id
-			%s
 			ORDER BY %s
 			LIMIT %d OFFSET %d
 		) up
 		LEFT JOIN post_images pi ON up.id = pi.post_id;`,
-		filter1, filter2, orderBy, limit, offset)
+		filter, orderBy, limit, offset)
 
 	tx, err := p.db.Begin()
 
@@ -173,7 +176,8 @@ func (p *PostRepository) FetchAllPost(limit, offset int, orderBy, filter1, filte
 		var post PostDetail
 		err := rows.Scan(
 			&post.ID,
-			&post.AuthorID, &post.AuthorName, &post.AuthorRole, &post.AuthorAvatar, &post.AuthorInstitution, &post.AuthorMajor,
+			&post.AuthorID, &post.AuthorName, &post.AuthorRole, &post.AuthorAvatar,
+			&post.AuthorInstitution, &post.AuthorMajor, &post.AuthorBatch,
 			&post.CategoryID, &post.Title, &post.Description, &post.CreatedAt, &post.CommentCount, &post.LikeCount,
 			&post.ImageID, &post.ImagePath)
 
@@ -206,6 +210,7 @@ func (p *PostRepository) FetchPostByID(postID int) ([]PostDetail, error) {
 			u.avatar as author_avatar,
 			ud.institute as author_institution,
 			ud.major as author_major,
+			ud.batch as author_batch,
 			p.category_id as category_id,
 			p.title as title,
 			p.desc as desc,
@@ -239,7 +244,8 @@ func (p *PostRepository) FetchPostByID(postID int) ([]PostDetail, error) {
 		var post PostDetail
 		err := rows.Scan(
 			&post.ID,
-			&post.AuthorID, &post.AuthorName, &post.AuthorRole, &post.AuthorAvatar, &post.AuthorInstitution, &post.AuthorMajor,
+			&post.AuthorID, &post.AuthorName, &post.AuthorRole, &post.AuthorAvatar,
+			&post.AuthorInstitution, &post.AuthorMajor, &post.AuthorBatch,
 			&post.CategoryID, &post.Title, &post.Description, &post.CreatedAt,
 			&post.ImageID, &post.ImagePath)
 
