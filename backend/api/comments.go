@@ -9,6 +9,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/rg-km/final-project-engineering-6/helper"
 	"github.com/rg-km/final-project-engineering-6/repository"
+	"github.com/rg-km/final-project-engineering-6/service"
 )
 
 type CreateCommentRequest struct {
@@ -67,6 +68,12 @@ func (api API) CreateComment(c *gin.Context) {
 		return
 	}
 
+	isCommentOK := service.GetValidationInstance().Validate(createCommentRequest.Comment)
+	if !isCommentOK {
+		c.AbortWithStatusJSON(http.StatusBadRequest, ErrorPostResponse{Message: "Your comment contains bad words"})
+		return
+	}
+
 	commentId, err := api.commentRepo.InsertComment(repository.Comment{
 		PostID:          createCommentRequest.PostID,
 		ParentCommentID: createCommentRequest.ParentCommentID,
@@ -121,6 +128,12 @@ func (api API) UpdateComment(c *gin.Context) {
 				gin.H{"error": err.Error()},
 			)
 		}
+		return
+	}
+
+	isCommentOK := service.GetValidationInstance().Validate(updateCommentRequest.Comment)
+	if !isCommentOK {
+		c.AbortWithStatusJSON(http.StatusBadRequest, ErrorPostResponse{Message: "Your comment contains bad words"})
 		return
 	}
 
