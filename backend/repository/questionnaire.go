@@ -18,8 +18,9 @@ func NewQuestionnaireRepository(db *sql.DB) *QuestionnaireRepository {
 	}
 }
 
-func (q *QuestionnaireRepository) ReadAllQuestionnaires(filterQuery string) ([]Questionnaire, error) {
-	sqlStmt := fmt.Sprintf(`
+func (q *QuestionnaireRepository) ReadAllQuestionnaires(filter, sortBy string) ([]Questionnaire, error) {
+	sqlStmt := fmt.Sprintf(
+		`
 	SELECT
 		p.id,
 		u.id,
@@ -43,7 +44,10 @@ func (q *QuestionnaireRepository) ReadAllQuestionnaires(filterQuery string) ([]Q
 	LEFT JOIN user_details ud ON u.id = ud.user_id
 	LEFT JOIN categories c ON p.category_id = c.id
 	INNER JOIN questionnaires q ON p.id = q.post_id
-	%s`, filterQuery)
+	WHERE %s
+	ORDER BY %s;`,
+		filter,
+		sortBy)
 
 	rows, err := q.db.Query(sqlStmt)
 	if err != nil {
