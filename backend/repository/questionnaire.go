@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"fmt"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -17,8 +18,9 @@ func NewQuestionnaireRepository(db *sql.DB) *QuestionnaireRepository {
 	}
 }
 
-func (q *QuestionnaireRepository) ReadAllQuestionnaires() ([]Questionnaire, error) {
-	sqlStmt := `
+func (q *QuestionnaireRepository) ReadAllQuestionnaires(filter, sortBy string) ([]Questionnaire, error) {
+	sqlStmt := fmt.Sprintf(
+		`
 	SELECT
 		p.id,
 		u.id,
@@ -41,7 +43,11 @@ func (q *QuestionnaireRepository) ReadAllQuestionnaires() ([]Questionnaire, erro
 	LEFT JOIN users u ON p.author_id = u.id
 	LEFT JOIN user_details ud ON u.id = ud.user_id
 	LEFT JOIN categories c ON p.category_id = c.id
-	INNER JOIN questionnaires q ON p.id = q.post_id;`
+	INNER JOIN questionnaires q ON p.id = q.post_id
+	WHERE %s
+	ORDER BY %s;`,
+		filter,
+		sortBy)
 
 	rows, err := q.db.Query(sqlStmt)
 	if err != nil {

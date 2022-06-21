@@ -17,9 +17,8 @@ const Login = () => {
     }
 
     if (eventName === 'password') {
-      setIsPwdError(
-        !eventValue.match(/^(?=.[a-z])(?=.[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/)
-      );
+      setIsPwdError(!eventValue.match(/^[a-zA-Z]*$/));
+      setIsPwdError(eventValue.length < 8);
     }
 
     setUserData((previousValues) => {
@@ -38,6 +37,11 @@ const Login = () => {
       setToken(result.data.token);
       form.childNodes.forEach((input) => (input.childNodes[0].value = ''));
     }
+  };
+
+  const showPwd = () => {
+    const pwd = document.getElementById('pwd');
+    pwd.type === 'password' ? (pwd.type = 'text') : (pwd.type = 'password');
   };
 
   const handleSubmit = (e) => {
@@ -64,7 +68,7 @@ const Login = () => {
             <div className='input-container'>
               <FormInput
                 className='pwd'
-                id='pwd'
+                id={'pwd'}
                 type={'password'}
                 name={'password'}
                 placeholder={'Password'}
@@ -72,14 +76,15 @@ const Login = () => {
                 value={userData.password ? userData.password : ''}
               />
             </div>
+            <div className='show-pwd'>
+              <input type='checkbox' className='check-pwd' onClick={showPwd} />
+              Show password
+            </div>
             <div className='button-container'>
-              {/* <Button variant={"login"} type="submit" disabled={isNameError}>
-                Login
-              </Button> */}
               <button
                 type='submit'
                 className='submit-btn'
-                disabled={!isEmailError && !isPwdError}
+                disabled={isEmailError || isPwdError}
                 onClick={loginClick}
               >
                 Login

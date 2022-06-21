@@ -4,12 +4,14 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net/http"
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/rg-km/final-project-engineering-6/helper"
 	"github.com/rg-km/final-project-engineering-6/repository"
-	"net/http"
-	"strconv"
+	"github.com/rg-km/final-project-engineering-6/service"
 )
 
 type CreateQuestionnaireRequest struct {
@@ -31,7 +33,51 @@ type UpdateQuestionnaireRequest struct {
 }
 
 func (api *API) ReadAllQuestionnaires(c *gin.Context) {
-	questionnaires, err := api.questionnaireRepo.ReadAllQuestionnaires()
+	sortBy := c.DefaultQuery("sort_by", "newest")
+	switch sortBy {
+	case "newest":
+		sortBy = "created_at DESC"
+	case "oldest":
+		sortBy = "created_at"
+	case "most_liked":
+		sortBy = "total_like DESC"
+	case "most_commented":
+		sortBy = "total_comment DESC"
+	default:
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Sort By"})
+		return
+	}
+
+	var filterQuery string
+
+	searchTitle := c.DefaultQuery("search_title", "")
+	filterQuery = fmt.Sprintf("title LIKE '%%%s%%'", searchTitle)
+
+	categoryId, err := strconv.Atoi(c.DefaultQuery("category_id", "0"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Filter By Category ID"})
+		return
+	}
+	if categoryId != 0 {
+		filterQuery = fmt.Sprintf("%s AND category_id = %d", filterQuery, categoryId)
+	}
+
+	me, err := strconv.ParseBool(c.DefaultQuery("me", "false"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Filter By Me"})
+		return
+	}
+
+	if me {
+		userID, err := api.getUserIdFromToken(c)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		filterQuery = fmt.Sprintf("%s AND author_id = %d", filterQuery, userID)
+	}
+
+	questionnaires, err := api.questionnaireRepo.ReadAllQuestionnaires(filterQuery, sortBy)
 	if err != nil {
 		c.AbortWithStatusJSON(
 			http.StatusInternalServerError,
@@ -112,6 +158,13 @@ func (api *API) CreateQuestionnaire(c *gin.Context) {
 		return
 	}
 
+	isTitleOK := service.GetValidationInstance().Validate(createQuestionnaireRequest.Title)
+	isDescriptionOK := service.GetValidationInstance().Validate(createQuestionnaireRequest.Description)
+	if !isTitleOK || !isDescriptionOK {
+		c.AbortWithStatusJSON(http.StatusBadRequest, ErrorPostResponse{Message: "Your post contains bad words"})
+		return
+	}
+
 	err = api.questionnaireRepo.InsertQuestionnaire(repository.Questionnaire{
 		Author: repository.User{
 			Id: createQuestionnaireRequest.AuthorID,
@@ -176,6 +229,13 @@ func (api *API) UpdateQuestionnaire(c *gin.Context) {
 			http.StatusBadRequest,
 			gin.H{"error": "No data with given id"},
 		)
+		return
+	}
+
+	isTitleOK := service.GetValidationInstance().Validate(updateQuestionnaireRequest.Title)
+	isDescriptionOK := service.GetValidationInstance().Validate(updateQuestionnaireRequest.Description)
+	if !isTitleOK || !isDescriptionOK {
+		c.AbortWithStatusJSON(http.StatusBadRequest, ErrorPostResponse{Message: "Your post contains bad words"})
 		return
 	}
 

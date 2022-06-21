@@ -23,13 +23,14 @@ const Navbar = ({ openSidebar }) => {
           </div>
           {token ? (
             <div className='link'>
+              <span className='badge'></span>
               <div className='user'>
-                <Link to='#'>
+                <Link to='/notifications'>
                   <NotificationsIcon style={{ fontSize: '2rem' }} />
                 </Link>
               </div>
               <div className='notification'>
-                <Link to='#'>
+                <Link to='/profile'>
                   <AccountCircleIcon style={{ fontSize: '2rem' }} />
                 </Link>
               </div>

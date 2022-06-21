@@ -24,9 +24,8 @@ const Register = () => {
     }
 
     if (eventName === 'password') {
-      setIsPwdError(
-        !eventValue.match(/^(?=.[a-z])(?=.[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/)
-      );
+      setIsPwdError(!eventValue.match(/^[a-zA-Z]*$/));
+      setIsPwdError(eventValue.length < 8);
     }
 
     setUserData((previousValues) => {
@@ -44,9 +43,24 @@ const Register = () => {
       batch: Number(userData.batch),
     });
     const form = document.getElementById('register');
+    form.childNodes.forEach((input, index) => {
+      if (index === 4) {
+        input.childNodes.forEach((inp) => {
+          inp.childNodes[0].value = '';
+        });
+      }
+      input.childNodes[0].value = '';
+    });
     if (result.status === 200) {
       setToken(result.data.token);
-      form.childNodes.forEach((input) => (input.childNodes[0].value = ''));
+      form.childNodes.forEach((input, index) => {
+        if (index === 4) {
+          input.childNodes.forEach((inp) => {
+            inp.childNodes[0].value = '';
+          });
+        }
+        input.childNodes[0].value = '';
+      });
     }
   };
 
@@ -137,7 +151,7 @@ const Register = () => {
               <button
                 className='btn'
                 variant={'login'}
-                disabled={!isEmailError && !isPwdError}
+                disabled={isEmailError || isPwdError}
                 onClick={registerClick}
               >
                 Register

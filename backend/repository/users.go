@@ -41,6 +41,32 @@ func (u *UserRepository) GetUserData(id int) (*User, error) {
 	return &user, err
 }
 
+func (u *UserRepository) UpdateUserData(id int, name, email string) error {
+	statement := "UPDATE users SET name = ?, email = ? WHERE id = ?"
+
+	isAvailable, err := u.CheckEmail(email)
+	if err != nil {
+		return err
+	}
+
+	if !isAvailable {
+		return errors.New("email has been used")
+	}
+
+	regex, err := regexp.Compile("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")
+	if err != nil {
+		return err
+	}
+
+	isValid := regex.Match([]byte(email))
+	if !isValid {
+		return errors.New("invalid email")
+	}
+
+	_, err = u.db.Exec(statement, name, email, id)
+	return err
+}
+
 func (u *UserRepository) GetUserRole(id int) (*string, error) {
 	statement := "SELECT role FROM users WHERE id = ?"
 	var role string

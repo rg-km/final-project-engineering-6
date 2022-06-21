@@ -16,6 +16,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/rg-km/final-project-engineering-6/repository"
+	"github.com/rg-km/final-project-engineering-6/service"
 )
 
 const (
@@ -94,6 +95,13 @@ func (api *API) createPost(ctx *gin.Context) {
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, ErrorPostResponse{Message: "Invalid Request Body"})
+		return
+	}
+
+	isTitleOK := service.GetValidationInstance().Validate(req.Title)
+	isDescriptionOK := service.GetValidationInstance().Validate(req.Description)
+	if !isTitleOK || !isDescriptionOK {
+		ctx.JSON(http.StatusBadRequest, ErrorPostResponse{Message: "Your post contains bad words"})
 		return
 	}
 
@@ -224,7 +232,7 @@ func (api *API) readPosts(ctx *gin.Context) {
 
 	searchTitle := ctx.DefaultQuery("search_title", "")
 	if searchTitle != "" {
-		filterQuery = fmt.Sprintf("WHERE title LIKE '%%%s%%'", searchTitle)
+		filterQuery = fmt.Sprintf("AND title LIKE '%%%s%%' ", searchTitle)
 	}
 
 	category_id, err := strconv.Atoi(ctx.DefaultQuery("category_id", "0"))
@@ -233,11 +241,22 @@ func (api *API) readPosts(ctx *gin.Context) {
 		return
 	}
 	if category_id != 0 {
-		if filterQuery != "" {
-			filterQuery = fmt.Sprintf("%s AND category_id = %d", filterQuery, category_id)
-		} else {
-			filterQuery = fmt.Sprintf("WHERE category_id = %d", category_id)
+		filterQuery = fmt.Sprintf("%sAND category_id = %d ", filterQuery, category_id)
+	}
+
+	me, err := strconv.ParseBool(ctx.DefaultQuery("me", "false"))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, ErrorPostResponse{Message: "Invalid Filter By Me"})
+		return
+	}
+
+	if me {
+		userID, err := api.getUserIdFromToken(ctx)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, ErrorPostResponse{Message: err.Error()})
+			return
 		}
+		filterQuery = fmt.Sprintf("%sAND author_id = %d", filterQuery, userID)
 	}
 
 	posts, err := api.postRepo.FetchAllPost(limit, offset, sortBy, filterQuery)
@@ -443,6 +462,13 @@ func (api *API) updatePost(ctx *gin.Context) {
 		return
 	} else if authorID != req.AuthorID {
 		ctx.JSON(http.StatusForbidden, ErrorPostResponse{Message: "Forbidden"})
+		return
+	}
+
+	isTitleOK := service.GetValidationInstance().Validate(req.Title)
+	isDescriptionOK := service.GetValidationInstance().Validate(req.Description)
+	if !isTitleOK || !isDescriptionOK {
+		ctx.JSON(http.StatusBadRequest, ErrorPostResponse{Message: "Your post contains bad words"})
 		return
 	}
 
