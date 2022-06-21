@@ -1,4 +1,4 @@
-@import "../../App.scss";
+@import '../../App.scss';
 
 .container-reg {
   width: 100%;
@@ -48,13 +48,17 @@
       form {
         width: 100%;
         transition: all 0.5s ease;
+
+        button {
+          @include button($Primary, $Light);
+        }
       }
     }
   }
   .gambar {
     width: 60%;
     height: 100vh;
-    background-image: url("./register.svg");
+    background-image: url('./register.svg');
     background-size: cover;
     @include breakpoint(md) {
       display: none;

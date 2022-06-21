@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
 import FormInput from '../../components/FormInput/FormInput';
-import Button from '../../components/Button/Button';
 import './Login.scss';
+import { login } from '../../api';
+import useTokenStore from '../../Store';
 
 const Login = () => {
   const [userData, setUserData] = useState({});
-  const [isNameError, setIsNameError] = useState(true);
+  const [isEmailError, setIsEmailError] = useState(true);
   const [isPwdError, setIsPwdError] = useState(true);
-  // const [isConfirmPwdError, setIsConfirmPwdError] = useState(true);
+  const setToken = useTokenStore((state) => state.setToken);
 
   const handleInputChange = (eventValue, eventName) => {
     console.log(eventValue, eventName);
-    if (eventName === 'username') {
-      setIsNameError(!eventValue.match(/^[a-zA-Z0-9]*$/));
+    if (eventName === 'email') {
+      setIsEmailError(!eventValue.match(/^[a-zA-Z0-9]+@+[a-z]+\.com$/));
     }
 
     if (eventName === 'password') {
@@ -29,6 +30,16 @@ const Login = () => {
     });
   };
 
+  const loginClick = async (e) => {
+    e.preventDefault();
+    const result = await login(userData);
+    const form = document.getElementById('loginForm');
+    if (result.status === 200) {
+      setToken(result.data.token);
+      form.childNodes.forEach((input) => (input.childNodes[0].value = ''));
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
   };
@@ -43,11 +54,11 @@ const Login = () => {
             <div className='input-container'>
               <FormInput
                 className='username'
-                type={'username'}
-                placeholder={'username'}
+                type={'email'}
+                placeholder={'Email'}
                 onChange={handleInputChange}
-                name={'username'}
-                value={userData.username ? userData.username : ''}
+                name={'email'}
+                value={userData.email ? userData.email : ''}
               />
             </div>
             <div className='input-container'>
@@ -58,6 +69,7 @@ const Login = () => {
                 name={'password'}
                 placeholder={'Password'}
                 onChange={handleInputChange}
+                value={userData.password ? userData.password : ''}
               />
             </div>
             <div className='button-container'>
@@ -67,9 +79,10 @@ const Login = () => {
               <button
                 type='submit'
                 className='submit-btn'
-                disabled={isNameError && isPwdError}
+                disabled={!isEmailError && !isPwdError}
+                onClick={loginClick}
               >
-                login
+                Login
               </button>
             </div>
           </form>

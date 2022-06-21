@@ -1,5 +1,4 @@
 import React from 'react';
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Navbar.scss';
 import Button from '../Button/Button';
@@ -7,10 +6,11 @@ import Button from '../Button/Button';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import useTokenStore from '../../Store';
 
 const Navbar = ({ openSidebar }) => {
-  // const [user, setUser] = useState({});
-  const [isLoggedIn, setIsloggedin] = useState(false);
+  const token = useTokenStore((state) => state.token);
+
   return (
     <div>
       <header>
@@ -18,8 +18,10 @@ const Navbar = ({ openSidebar }) => {
           <div className='menu_icon' onClick={openSidebar}>
             <MenuIcon />
           </div>
-          <div className='logo'>BASIS___</div>
-          {isLoggedIn ? (
+          <div className='logo'>
+            <Link to='/'>BASIS___</Link>
+          </div>
+          {token ? (
             <div className='link'>
               <div className='user'>
                 <Link to='#'>

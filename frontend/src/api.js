@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://localhost:8080';
+const API_URL = 'http://167.172.84.216:8080';
 
 export const login = async (data) => {
   // data email, password
@@ -10,6 +10,7 @@ export const login = async (data) => {
     if (res.status === 200) return res;
   } catch (error) {
     console.log(error);
+    return error;
   }
 };
 
@@ -21,6 +22,7 @@ export const register = async (data) => {
     if (res.status === 200) return res;
   } catch (error) {
     console.log(error);
+    return error;
   }
 };
 
@@ -34,6 +36,7 @@ export const uploadAvatar = async (data, token) => {
     if (res.status === 200) return res;
   } catch (error) {
     console.log(error);
+    return error;
   }
 };
 
@@ -47,6 +50,7 @@ export const createPost = async (data, token) => {
     if (res.status === 200) return res;
   } catch (error) {
     console.log(error);
+    return error;
   }
 };
 
@@ -60,6 +64,7 @@ export const uploadPostImages = async (data, id, token) => {
     if (res.status === 200) return res;
   } catch (error) {
     console.log(error);
+    return error;
   }
 };
 
@@ -72,6 +77,7 @@ export const readAllPost = async (token) => {
     if (res.status === 200) return res;
   } catch (error) {
     console.log(error);
+    return error;
   }
 };
 
@@ -84,6 +90,7 @@ export const readDetailPost = async (id, token) => {
     if (res.status === 200) return res;
   } catch (error) {
     console.log(error);
+    return error;
   }
 };
 
@@ -97,6 +104,7 @@ export const updatePost = async (data, token) => {
     if (res.status === 200) return res;
   } catch (error) {
     console.log(error);
+    return error;
   }
 };
 
@@ -111,6 +119,7 @@ export const deletePost = async (data, token) => {
     if (res.status === 200) return res;
   } catch (error) {
     console.log(error);
+    return error;
   }
 };
 
@@ -123,6 +132,7 @@ export const readAllComment = async (id, token) => {
     if (res.status === 200) return res;
   } catch (error) {
     console.log(error);
+    return error;
   }
 };
 
@@ -136,6 +146,7 @@ export const createComment = async (data, token) => {
     if (res.status === 200) return res;
   } catch (error) {
     console.log(error);
+    return error;
   }
 };
 
@@ -149,6 +160,7 @@ export const updateComment = async (data, token) => {
     if (res.status === 200) return res;
   } catch (error) {
     console.log(error);
+    return error;
   }
 };
 
@@ -161,6 +173,7 @@ export const deleteComment = async (id, token) => {
     if (res.status === 200) return res;
   } catch (error) {
     console.log(error);
+    return error;
   }
 };
 
@@ -174,6 +187,7 @@ export const createPostLike = async (data, token) => {
     if (res.status === 200) return res;
   } catch (error) {
     console.log(error);
+    return error;
   }
 };
 
@@ -188,6 +202,7 @@ export const deletePostLike = async (data, token) => {
     if (res.status === 200) return res;
   } catch (error) {
     console.log(error);
+    return error;
   }
 };
 
@@ -201,6 +216,7 @@ export const createCommentLike = async (data, token) => {
     if (res.status === 200) return res;
   } catch (error) {
     console.log(error);
+    return error;
   }
 };
 
@@ -215,6 +231,7 @@ export const deleteCommentLike = async (data, token) => {
     if (res.status === 200) return res;
   } catch (error) {
     console.log(error);
+    return error;
   }
 };
 
@@ -227,6 +244,7 @@ export const readAllSurvey = async (token) => {
     if (res.status === 200) return res;
   } catch (error) {
     console.log(error);
+    return error;
   }
 };
 
@@ -239,6 +257,7 @@ export const readDetailSurvey = async (id, token) => {
     if (res.status === 200) return res;
   } catch (error) {
     console.log(error);
+    return error;
   }
 };
 
@@ -252,6 +271,7 @@ export const createSurvey = async (data, token) => {
     if (res.status === 200) return res;
   } catch (error) {
     console.log(error);
+    return error;
   }
 };
 
@@ -265,6 +285,7 @@ export const updateSurvey = async (data, token) => {
     if (res.status === 200) return res;
   } catch (error) {
     console.log(error);
+    return error;
   }
 };
 
@@ -277,6 +298,7 @@ export const deleteSurvey = async (id, token) => {
     if (res.status === 200) return res;
   } catch (error) {
     console.log(error);
+    return error;
   }
 };
 
@@ -289,6 +311,7 @@ export const getNotifications = async (token) => {
     if (res.status === 200) return res;
   } catch (error) {
     console.log(error);
+    return error;
   }
 };
 
@@ -302,6 +325,7 @@ export const readNotifications = async (data, token) => {
     if (res.status === 200) return res;
   } catch (error) {
     console.log(error);
+    return error;
   }
 };
 
@@ -314,6 +338,7 @@ export const getAllCategory = async (token) => {
     if (res.status === 200) return res;
   } catch (error) {
     console.log(error);
+    return error;
   }
 };
 
@@ -326,6 +351,7 @@ export const getProfile = async (token) => {
     if (res.status === 200) return res;
   } catch (error) {
     console.log(error);
+    return error;
   }
 };
 
@@ -339,6 +365,7 @@ export const updateProfile = async (data, token) => {
     if (res.status === 200) return res;
   } catch (error) {
     console.log(error);
+    return error;
   }
 };
 
@@ -351,6 +378,7 @@ export const getPostByMe = async (token) => {
     if (res.status === 200) return res;
   } catch (error) {
     console.log(error);
+    return error;
   }
 };
 
@@ -363,5 +391,6 @@ export const getSurveyByMe = async (token) => {
     if (res.status === 200) return res;
   } catch (error) {
     console.log(error);
+    return error;
   }
 };
