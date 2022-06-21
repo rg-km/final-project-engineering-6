@@ -1,0 +1,131 @@
+@import "../../App.scss";
+
+.home-page {
+  width: 100%;
+  background-color: $Light;
+  height: 100%;
+  position: relative;
+  z-index: 11;
+  .container {
+    width: 100%;
+    background-color: $Border;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: $Light;
+    padding: 5rem;
+    background-image: url("../../images/bg-banner.svg");
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    .words {
+      display: flex;
+      justify-content: center;
+      .title {
+        padding: 5rem;
+        h1 {
+          color: $TitleText;
+          font-size: 4.2rem;
+        }
+        p {
+          color: $SubTitleText;
+          padding: 2rem 0;
+          font-weight: 400;
+        }
+        .btn {
+          width: 30%;
+        }
+      }
+      .btn {
+        width: 50%;
+      }
+    }
+    .banner {
+      padding-top: 7rem;
+      padding-right: 4rem;
+    }
+  }
+
+  .what {
+    background-color: $Light;
+    width: 100%;
+    margin: 0 auto;
+    height: 150vh;
+    background-image: url("../../images/bg-basis.svg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8rem;
+    .gambar {
+      // margin-top: 5rem;
+      img {
+        width: 30rem;
+      }
+    }
+
+    .explain {
+      h2 {
+        font-size: 2.5rem;
+        font-weight: 400;
+        line-height: 3rem;
+        padding: 1rem 0;
+      }
+
+      p {
+        color: $SubTitleText;
+      }
+      // background-color: aliceblue;
+      padding-left: 20rem;
+      line-height: 2rem;
+    }
+  }
+
+  .fitur {
+    width: 100%;
+    padding: 0 10rem 10rem 10rem;
+    // background-color: aqua;
+    display: flex;
+    gap: 5rem;
+    .card {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+      align-items: center;
+      width: 30%;
+      border: 1px solid $Border;
+      opacity: 0.5;
+      // background-color: #ddcef3;
+      // height: 10vh;
+      &:hover {
+        box-shadow: 2px 1px 10px rgba(77, 41, 175, 0.2);
+        opacity: 1;
+      }
+      img {
+        width: 15rem;
+      }
+      h3 {
+        padding: 1rem;
+      }
+    }
+  }
+
+  .footer {
+    width: 100%;
+    min-height: 10vh;
+    background-image: url("../../images/wave.svg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    p {
+      color: $Light;
+      font-size: 1.2rem;
+      justify-content: center;
+    }
+  }
+}

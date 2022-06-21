@@ -8,9 +8,11 @@ import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 
+import Logo from "../../images/logo.svg";
+
 const Navbar = ({ openSidebar }) => {
   // const [user, setUser] = useState({});
-  const [isLoggedIn, setIsloggedin] = useState(true);
+  const [isLoggedIn, setIsloggedin] = useState(false);
   return (
     <div>
       <header>
@@ -18,7 +20,9 @@ const Navbar = ({ openSidebar }) => {
           <div className="menu_icon" onClick={openSidebar}>
             <MenuIcon />
           </div>
-          <div className="logo">BASIS___</div>
+          <div className="logo">
+            <img src={Logo} alt="" />
+          </div>
           {isLoggedIn ? (
             <div className="link">
               <span className="badge"></span>
