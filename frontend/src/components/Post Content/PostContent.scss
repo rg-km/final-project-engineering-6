@@ -7,6 +7,7 @@
     display: flex;
     justify-content: space-between;
     gap: 1rem;
+    width: 100%;
 
     .content {
       display: flex;
@@ -16,10 +17,10 @@
       .content-info {
         color: $SubTitleText;
         font-size: 0.9rem;
-        margin-bottom: 0.8rem;
       }
 
       .content-description {
+        margin-top: 0.8rem;
         overflow: hidden;
         text-overflow: ellipsis;
         display: -webkit-box;
@@ -83,6 +84,7 @@
     display: flex;
     justify-content: space-between;
     gap: 2rem;
+    width: 100%;
 
     @include breakpoint(md) {
       flex-direction: column;

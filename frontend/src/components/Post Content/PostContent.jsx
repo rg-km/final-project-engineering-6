@@ -7,7 +7,7 @@ import LinkIcon from '@mui/icons-material/Link';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import './PostContent.scss';
 
-const PostContent = ({ page, type }) => {
+const PostContent = ({ data, page, type }) => {
   const [likeClicked, setLikeClicked] = useState(false);
   const [commentClicked, setCommentClicked] = useState(false);
 
@@ -23,51 +23,46 @@ const PostContent = ({ page, type }) => {
               <img src='' alt='user' />
             </div>
             <div className='user-info'>
-              <div className='user-name'>Name</div>
-              <div className='user-detail'>
-                <p>Tipe User</p>
-                <p>Universitas</p>
+              <div className='user-name'>
+                {type === 'comment' || type === 'reply'
+                  ? data.author_name
+                  : data.author.name}
               </div>
+              {type !== 'comment' && type !== 'reply' && (
+                <div className='user-detail'>
+                  <p>{data.author.role}</p>
+                  <p>{data.author.institute}</p>
+                </div>
+              )}
             </div>
           </div>
         )}
         <div className='content'>
-          {type !== 'comment' && (
+          {(type !== 'comment' || type !== 'reply') && (
             <>
-              <h2 className='content-title'>Lorem ipsum dolor sit amet.</h2>
-              <div className='content-info'>posted 3 days ago</div>
+              <h2 className='content-title'>{data.title}</h2>
+              <div className='content-info'>{data.created_at}</div>
             </>
           )}
           <p className='content-description'>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi quos
-            est harum modi enim corporis alias error tempora perspiciatis
-            quaerat. Harum sequi modi at quod obcaecati veritatis. Illo,
-            obcaecati tempore, voluptate consectetur non veritatis deserunt ipsa
-            dolore praesentium vel maiores quod, nostrum cumque officiis? Odio
-            cum voluptas distinctio quibusdam delectus fugiat, perferendis
-            earum, assumenda ab quasi omnis velit quia cumque, qui nobis
-            obcaecati! Ut voluptate animi officia minima numquam ducimus facere
-            totam ullam hic aperiam voluptatibus, sed, nostrum quasi debitis
-            mollitia dolorum tenetur soluta iste earum. Officia delectus itaque
-            ipsam, odio ratione animi incidunt est voluptate voluptatum natus
-            mollitia tempore.
+            {type === 'comment' || type !== 'reply'
+              ? data.comment
+              : data.description}
           </p>
           {page === 'survey' && type === 'detail' && (
             <>
               <div className='content-link'>
                 <LinkIcon />
-                <a
-                  href='https://forms.google.com'
-                  target='_blank'
-                  rel='noreferrer'
-                >
-                  https://forms.google.com
+                <a href={data.link} target='_blank' rel='noreferrer'>
+                  {data.link}
                 </a>
               </div>
-              <p className='content-reward'>
-                <EmojiEventsIcon />
-                100000
-              </p>
+              {data.reward && (
+                <p className='content-reward'>
+                  <EmojiEventsIcon />
+                  {data.reward}
+                </p>
+              )}
             </>
           )}
         </div>
@@ -82,20 +77,20 @@ const PostContent = ({ page, type }) => {
               <img src='' alt='user' />
             </div>
             <div className='user-info'>
-              <div className='user-name'>Name</div>
+              <div className='user-name'>{data.author.name}</div>
               <div className='user-detail'>
-                <p>Tipe User</p>
-                <p>Universitas</p>
+                <p>{data.author.role}</p>
+                <p>{data.author.institute}</p>
               </div>
             </div>
           </div>
         )}
 
         <div className='activity-section'>
-          {page === 'survey' && type === 'post' && (
+          {data.reward && (
             <p className='reward-info'>
               <EmojiEventsIcon />
-              100000
+              {data.reward}
             </p>
           )}
           <div className='like-info'>
@@ -112,7 +107,9 @@ const PostContent = ({ page, type }) => {
                 }}
               />
             )}
-            123
+            {type === 'comment' || page === 'survey' || type === 'reply'
+              ? data.total_like
+              : data.like_count}
           </div>
           <div className='comment-info'>
             {commentClicked ? (
@@ -128,7 +125,11 @@ const PostContent = ({ page, type }) => {
                 }}
               />
             )}
-            456
+            {type === 'comment' || type === 'reply'
+              ? data.total_reply
+              : page === 'survey'
+              ? data.total_comment
+              : data.comment_count}
           </div>
         </div>
       </div>

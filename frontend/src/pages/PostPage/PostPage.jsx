@@ -4,8 +4,18 @@ import ForumForm from '../../components/ForumForm/ForumForm';
 import PostCard from '../../components/PostCard/PostCard';
 import SearchIcon from '@mui/icons-material/Search';
 import './PostPage.scss';
+import { useGet } from '../../config';
+import useTokenStore from '../../Store';
 
 const PostPage = ({ page, type }) => {
+  const token = useTokenStore((state) => state.token);
+
+  const [results, status] = useGet(
+    page === 'forum' ? `post` : page === 'survey' && `questionnaires`,
+    token
+  );
+  const [categories, getStatus] = useGet('category', token);
+
   const handleChange = (e) => {};
 
   const handleSearch = () => {};
@@ -41,21 +51,31 @@ const PostPage = ({ page, type }) => {
             <option value='' disabled>
               Filter by Category
             </option>
-            <option value='Mathematics'>Mathematics</option>
-            <option value='Science'>Science</option>
-            <option value='Psychology'>Psychology</option>
-            <option value='Social Politics'>Social Politics</option>
-            <option value='Engineering'>Engineering</option>
-            <option value='Technology'>Technology</option>
+            {getStatus &&
+              categories.map((category) => {
+                return (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                );
+              })}
           </select>
         </div>
       )}
       <div className='post-container'>
-        {type === 'post' ? (
-          <PostCard page={page} type={type} />
-        ) : (
-          type === 'form' && <ForumForm page={page} />
-        )}
+        {type === 'post'
+          ? status &&
+            results.map((result) => {
+              return (
+                <PostCard
+                  page={page}
+                  type={type}
+                  data={result}
+                  key={result.id}
+                />
+              );
+            })
+          : type === 'form' && <ForumForm page={page} />}
       </div>
     </div>
   );

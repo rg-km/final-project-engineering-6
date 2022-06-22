@@ -36,6 +36,7 @@ export const useGet = (url, token) => {
         setStatus(false);
       }
     };
+
     fetchData();
   }, [get, token, url]);
 
