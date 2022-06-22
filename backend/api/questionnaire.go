@@ -43,7 +43,7 @@ func (api *API) ReadAllQuestionnaires(c *gin.Context) {
 	case "most_commented":
 		sortBy = "total_comment DESC"
 	default:
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Sort By"})
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid Sort By"})
 		return
 	}
 
@@ -54,7 +54,7 @@ func (api *API) ReadAllQuestionnaires(c *gin.Context) {
 
 	categoryId, err := strconv.Atoi(c.DefaultQuery("category_id", "0"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Filter By Category ID"})
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid Filter By Category ID"})
 		return
 	}
 	if categoryId != 0 {
@@ -63,14 +63,14 @@ func (api *API) ReadAllQuestionnaires(c *gin.Context) {
 
 	me, err := strconv.ParseBool(c.DefaultQuery("me", "false"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Filter By Me"})
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid Filter By Me"})
 		return
 	}
 
 	if me {
 		userID, err := api.getUserIdFromToken(c)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 		filterQuery = fmt.Sprintf("%s AND author_id = %d", filterQuery, userID)
