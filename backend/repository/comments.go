@@ -2,8 +2,6 @@ package repository
 
 import (
 	"database/sql"
-	"fmt"
-	"net/http"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -115,7 +113,14 @@ func (c *CommentRepository) FetchCommentAuthorId(commentID int) (int, error) {
 
 	var authorID int
 	err := c.db.QueryRow(sqlStmt, commentID).Scan(&authorID)
-	return authorID, err
+	switch err {
+	case sql.ErrNoRows:
+		return 0, nil
+	case nil:
+		return authorID, nil
+	default:
+		return 0, err
+	}
 }
 
 func (c *CommentRepository) InsertComment(comment Comment) (int64, error) {
@@ -128,44 +133,16 @@ func (c *CommentRepository) InsertComment(comment Comment) (int64, error) {
 	return rowId, err
 }
 
-func (c *CommentRepository) UpdateComment(comment Comment) (int, error) {
+func (c *CommentRepository) UpdateComment(comment Comment) error {
 	sqlStmt := `UPDATE comments SET comment = ? WHERE id = ?`
-
-	result, err := c.db.Exec(sqlStmt, comment.Comment, comment.ID)
-	if err != nil {
-		return http.StatusInternalServerError, err
-	}
-
-	count, err := result.RowsAffected()
-	if err != nil {
-		return http.StatusInternalServerError, err
-	}
-
-	if count == 0 {
-		return http.StatusBadRequest, fmt.Errorf("No data with given id")
-	}
-
-	return http.StatusOK, nil
+	_, err := c.db.Exec(sqlStmt, comment.Comment, comment.ID)
+	return err
 }
 
-func (c *CommentRepository) DeleteComment(commentID int) (int, error) {
+func (c *CommentRepository) DeleteComment(commentID int) error {
 	sqlStmt := `DELETE FROM comments WHERE id = ? OR comment_id = ?`
-
-	result, err := c.db.Exec(sqlStmt, commentID, commentID)
-	if err != nil {
-		return http.StatusInternalServerError, err
-	}
-
-	count, err := result.RowsAffected()
-	if err != nil {
-		return http.StatusInternalServerError, err
-	}
-
-	if count == 0 {
-		return http.StatusBadRequest, fmt.Errorf("No data with given id")
-	}
-
-	return http.StatusOK, nil
+	_, err := c.db.Exec(sqlStmt, commentID, commentID)
+	return err
 }
 
 func (c CommentRepository) CountComment(postID int) (int, error) {
