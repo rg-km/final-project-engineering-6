@@ -17,7 +17,7 @@ func NewCommentRepository(db *sql.DB) *CommentRepository {
 	}
 }
 
-func (c *CommentRepository) SelectAllCommentsByParentCommentID(parentCommentID int) ([]Comment, error) {
+func (c *CommentRepository) SelectAllCommentsByParentCommentID(out chan<- []Comment, errOut chan<- error, parentCommentID int) {
 	sqlStmt := `
 	SELECT
 		c.*,
@@ -30,15 +30,19 @@ func (c *CommentRepository) SelectAllCommentsByParentCommentID(parentCommentID i
 
 	rows, err := c.db.Query(sqlStmt, parentCommentID)
 	if err != nil {
-		return nil, err
+		errOut <- err
+		return
 	}
 	defer rows.Close()
+
+	ch := make(chan []Comment)
+	errCh := make(chan error)
 
 	comments := []Comment{}
 	for rows.Next() {
 		var comment Comment
 
-		err := rows.Scan(
+		err = rows.Scan(
 			&comment.ID,
 			&comment.PostID,
 			&comment.AuthorID,
@@ -49,17 +53,28 @@ func (c *CommentRepository) SelectAllCommentsByParentCommentID(parentCommentID i
 			&comment.TotalLike,
 		)
 		if err != nil {
-			return []Comment{}, err
+			errOut <- err
+			return
 		}
 
-		reply, _ := c.SelectAllCommentsByParentCommentID(comment.ID)
+		go c.SelectAllCommentsByParentCommentID(ch, errCh, comment.ID)
+		err = <-errCh
+		if err != nil {
+			errOut <- err
+			return
+		}
+
+		reply := <-ch
 		comment.Reply = reply
 		comment.TotalReply = len(reply)
 
 		comments = append(comments, comment)
 	}
 
-	return comments, nil
+	errOut <- nil
+	out <- comments
+	close(errCh)
+	close(ch)
 }
 
 func (c *CommentRepository) SelectAllCommentsByPostID(postID int) ([]Comment, error) {
@@ -79,11 +94,14 @@ func (c *CommentRepository) SelectAllCommentsByPostID(postID int) ([]Comment, er
 	}
 	defer rows.Close()
 
+	ch := make(chan []Comment)
+	errCh := make(chan error)
+
 	comments := []Comment{}
 	for rows.Next() {
 		var comment Comment
 
-		err := rows.Scan(
+		err = rows.Scan(
 			&comment.ID,
 			&comment.PostID,
 			&comment.AuthorID,
@@ -94,16 +112,24 @@ func (c *CommentRepository) SelectAllCommentsByPostID(postID int) ([]Comment, er
 			&comment.TotalLike,
 		)
 		if err != nil {
-			return []Comment{}, err
+			return nil, err
 		}
 
-		reply, _ := c.SelectAllCommentsByParentCommentID(comment.ID)
+		go c.SelectAllCommentsByParentCommentID(ch, errCh, comment.ID)
+		err = <-errCh
+		if err != nil {
+			return nil, err
+		}
+
+		reply := <-ch
 		comment.Reply = reply
 		comment.TotalReply = len(reply)
 
 		comments = append(comments, comment)
 	}
 
+	close(errCh)
+	close(ch)
 	return comments, nil
 }
 
