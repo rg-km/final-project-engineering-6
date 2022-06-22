@@ -1,46 +1,31 @@
 package api
 
 import (
-	"errors"
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator/v10"
-	"github.com/rg-km/final-project-engineering-6/helper"
 	"github.com/rg-km/final-project-engineering-6/repository"
 	"net/http"
+	"strconv"
 )
 
-type PostLikeRequest struct {
-	PostID int `json:"post_id" binding:"required,number"`
-	UserID int `json:"user_id" binding:"required,number"`
-}
-
-type CommentLikeRequest struct {
-	CommentID int `json:"comment_id" binding:"required,number"`
-	UserID    int `json:"user_id" binding:"required,number"`
-}
-
 func (api API) CreatePostLike(c *gin.Context) {
-	var postLikeRequest PostLikeRequest
-	err := c.ShouldBind(&postLikeRequest)
+	postID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		var ve validator.ValidationErrors
-		if errors.As(err, &ve) {
-			c.AbortWithStatusJSON(
-				http.StatusBadRequest,
-				gin.H{"errors": helper.GetErrorMessage(ve)},
-			)
-		} else {
-			c.AbortWithStatusJSON(
-				http.StatusBadRequest,
-				gin.H{"error": err.Error()},
-			)
-		}
+		c.AbortWithStatusJSON(
+			http.StatusBadRequest,
+			gin.H{"error": err.Error()},
+		)
+		return
+	}
+
+	userID, err := api.getUserIdFromToken(c)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	isExist, err := api.likeRepo.CheckPostLikeIsExist(repository.PostLike{
-		PostID: postLikeRequest.PostID,
-		UserID: postLikeRequest.UserID,
+		PostID: postID,
+		UserID: userID,
 	})
 	if err != nil {
 		c.AbortWithStatusJSON(
@@ -58,8 +43,8 @@ func (api API) CreatePostLike(c *gin.Context) {
 	}
 
 	err = api.likeRepo.InsertPostLike(repository.PostLike{
-		PostID: postLikeRequest.PostID,
-		UserID: postLikeRequest.UserID,
+		PostID: postID,
+		UserID: userID,
 	})
 	if err != nil {
 		c.AbortWithStatusJSON(
@@ -75,27 +60,24 @@ func (api API) CreatePostLike(c *gin.Context) {
 }
 
 func (api API) DeletePostLike(c *gin.Context) {
-	var postLikeRequest PostLikeRequest
-	err := c.ShouldBind(&postLikeRequest)
+	postID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		var ve validator.ValidationErrors
-		if errors.As(err, &ve) {
-			c.AbortWithStatusJSON(
-				http.StatusBadRequest,
-				gin.H{"errors": helper.GetErrorMessage(ve)},
-			)
-		} else {
-			c.AbortWithStatusJSON(
-				http.StatusBadRequest,
-				gin.H{"error": err.Error()},
-			)
-		}
+		c.AbortWithStatusJSON(
+			http.StatusBadRequest,
+			gin.H{"error": err.Error()},
+		)
+		return
+	}
+
+	userID, err := api.getUserIdFromToken(c)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	isExist, err := api.likeRepo.CheckPostLikeIsExist(repository.PostLike{
-		PostID: postLikeRequest.PostID,
-		UserID: postLikeRequest.UserID,
+		PostID: postID,
+		UserID: userID,
 	})
 	if err != nil {
 		c.AbortWithStatusJSON(
@@ -113,8 +95,8 @@ func (api API) DeletePostLike(c *gin.Context) {
 	}
 
 	err = api.likeRepo.DeletePostLike(repository.PostLike{
-		PostID: postLikeRequest.PostID,
-		UserID: postLikeRequest.UserID,
+		PostID: postID,
+		UserID: userID,
 	})
 	if err != nil {
 		c.AbortWithStatusJSON(
@@ -130,27 +112,24 @@ func (api API) DeletePostLike(c *gin.Context) {
 }
 
 func (api API) CreateCommentLike(c *gin.Context) {
-	var commentLikeRequest CommentLikeRequest
-	err := c.ShouldBind(&commentLikeRequest)
+	commentID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		var ve validator.ValidationErrors
-		if errors.As(err, &ve) {
-			c.AbortWithStatusJSON(
-				http.StatusBadRequest,
-				gin.H{"errors": helper.GetErrorMessage(ve)},
-			)
-		} else {
-			c.AbortWithStatusJSON(
-				http.StatusBadRequest,
-				gin.H{"error": err.Error()},
-			)
-		}
+		c.AbortWithStatusJSON(
+			http.StatusBadRequest,
+			gin.H{"error": err.Error()},
+		)
+		return
+	}
+
+	userID, err := api.getUserIdFromToken(c)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	isExist, err := api.likeRepo.CheckCommentLikeIsExist(repository.CommentLike{
-		CommentID: commentLikeRequest.CommentID,
-		UserID:    commentLikeRequest.UserID,
+		CommentID: commentID,
+		UserID:    userID,
 	})
 	if err != nil {
 		c.AbortWithStatusJSON(
@@ -168,8 +147,8 @@ func (api API) CreateCommentLike(c *gin.Context) {
 	}
 
 	err = api.likeRepo.InsertCommentLike(repository.CommentLike{
-		CommentID: commentLikeRequest.CommentID,
-		UserID:    commentLikeRequest.UserID,
+		CommentID: commentID,
+		UserID:    userID,
 	})
 	if err != nil {
 		c.AbortWithStatusJSON(
@@ -185,27 +164,24 @@ func (api API) CreateCommentLike(c *gin.Context) {
 }
 
 func (api API) DeleteCommentLike(c *gin.Context) {
-	var commentLikeRequest CommentLikeRequest
-	err := c.ShouldBind(&commentLikeRequest)
+	commentID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		var ve validator.ValidationErrors
-		if errors.As(err, &ve) {
-			c.AbortWithStatusJSON(
-				http.StatusBadRequest,
-				gin.H{"errors": helper.GetErrorMessage(ve)},
-			)
-		} else {
-			c.AbortWithStatusJSON(
-				http.StatusBadRequest,
-				gin.H{"error": err.Error()},
-			)
-		}
+		c.AbortWithStatusJSON(
+			http.StatusBadRequest,
+			gin.H{"error": err.Error()},
+		)
+		return
+	}
+
+	userID, err := api.getUserIdFromToken(c)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	isExist, err := api.likeRepo.CheckCommentLikeIsExist(repository.CommentLike{
-		CommentID: commentLikeRequest.CommentID,
-		UserID:    commentLikeRequest.UserID,
+		CommentID: commentID,
+		UserID:    userID,
 	})
 	if err != nil {
 		c.AbortWithStatusJSON(
@@ -217,14 +193,14 @@ func (api API) DeleteCommentLike(c *gin.Context) {
 	if !isExist {
 		c.AbortWithStatusJSON(
 			http.StatusInternalServerError,
-			gin.H{"error": "User with given id already like this comment"},
+			gin.H{"error": "No data with given id"},
 		)
 		return
 	}
 
 	err = api.likeRepo.DeleteCommentLike(repository.CommentLike{
-		CommentID: commentLikeRequest.CommentID,
-		UserID:    commentLikeRequest.UserID,
+		CommentID: commentID,
+		UserID:    userID,
 	})
 	if err != nil {
 		c.AbortWithStatusJSON(
