@@ -18,14 +18,14 @@ const HomePage = () => {
             <h1>Don’t wanna Make you have A bad day</h1>
             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus consequuntur odit quam sint sapiente aspernatur omnis accusamus rerum asperiores ipsam.</p>
             <div className="btn">
-              <Link to="">
+              <Link to="/forum">
                 <Button variant="login">Join Forum</Button>
               </Link>
             </div>
           </div>
         </div>
         <div className="banner">
-          <img width={700} src={Banner} alt="" />
+          <img src={Banner} alt="" />
         </div>
       </div>
       <div className="what">
@@ -56,7 +56,7 @@ const HomePage = () => {
         </div>
       </div>
       <div className="footer">
-        <p>Copyright 2022 | team Basis</p>
+        <p>copyright 2022 | team Basis</p>
       </div>
     </div>
   );

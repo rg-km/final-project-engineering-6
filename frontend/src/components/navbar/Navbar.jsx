@@ -21,7 +21,9 @@ const Navbar = ({ openSidebar }) => {
             <MenuIcon />
           </div>
           <div className="logo">
-            <img src={Logo} alt="" />
+            <Link to="/">
+              <img src={Logo} alt="" />
+            </Link>
           </div>
           {isLoggedIn ? (
             <div className="link">

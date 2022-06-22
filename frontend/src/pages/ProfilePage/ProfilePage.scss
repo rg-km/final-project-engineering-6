@@ -14,7 +14,8 @@
   @include page();
 
   .post-user {
-    @include card-style();
+    // @include card-style();
+    width: 70%;
     flex-direction: column;
     // margin-right: 3rem;
     @include breakpoint(md) {
@@ -22,17 +23,19 @@
     }
     p {
       color: $SubTitleText;
+      margin-bottom: 2rem;
     }
   }
   .profile {
     @include card-style();
     width: 25%;
+    margin-top: 6rem;
     // background-color: #000000;
     display: flex;
     flex-direction: column;
     align-items: center;
     flex-wrap: wrap;
-    margin: 0 auto;
+    // margin: 0 auto;
     height: 100%;
     overflow: hidden;
     // justify-content: center;

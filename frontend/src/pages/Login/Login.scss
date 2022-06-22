@@ -62,8 +62,11 @@
   .gambar {
     width: 60%;
     height: 100vh;
-    background-image: url("./login.svg");
-    background-size: cover;
+    background-image: url("../../images/login.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-position-y: 13vh;
     @include breakpoint(md) {
       display: none;
     }
