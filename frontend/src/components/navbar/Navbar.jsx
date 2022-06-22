@@ -19,7 +19,7 @@ const Navbar = ({ openSidebar }) => {
             <MenuIcon />
           </div>
           <div className='logo'>
-            <Link to='/'>BASIS___</Link>
+            <Link to='/forum'>BASIS___</Link>
           </div>
           {token ? (
             <div className='link'>

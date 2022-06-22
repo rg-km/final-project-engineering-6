@@ -1,30 +1,67 @@
 import axios from 'axios';
+import create from 'zustand';
+import { devtools } from 'zustand/middleware';
 
 const API_URL = 'http://167.172.84.216:8080';
 
-export const login = async (data) => {
-  // data email, password
-  try {
-    const res = await axios.post(`${API_URL}/api/login`, data);
-    console.log(res);
-    if (res.status === 200) return res;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-};
+const defaultAxios = axios.create({
+  baseURL: 'http://167.172.84.216:8080/api/',
+  timeout: 1000,
+});
 
-export const register = async (data) => {
-  // data name, email, password, role, institute, major, batch
-  try {
-    const res = await axios.post(`${API_URL}/api/register`, data);
-    console.log(res);
-    if (res.status === 200) return res;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-};
+export const useAPI = create(
+  devtools(() => ({
+    get: async (url, token) => {
+      try {
+        const res = await defaultAxios.get(url, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        return res;
+      } catch (error) {
+        return error;
+      }
+    },
+    post: async (url, data, token) => {
+      if (!token) {
+        try {
+          const res = await defaultAxios.post(url, data);
+          return res;
+        } catch (error) {
+          return error;
+        }
+      } else {
+        try {
+          const res = await defaultAxios.post(url, data, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          return res;
+        } catch (error) {
+          return error;
+        }
+      }
+    },
+    put: async (url, data, token) => {
+      try {
+        const res = await defaultAxios.put(url, data, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        return res;
+      } catch (error) {
+        return error;
+      }
+    },
+    del: async (url, token) => {
+      try {
+        const res = await defaultAxios.delete(url, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        return res;
+      } catch (error) {
+        return error;
+      }
+    },
+  }))
+);
 
 export const uploadAvatar = async (data, token) => {
   // data avatar
@@ -41,7 +78,7 @@ export const uploadAvatar = async (data, token) => {
 };
 
 export const createPost = async (data, token) => {
-  // data author_id, category_id, title, description
+  // data category_id, title, description
   try {
     const res = await axios.post(`${API_URL}/api/post`, data, {
       headers: { Authorization: `Bearer ${token}` },
@@ -108,12 +145,10 @@ export const updatePost = async (data, token) => {
   }
 };
 
-export const deletePost = async (data, token) => {
-  // data id, author_id
+export const deletePost = async (id, token) => {
   try {
-    const res = await axios.delete(`${API_URL}/api/post`, {
+    const res = await axios.delete(`${API_URL}/api/post/${id}`, {
       headers: { Authorization: `${token}` },
-      data: data,
     });
     console.log(res);
     if (res.status === 200) return res;
@@ -178,9 +213,8 @@ export const deleteComment = async (id, token) => {
 };
 
 export const createPostLike = async (data, token) => {
-  // data post_id, user_id
   try {
-    const res = await axios.post(`${API_URL}/api/post-likes`, data, {
+    const res = await axios.post(`${API_URL}/api/post/${data}/likes`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     console.log(res);
@@ -192,11 +226,9 @@ export const createPostLike = async (data, token) => {
 };
 
 export const deletePostLike = async (data, token) => {
-  // data post_id, user_id
   try {
-    const res = await axios.delete(`${API_URL}/api/post-likes`, {
+    const res = await axios.delete(`${API_URL}/api/post/${data}/likes`, {
       headers: { Authorization: `${token}` },
-      data: data,
     });
     console.log(res);
     if (res.status === 200) return res;
@@ -207,9 +239,8 @@ export const deletePostLike = async (data, token) => {
 };
 
 export const createCommentLike = async (data, token) => {
-  // data comment_id, user_id
   try {
-    const res = await axios.post(`${API_URL}/api/comment-likes`, data, {
+    const res = await axios.post(`${API_URL}/api/comments/${data}/likes`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     console.log(res);
@@ -221,11 +252,9 @@ export const createCommentLike = async (data, token) => {
 };
 
 export const deleteCommentLike = async (data, token) => {
-  // data comment_id, user_id
   try {
-    const res = await axios.delete(`${API_URL}/api/comment-likes`, {
+    const res = await axios.delete(`${API_URL}/api/comments/${data}/likes`, {
       headers: { Authorization: `${token}` },
-      data: data,
     });
     console.log(res);
     if (res.status === 200) return res;

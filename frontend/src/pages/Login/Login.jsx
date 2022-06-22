@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import FormInput from '../../components/FormInput/FormInput';
 import './Login.scss';
-import { login } from '../../api';
+import { useAPI } from '../../api';
 import useTokenStore from '../../Store';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [userData, setUserData] = useState({});
   const [isEmailError, setIsEmailError] = useState(true);
   const [isPwdError, setIsPwdError] = useState(true);
   const setToken = useTokenStore((state) => state.setToken);
+  const { post } = useAPI((state) => state);
+  let navigate = useNavigate();
 
   const handleInputChange = (eventValue, eventName) => {
-    console.log(eventValue, eventName);
     if (eventName === 'email') {
       setIsEmailError(!eventValue.match(/^[a-zA-Z0-9]+@+[a-z]+\.com$/));
     }
@@ -31,11 +33,18 @@ const Login = () => {
 
   const loginClick = async (e) => {
     e.preventDefault();
-    const result = await login(userData);
+    // data email, password
+
+    const result = await post('login', userData);
     const form = document.getElementById('loginForm');
+
     if (result.status === 200) {
       setToken(result.data.token);
       form.childNodes.forEach((input) => (input.childNodes[0].value = ''));
+      window.alert('Login success');
+      navigate('/');
+    } else {
+      window.alert('Login failed');
     }
   };
 

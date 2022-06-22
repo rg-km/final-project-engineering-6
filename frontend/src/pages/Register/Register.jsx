@@ -2,13 +2,16 @@ import React, { useState } from 'react';
 import FormInput from '../../components/FormInput/FormInput';
 import './Register.scss';
 import useTokenStore from '../../Store';
-import { register } from '../../api';
+import { useAPI } from '../../api';
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
   const [userData, setUserData] = useState({});
   const [isEmailError, setIsEmailError] = useState(true);
   const [isPwdError, setIsPwdError] = useState(true);
   const setToken = useTokenStore((state) => state.setToken);
+  const { post } = useAPI((state) => state);
+  let navigate = useNavigate();
 
   const check = (event) => {
     if (event.target.selectedIndex === 2) {
@@ -38,19 +41,15 @@ const Register = () => {
 
   const registerClick = async (e) => {
     e.preventDefault();
-    const result = await register({
+    // data name, email, password, role, institute, major, batch
+
+    const result = await post('register', {
       ...userData,
       batch: Number(userData.batch),
     });
+
     const form = document.getElementById('register');
-    form.childNodes.forEach((input, index) => {
-      if (index === 4) {
-        input.childNodes.forEach((inp) => {
-          inp.childNodes[0].value = '';
-        });
-      }
-      input.childNodes[0].value = '';
-    });
+
     if (result.status === 200) {
       setToken(result.data.token);
       form.childNodes.forEach((input, index) => {
@@ -61,6 +60,10 @@ const Register = () => {
         }
         input.childNodes[0].value = '';
       });
+      window.alert('Register success');
+      navigate('/');
+    } else {
+      window.alert('Register failed');
     }
   };
 

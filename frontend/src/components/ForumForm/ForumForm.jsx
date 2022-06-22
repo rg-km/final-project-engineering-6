@@ -1,9 +1,15 @@
 import React from 'react';
+import { useGet } from '../../config';
+import useTokenStore from '../../Store';
 import Button from '../Button/Button';
 import FormInput from '../FormInput/FormInput';
 import './ForumForm.scss';
 
 const ForumForm = ({ page }) => {
+  const token = useTokenStore((state) => state.token);
+
+  const [categories, getStatus] = useGet('category', token);
+
   const handleChange = (e) => {
     console.log(e.target.value);
   };
@@ -54,6 +60,14 @@ const ForumForm = ({ page }) => {
             <option value='' disabled>
               Choose a Category
             </option>
+            {getStatus &&
+              categories.map((category) => {
+                return (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                );
+              })}
             <option value='Mathematics'>Mathematics</option>
             <option value='Science'>Science</option>
             <option value='Psychology'>Psychology</option>
