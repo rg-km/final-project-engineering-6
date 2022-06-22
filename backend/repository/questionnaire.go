@@ -139,11 +139,14 @@ func (q *QuestionnaireRepository) ReadAllQuestionnaireByID(postID int) (Question
 		&questionnaire.TotalLike,
 		&questionnaire.TotalComment,
 	)
-	if err != nil {
+	switch err {
+	case sql.ErrNoRows:
+		return Questionnaire{}, nil
+	case nil:
+		return questionnaire, nil
+	default:
 		return Questionnaire{}, err
 	}
-
-	return questionnaire, nil
 }
 
 func (q QuestionnaireRepository) InsertQuestionnaire(questionnaire Questionnaire) error {
@@ -253,26 +256,4 @@ func (q QuestionnaireRepository) DeleteQuestionnaire(postID int) error {
 	}
 
 	return nil
-}
-
-func (q *QuestionnaireRepository) CheckQuestionnaireExist(postID int) (bool, error) {
-	sqlStmt := `
-	SELECT  
-		COUNT(*)
-	FROM posts p
-	INNER JOIN questionnaires q ON p.id = q.post_id
-	WHERE id = ?;`
-	result := q.db.QueryRow(sqlStmt, postID)
-
-	var count int
-	err := result.Scan(&count)
-	if err != nil {
-		return false, err
-	}
-
-	if count == 1 {
-		return true, nil
-	} else {
-		return false, nil
-	}
 }
