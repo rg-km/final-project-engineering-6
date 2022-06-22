@@ -87,13 +87,13 @@ func NewAPI(
 		commentRoutersWithAuth.DELETE("/:id", api.DeleteComment)
 	}
 
-	postLikeRouters := router.Group("/api/post-likes", AuthMiddleware())
+	postLikeRouters := router.Group("/api/post/:id/likes", AuthMiddleware())
 	{
 		postLikeRouters.POST("/", api.CreatePostLike)
 		postLikeRouters.DELETE("/", api.DeletePostLike)
 	}
 
-	commentLikeRouters := router.Group("/api/comment-likes", AuthMiddleware())
+	commentLikeRouters := router.Group("/api/comments/:id/likes", AuthMiddleware())
 	{
 		commentLikeRouters.POST("/", api.CreateCommentLike)
 		commentLikeRouters.DELETE("/", api.DeleteCommentLike)
