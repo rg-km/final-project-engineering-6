@@ -76,7 +76,7 @@ func NewAPI(
 		postRouter.POST("/", api.createPost)
 		postRouter.POST("/images/:id", api.uploadPostImages)
 		postRouter.PUT("/", api.updatePost)
-		postRouter.DELETE("/", api.deletePost)
+		postRouter.DELETE("/:id", api.deletePost)
 	}
 
 	router.GET("/api/comments", api.ReadAllComment)
