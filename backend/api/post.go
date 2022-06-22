@@ -25,7 +25,6 @@ const (
 )
 
 type CreatePostRequest struct {
-	AuthorID    int    `json:"author_id"`
 	CategoryID  int    `json:"category_id"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
@@ -33,15 +32,9 @@ type CreatePostRequest struct {
 
 type UpdatePostRequest struct {
 	ID          int    `json:"id"`
-	AuthorID    int    `json:"author_id"`
 	CategoryID  int    `json:"category_id"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
-}
-
-type DeletePostRequest struct {
-	ID       int `json:"id"`
-	AuthorID int `json:"author_id"`
 }
 
 type CreatePostResponse struct {
@@ -105,7 +98,12 @@ func (api *API) createPost(ctx *gin.Context) {
 		return
 	}
 
-	postID, err := api.postRepo.InsertPost(req.AuthorID, req.CategoryID, req.Title, req.Description)
+	authorID, err := api.getUserIdFromToken(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, ErrorPostResponse{Message: "Your ID cann't read"})
+	}
+
+	postID, err := api.postRepo.InsertPost(authorID, req.CategoryID, req.Title, req.Description)
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, ErrorPostResponse{Message: "Internal Server Error"})
@@ -453,6 +451,11 @@ func (api *API) updatePost(ctx *gin.Context) {
 		return
 	}
 
+	reqAuthorID, err := api.getUserIdFromToken(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, ErrorPostResponse{Message: "Your ID cann't read"})
+	}
+
 	if authorID, err := api.postRepo.FetchAuthorIDByPostID(req.ID); err != nil {
 		if errors.Is(err, repository.ErrPostNotFound) {
 			ctx.JSON(http.StatusNotFound, ErrorPostResponse{Message: "Post Not Found"})
@@ -460,7 +463,7 @@ func (api *API) updatePost(ctx *gin.Context) {
 		}
 		ctx.JSON(http.StatusInternalServerError, ErrorPostResponse{Message: "Internal Server Error"})
 		return
-	} else if authorID != req.AuthorID {
+	} else if authorID != reqAuthorID {
 		ctx.JSON(http.StatusForbidden, ErrorPostResponse{Message: "Forbidden"})
 		return
 	}
@@ -482,28 +485,30 @@ func (api *API) updatePost(ctx *gin.Context) {
 }
 
 func (api *API) deletePost(ctx *gin.Context) {
-	var (
-		req = DeletePostRequest{}
-	)
-
-	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, ErrorPostResponse{Message: "Invalid Request Body"})
+	postID, err := strconv.Atoi(ctx.Param("id"))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, ErrorPostResponse{Message: "Invalid Post ID"})
 		return
 	}
 
-	if authorID, err := api.postRepo.FetchAuthorIDByPostID(req.ID); err != nil {
+	reqAuthorID, err := api.getUserIdFromToken(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, ErrorPostResponse{Message: "Your ID cann't read"})
+	}
+
+	if authorID, err := api.postRepo.FetchAuthorIDByPostID(postID); err != nil {
 		if errors.Is(err, repository.ErrPostNotFound) {
 			ctx.JSON(http.StatusNotFound, ErrorPostResponse{Message: "Post Not Found"})
 			return
 		}
 		ctx.JSON(http.StatusInternalServerError, ErrorPostResponse{Message: "Internal Server Error"})
 		return
-	} else if authorID != req.AuthorID {
+	} else if authorID != reqAuthorID {
 		ctx.JSON(http.StatusForbidden, ErrorPostResponse{Message: "Forbidden"})
 		return
 	}
 
-	if err := api.postRepo.DeletePostByID(req.ID); err != nil {
+	if err := api.postRepo.DeletePostByID(postID); err != nil {
 		ctx.JSON(http.StatusInternalServerError, ErrorPostResponse{Message: "Internal Server Error"})
 		return
 	}
