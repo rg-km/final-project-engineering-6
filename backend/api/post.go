@@ -133,7 +133,7 @@ func (api *API) uploadPostImages(ctx *gin.Context) {
 	folderPath := "media/post"
 	err = os.MkdirAll(folderPath, os.ModePerm)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusInternalServerError, ErrorPostResponse{Message: err.Error()})
 		return
 	}
 
