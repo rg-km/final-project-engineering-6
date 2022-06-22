@@ -19,11 +19,6 @@ import (
 	"github.com/rg-km/final-project-engineering-6/service"
 )
 
-const (
-	Local_Post_Image_Path      = "localhost:8080/media/post/"
-	Production_Post_Image_Path = "https://basis.herokuapp.com/media/post/"
-)
-
 type CreatePostRequest struct {
 	CategoryID  int    `json:"category_id"`
 	Title       string `json:"title"`
@@ -135,9 +130,10 @@ func (api *API) uploadPostImages(ctx *gin.Context) {
 		return
 	}
 
-	dir, err := os.Getwd()
+	folderPath := "media/post"
+	err = os.MkdirAll(folderPath, os.ModePerm)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, ErrorPostResponse{Message: err.Error()})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -168,7 +164,7 @@ func (api *API) uploadPostImages(ctx *gin.Context) {
 
 			unixTime := time.Now().UTC().UnixNano()
 			fileName := fmt.Sprintf("%d-%d-%s", postID, unixTime, strings.ReplaceAll(file.Filename, " ", ""))
-			fileLocation := filepath.Join(dir, "media/post", fileName)
+			fileLocation := filepath.Join(folderPath, fileName)
 			targetFile, err := os.OpenFile(fileLocation, os.O_WRONLY|os.O_CREATE, 0666)
 
 			if err != nil {
@@ -183,9 +179,8 @@ func (api *API) uploadPostImages(ctx *gin.Context) {
 				return
 			}
 
-			filePath := Local_Post_Image_Path + fileName
 			mu.Lock()
-			if err := api.postRepo.InsertPostImage(postID, filePath); err != nil {
+			if err := api.postRepo.InsertPostImage(postID, fileLocation); err != nil {
 				ctx.JSON(http.StatusInternalServerError, ErrorPostResponse{Message: err.Error()})
 				return
 			}
