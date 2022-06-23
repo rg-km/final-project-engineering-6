@@ -119,6 +119,10 @@
       gap: 0.5rem;
       flex: 9;
 
+      img {
+        width: 100%;
+      }
+
       .content-info {
         color: $SubTitleText;
         font-size: 0.9rem;

@@ -30,7 +30,7 @@ const ForumForm = ({ page }) => {
     // data category_id, title, description
     e.preventDefault();
 
-    uploadData.append('images', userData.image);
+    if (userData.image) uploadData.append('images', userData.image);
 
     const data = {
       category_id: Number(userData.category),
@@ -48,7 +48,7 @@ const ForumForm = ({ page }) => {
 
     if (result.status === 200) {
       // data images
-      if (page === 'forum') {
+      if (page === 'forum' && userData.image) {
         const imageResult = await post(
           `post/images/${result.data.id}`,
           uploadData,
@@ -63,8 +63,10 @@ const ForumForm = ({ page }) => {
         }
       }
 
-      window.alert('Post Submitted');
-      navigate('/survey');
+      window.alert(
+        `${page === 'forum' ? 'Post Submitted' : 'Survey Submitted'}`
+      );
+      navigate(`${page === 'forum' ? '/forum' : '/survey'}`);
     } else {
       window.alert('Submit Failed');
     }

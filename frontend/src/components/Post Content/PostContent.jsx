@@ -6,11 +6,96 @@ import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import LinkIcon from '@mui/icons-material/Link';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import './PostContent.scss';
+import useTokenStore from '../../Store';
+import { useAPI } from '../../api';
 
 const PostContent = ({ data, page, type }) => {
   const [likeClicked, setLikeClicked] = useState(false);
+  const [totalLike, setTotalLike] = useState(
+    type === 'comment' || page === 'survey' || type === 'reply'
+      ? data.total_like
+      : data.like_count
+  );
   const [commentClicked, setCommentClicked] = useState(false);
+  const [userData, setUserData] = useState({});
+  const token = useTokenStore((state) => state.token);
+  const { post, del } = useAPI((state) => state);
 
+  const handleChange = (eventValue, eventName) => {
+    setUserData((previousValues) => {
+      return {
+        ...previousValues,
+        [eventName]: eventValue,
+      };
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    // data post_id, comment, parent_comment_id
+    const input = document.getElementsByClassName('comment-input');
+    const body = {
+      comment: userData.comment,
+    };
+    if (type === 'detail') {
+      body.post_id = data.id;
+    } else {
+      body.post_id = data.post_id;
+      body.parent_comment_id = data.id;
+    }
+    console.log(body);
+
+    const result = await post('comments', body, token);
+
+    if (result.status === 200) {
+      setUserData({});
+      input[0].value = '';
+      window.alert('Comment Submitted');
+      setCommentClicked(false);
+    } else {
+      window.alert('Submit Failed');
+    }
+  };
+
+  const clickLike = async () => {
+    if (!likeClicked) {
+      if (type === 'detail') {
+        const result = await post(`post/${data.id}/likes`, {}, token);
+
+        if (result.status === 200) {
+          window.alert('Post Liked');
+          setTotalLike(totalLike + 1);
+          setLikeClicked(true);
+        }
+      } else if (type === 'comment' || type === 'reply') {
+        const result = await post(`comments/${data.id}/likes`, {}, token);
+
+        if (result.status === 200) {
+          window.alert('Comment Liked');
+          setTotalLike(totalLike + 1);
+          setLikeClicked(true);
+        }
+      }
+    } else {
+      if (type === 'detail') {
+        const result = await del(`post/${data.id}/likes`, token);
+
+        if (result.status === 200) {
+          window.alert('Post Disliked');
+          setTotalLike(totalLike - 1);
+          setLikeClicked(false);
+        }
+      } else if (type === 'comment' || type === 'reply') {
+        const result = await del(`comments/${data.id}/likes`, token);
+
+        if (result.status === 200) {
+          window.alert('Comment Disliked');
+          setTotalLike(totalLike - 1);
+          setLikeClicked(false);
+        }
+      }
+    }
+  };
   return (
     <div className='content-container'>
       <div
@@ -30,7 +115,10 @@ const PostContent = ({ data, page, type }) => {
               </div>
               {type !== 'comment' && type !== 'reply' && (
                 <div className='user-detail'>
-                  <p>{data.author.role}</p>
+                  <p>
+                    {data.author.role[0].toUpperCase() +
+                      data.author.role.substring(1)}
+                  </p>
                   <p>{data.author.institute}</p>
                 </div>
               )}
@@ -49,8 +137,13 @@ const PostContent = ({ data, page, type }) => {
               ? data.comment
               : data.description}
           </p>
-          {/* {type ==='detail'&& } */}
-          <img src={data.images} alt='Description' />
+          {type === 'detail' && data?.images[0] && (
+            <img
+              src={`http://167.172.84.216:8080/${data.images[0].url}`}
+              alt='Description'
+            />
+          )}
+
           {page === 'survey' && type === 'detail' && (
             <>
               <div className='content-link'>
@@ -81,7 +174,10 @@ const PostContent = ({ data, page, type }) => {
             <div className='user-info'>
               <div className='user-name'>{data.author.name}</div>
               <div className='user-detail'>
-                <p>{data.author.role}</p>
+                <p>
+                  {data.author.role[0].toUpperCase() +
+                    data.author.role.substring(1)}
+                </p>
                 <p>{data.author.institute}</p>
               </div>
             </div>
@@ -97,21 +193,11 @@ const PostContent = ({ data, page, type }) => {
           )}
           <div className='like-info'>
             {likeClicked ? (
-              <FavoriteIcon
-                onClick={() => {
-                  type !== 'post' && setLikeClicked(false);
-                }}
-              />
+              <FavoriteIcon onClick={clickLike} />
             ) : (
-              <FavoriteBorderIcon
-                onClick={() => {
-                  setLikeClicked(true);
-                }}
-              />
+              <FavoriteBorderIcon onClick={clickLike} />
             )}
-            {type === 'comment' || page === 'survey' || type === 'reply'
-              ? data.total_like
-              : data.like_count}
+            {totalLike}
           </div>
           <div className='comment-info'>
             {commentClicked ? (
@@ -143,13 +229,10 @@ const PostContent = ({ data, page, type }) => {
               name='comment'
               className='comment-input'
               rows='5'
+              onChange={(e) => handleChange(e.target.value, e.target.name)}
+              value={userData.comment ? userData.comment : ''}
             ></textarea>
-            <button
-              className='comment-btn'
-              onClick={() => {
-                setCommentClicked(false);
-              }}
-            >
+            <button className='comment-btn' onClick={handleSubmit}>
               Comment
             </button>
           </div>

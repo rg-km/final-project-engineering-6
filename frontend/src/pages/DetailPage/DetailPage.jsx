@@ -40,13 +40,3 @@ const DetailPage = ({ page, type }) => {
 };
 
 export default DetailPage;
-//   author_id: 1
-// author_name: "Radit"
-// comment: "Comment 1"
-// created_at: "2022-06-11T19:33:02.3861157+07:00"
-// id: 1
-// parent_comment_id: null
-// post_id: 1
-// reply: (2) [{…}, {…}]
-// total_like: 0
-// total_reply: 2
