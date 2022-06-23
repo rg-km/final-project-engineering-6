@@ -9,19 +9,19 @@ const Button = (props) => {
   const location = useLocation();
 
   useEffect(() => {
-    if (location.pathname === "/") {
+    if (location.pathname === "/forum") {
       setShowButton(true);
-      setLink('/post-forum');
-    } else if (location.pathname === '/survey') {
+      setLink("/post-forum");
+    } else if (location.pathname === "/survey") {
       setShowButton(true);
-      setLink('/post-survey');
+      setLink("/post-survey");
     } else {
       setShowButton(false);
     }
-    if (location.pathname === '/post-forum') {
-      setLink('/');
-    } else if (location.pathname === '/post-survey') {
-      setLink('/survey');
+    if (location.pathname === "/post-forum") {
+      setLink("/");
+    } else if (location.pathname === "/post-survey") {
+      setLink("/survey");
     }
   }, [location]);
 

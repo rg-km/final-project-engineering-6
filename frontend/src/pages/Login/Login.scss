@@ -9,7 +9,7 @@
   background-color: $Light;
   position: relative;
   @include breakpoint(md) {
-    flex-direction: column;
+    flex-direction: column-reverse;
   }
   .form-login {
     width: 40%;
@@ -19,39 +19,71 @@
     align-items: center;
     display: flex;
     @include breakpoint(md) {
+      padding: 1rem;
+      align-items: flex-start;
       width: 100%;
+      height: 65vh;
     }
     .form {
       // background-color: aqua;
       width: 60%;
       margin: 0 auto;
       @include breakpoint(md) {
+        width: 90%;
+      }
+      p {
+        padding: 1rem 0;
         width: 80%;
       }
+
       form {
         width: 100%;
         button {
           @include button($Primary, $Light);
+          padding: 1rem;
         }
-      }
-      h2 {
-        transform: translateX(0);
-        padding: 1rem 0;
-        font-size: 2rem;
-      }
-
-      p {
-        padding: 1rem 0;
+        .show-pwd {
+          display: flex;
+          width: 100%;
+          align-items: center;
+          input {
+            margin-left: -12rem;
+            @include breakpoint(md) {
+              margin: 0;
+              margin-left: -10rem;
+              margin-bottom: 1rem;
+              align-items: flex-start;
+            }
+          }
+          p {
+            margin-left: -11rem;
+            font-size: 0.8rem;
+            margin-top: -1rem;
+            @include breakpoint(md) {
+              margin-top: -1;
+              margin-left: -9rem;
+            }
+          }
+        }
+        h2 {
+          transform: translateX(0);
+          padding: 1rem 0;
+          font-size: 2rem;
+        }
       }
     }
   }
   .gambar {
     width: 60%;
     height: 100vh;
-    background-image: url("./login.svg");
-    background-size: cover;
+    background-image: url("../../images/login.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-position-y: 10vh;
+    // background-color: aqua;
     @include breakpoint(md) {
-      display: none;
+      height: 30vh;
     }
   }
 }

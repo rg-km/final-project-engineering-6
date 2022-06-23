@@ -1,4 +1,4 @@
-@import '../../App.scss';
+@import "../../App.scss";
 
 .content-container {
   @include post-container();
@@ -45,6 +45,14 @@
       @include breakpoint(md) {
         align-items: flex-start;
         flex-direction: column;
+      }
+
+      .user-avatar {
+        img {
+          width: 3rem;
+          height: 3.5rem;
+          border-radius: 50%;
+        }
       }
 
       .user-info {
@@ -144,11 +152,15 @@
       right: 0;
       bottom: 0;
       gap: 1rem;
+      display: none;
 
       .like-info,
       .comment-info {
         @include section-style();
         font-weight: bold;
+        @include breakpoint(md) {
+          display: none;
+        }
 
         svg {
           font-size: 2rem;

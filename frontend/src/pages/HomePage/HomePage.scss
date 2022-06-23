@@ -1,0 +1,195 @@
+@import "../../App.scss";
+
+.home-page {
+  width: 100%;
+  background-color: $Light;
+  height: 100%;
+  position: relative;
+  z-index: 11;
+  @include breakpoint(md) {
+    // display: none;
+    // top: 40vh;
+  }
+
+  .container {
+    width: 100%;
+    background-color: $Border;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: $Light;
+    padding: 5rem;
+    background-image: url("../../images/bg-banner.svg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    @include breakpoint(md) {
+      padding: 0;
+      background-size: contain;
+      background-position: center;
+      background-position: top;
+      flex-direction: column-reverse;
+    }
+
+    .words {
+      display: flex;
+      justify-content: center;
+      .title {
+        padding: 5rem;
+        @include breakpoint(md) {
+          padding: 1rem;
+        }
+        h1 {
+          color: $TitleText;
+          font-size: 4.2rem;
+          @include breakpoint(md) {
+            font-size: 2rem;
+          }
+        }
+        p {
+          color: $SubTitleText;
+          padding: 2rem 0;
+          @include breakpoint(md) {
+            padding: 1rem 0;
+            font-size: 0.8rem;
+            line-height: 1rem;
+          }
+          font-weight: 400;
+        }
+        .btn {
+          width: 30%;
+          @include breakpoint(md) {
+            width: 50%;
+          }
+        }
+      }
+      .btn {
+        width: 50%;
+      }
+    }
+    .banner {
+      padding-top: 7rem;
+      padding-right: 4rem;
+      @include breakpoint(md) {
+        padding-top: 0;
+      }
+      img {
+        width: 40rem;
+        @include breakpoint(md) {
+          // display: none;
+          width: 20rem;
+        }
+      }
+    }
+  }
+
+  .what {
+    background-color: $Light;
+    width: 100%;
+    margin: 0 auto;
+    height: 150vh;
+    background-image: url("../../images/bg-basis.svg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    @include breakpoint(md) {
+      padding: 0;
+      background-size: contain;
+      background-position: center;
+      background-position: top;
+      flex-direction: column;
+      height: 100%;
+    }
+    .gambar {
+      img {
+        width: 30rem;
+        margin-left: 10rem;
+        @include breakpoint(md) {
+          margin-left: 0rem;
+          width: 15rem;
+        }
+      }
+    }
+
+    .explain {
+      padding-left: 20rem;
+      line-height: 2rem;
+      @include breakpoint(md) {
+        padding: 1rem;
+      }
+      h2 {
+        font-size: 2.5rem;
+        font-weight: 400;
+        line-height: 3rem;
+        padding: 1rem 0;
+        @include breakpoint(md) {
+          font-size: 2rem;
+        }
+      }
+
+      p {
+        color: $SubTitleText;
+      }
+      // background-color: aliceblue;
+    }
+  }
+
+  .fitur {
+    width: 100%;
+    padding: 0 10rem 10rem 10rem;
+    // background-color: aqua;
+    display: flex;
+    gap: 5rem;
+    justify-content: center;
+    align-items: center;
+    @include breakpoint(md) {
+      flex-direction: column;
+      padding: 10rem 10rem 10rem 10rem;
+    }
+    .card {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+      align-items: center;
+      width: 30%;
+      border: 1px solid $Border;
+      opacity: 0.5;
+      overflow: hidden;
+      @include breakpoint(md) {
+        width: 20rem;
+      }
+      &:hover {
+        box-shadow: 2px 1px 10px rgba(77, 41, 175, 0.2);
+        opacity: 1;
+      }
+      img {
+        width: 15rem;
+        @include breakpoint(md) {
+          width: 10rem;
+        }
+      }
+      h3 {
+        padding: 1rem;
+      }
+    }
+  }
+
+  .footer {
+    width: 100%;
+    min-height: 10vh;
+    background-image: url("../../images/wave.svg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    p {
+      color: $Light;
+      font-size: 1.2rem;
+      justify-content: center;
+    }
+  }
+}
