@@ -12,6 +12,8 @@ type Comment struct {
 	AuthorName      string     `json:"author_name" db:"author_name"`
 	TotalLike       int        `json:"total_like"`
 	TotalReply      int        `json:"total_reply"`
+	IsLike          bool       `json:"is_like"`
+	IsAuthor        bool       `json:"is_author"`
 	Reply           []Comment  `json:"reply"`
 }
 

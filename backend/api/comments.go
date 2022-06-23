@@ -33,7 +33,16 @@ func (api *API) ReadAllComment(c *gin.Context) {
 		return
 	}
 
-	comments, err := api.commentRepo.SelectAllCommentsByPostID(postID)
+	userID := -1
+	if c.GetHeader("Authorization") != "" {
+		userID, err = api.getUserIdFromToken(c)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+	}
+
+	comments, err := api.commentRepo.SelectAllCommentsByPostID(userID, postID)
 	if err != nil {
 		c.AbortWithStatusJSON(
 			http.StatusInternalServerError,
