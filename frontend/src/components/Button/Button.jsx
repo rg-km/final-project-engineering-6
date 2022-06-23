@@ -9,7 +9,7 @@ const Button = (props) => {
   const location = useLocation();
 
   useEffect(() => {
-    if (location.pathname === '/forum') {
+    if (location.pathname === '/forum' || location.pathname === '/') {
       setShowButton(true);
       setLink('/forum/form');
     } else if (location.pathname === '/survey') {
@@ -17,11 +17,6 @@ const Button = (props) => {
       setLink('/survey/form');
     } else {
       setShowButton(false);
-    }
-    if (location.pathname === '/forum/form') {
-      setLink('/forum');
-    } else if (location.pathname === '/survey/form') {
-      setLink('/survey');
     }
   }, [location]);
 
@@ -31,10 +26,6 @@ const Button = (props) => {
         <button className={`btn-${variant}`}>{props.children}</button>
       </Link>
     )
-  ) : variant === 'submit' ? (
-    <Link to={link}>
-      <button className={`btn-${variant}`}>{props.children}</button>
-    </Link>
   ) : (
     <button className={`btn-${variant}`}>{props.children}</button>
   );

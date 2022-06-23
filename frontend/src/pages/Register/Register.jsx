@@ -48,18 +48,8 @@ const Register = () => {
       batch: Number(userData.batch),
     });
 
-    const form = document.getElementById('register');
-
     if (result.status === 200) {
       setToken(result.data.token);
-      form.childNodes.forEach((input, index) => {
-        if (index === 4) {
-          input.childNodes.forEach((inp) => {
-            inp.childNodes[0].value = '';
-          });
-        }
-        input.childNodes[0].value = '';
-      });
       window.alert('Register success');
       navigate('/');
     } else {

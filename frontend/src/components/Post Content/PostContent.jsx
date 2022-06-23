@@ -45,10 +45,12 @@ const PostContent = ({ data, page, type }) => {
             </>
           )}
           <p className='content-description'>
-            {type === 'comment' || type !== 'reply'
+            {type === 'comment' || type === 'reply'
               ? data.comment
               : data.description}
           </p>
+          {/* {type ==='detail'&& } */}
+          <img src={data.images} alt='Description' />
           {page === 'survey' && type === 'detail' && (
             <>
               <div className='content-link'>

@@ -36,11 +36,9 @@ const Login = () => {
     // data email, password
 
     const result = await post('login', userData);
-    const form = document.getElementById('loginForm');
 
     if (result.status === 200) {
       setToken(result.data.token);
-      form.childNodes.forEach((input) => (input.childNodes[0].value = ''));
       window.alert('Login success');
       navigate('/');
     } else {

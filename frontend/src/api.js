@@ -9,19 +9,24 @@ const defaultAxios = axios.create({
   timeout: 1000,
 });
 
+const headers = (token) => {
+  return {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+};
+
 export const useAPI = create(
   devtools(() => ({
     get: async (url, token) => {
       try {
-        const res = await defaultAxios.get(url, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await defaultAxios.get(url, headers(token));
         return res;
       } catch (error) {
         return error;
       }
     },
     post: async (url, data, token) => {
+      console.log(data);
       if (!token) {
         try {
           const res = await defaultAxios.post(url, data);
@@ -31,9 +36,7 @@ export const useAPI = create(
         }
       } else {
         try {
-          const res = await defaultAxios.post(url, data, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
+          const res = await defaultAxios.post(url, data, headers(token));
           return res;
         } catch (error) {
           return error;
@@ -42,9 +45,7 @@ export const useAPI = create(
     },
     put: async (url, data, token) => {
       try {
-        const res = await defaultAxios.put(url, data, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await defaultAxios.put(url, data, headers(token));
         return res;
       } catch (error) {
         return error;
@@ -52,9 +53,7 @@ export const useAPI = create(
     },
     del: async (url, token) => {
       try {
-        const res = await defaultAxios.delete(url, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await defaultAxios.delete(url, headers(token));
         return res;
       } catch (error) {
         return error;
@@ -67,60 +66,6 @@ export const uploadAvatar = async (data, token) => {
   // data avatar
   try {
     const res = await axios.put(`${API_URL}/api/profile/avatar`, data, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    console.log(res);
-    if (res.status === 200) return res;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-};
-
-export const createPost = async (data, token) => {
-  // data category_id, title, description
-  try {
-    const res = await axios.post(`${API_URL}/api/post`, data, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    console.log(res);
-    if (res.status === 200) return res;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-};
-
-export const uploadPostImages = async (data, id, token) => {
-  // data images
-  try {
-    const res = await axios.post(`${API_URL}/api/post/images/${id}`, data, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    console.log(res);
-    if (res.status === 200) return res;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-};
-
-export const readAllPost = async (token) => {
-  try {
-    const res = await axios.get(`${API_URL}/api/post`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    console.log(res);
-    if (res.status === 200) return res;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-};
-
-export const readDetailPost = async (id, token) => {
-  try {
-    const res = await axios.get(`${API_URL}/api/post/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     console.log(res);
@@ -149,19 +94,6 @@ export const deletePost = async (id, token) => {
   try {
     const res = await axios.delete(`${API_URL}/api/post/${id}`, {
       headers: { Authorization: `${token}` },
-    });
-    console.log(res);
-    if (res.status === 200) return res;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-};
-
-export const readAllComment = async (id, token) => {
-  try {
-    const res = await axios.get(`${API_URL}/api/comments?postID=${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
     });
     console.log(res);
     if (res.status === 200) return res;
@@ -264,46 +196,6 @@ export const deleteCommentLike = async (data, token) => {
   }
 };
 
-export const readAllSurvey = async (token) => {
-  try {
-    const res = await axios.get(`${API_URL}/api/questionnaires`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    console.log(res);
-    if (res.status === 200) return res;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-};
-
-export const readDetailSurvey = async (id, token) => {
-  try {
-    const res = await axios.get(`${API_URL}/api/questionnaires/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    console.log(res);
-    if (res.status === 200) return res;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-};
-
-export const createSurvey = async (data, token) => {
-  // data author_id, category_id, title, description, link
-  try {
-    const res = await axios.post(`${API_URL}/api/questionnaires`, data, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    console.log(res);
-    if (res.status === 200) return res;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-};
-
 export const updateSurvey = async (data, token) => {
   // data id, category_id, title, description, link
   try {
@@ -348,19 +240,6 @@ export const readNotifications = async (data, token) => {
   // data notif_id
   try {
     const res = await axios.put(`${API_URL}/api/notifications/read`, data, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    console.log(res);
-    if (res.status === 200) return res;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-};
-
-export const getAllCategory = async (token) => {
-  try {
-    const res = await axios.get(`${API_URL}/api/category`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     console.log(res);
