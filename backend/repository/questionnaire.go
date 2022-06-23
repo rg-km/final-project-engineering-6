@@ -18,7 +18,7 @@ func NewQuestionnaireRepository(db *sql.DB) *QuestionnaireRepository {
 	}
 }
 
-func (q *QuestionnaireRepository) ReadAllQuestionnaires(filter, sortBy string) ([]Questionnaire, error) {
+func (q *QuestionnaireRepository) ReadAllQuestionnaires(userID int, filter, sortBy string) ([]Questionnaire, error) {
 	sqlStmt := fmt.Sprintf(
 		`
 	SELECT
@@ -38,7 +38,8 @@ func (q *QuestionnaireRepository) ReadAllQuestionnaires(filter, sortBy string) (
 		q.link,
 		q.reward,
 		(SELECT COUNT(*) FROM post_likes WHERE post_id = p.id) AS total_like,
-		(SELECT COUNT(*) FROM comments WHERE post_id = p.id) AS total_comment
+		(SELECT COUNT(*) FROM comments WHERE post_id = p.id) AS total_comment,
+		(SELECT EXISTS (SELECT 1 FROM post_likes WHERE post_id = p.id AND user_id = %d)) AS is_like
 	FROM posts p
 	LEFT JOIN users u ON p.author_id = u.id
 	LEFT JOIN user_details ud ON u.id = ud.user_id
@@ -46,6 +47,7 @@ func (q *QuestionnaireRepository) ReadAllQuestionnaires(filter, sortBy string) (
 	INNER JOIN questionnaires q ON p.id = q.post_id
 	WHERE %s
 	ORDER BY %s;`,
+		userID,
 		filter,
 		sortBy)
 
@@ -78,9 +80,14 @@ func (q *QuestionnaireRepository) ReadAllQuestionnaires(filter, sortBy string) (
 			&questionnaire.Reward,
 			&questionnaire.TotalLike,
 			&questionnaire.TotalComment,
+			&questionnaire.IsLike,
 		)
 		if err != nil {
 			return nil, err
+		}
+
+		if questionnaire.Author.Id == userID {
+			questionnaire.IsAuthor = true
 		}
 
 		questionnaires = append(questionnaires, questionnaire)
@@ -89,7 +96,7 @@ func (q *QuestionnaireRepository) ReadAllQuestionnaires(filter, sortBy string) (
 	return questionnaires, nil
 }
 
-func (q *QuestionnaireRepository) ReadAllQuestionnaireByID(postID int) (Questionnaire, error) {
+func (q *QuestionnaireRepository) ReadAllQuestionnaireByID(userID, postID int) (Questionnaire, error) {
 	sqlStmt := `
 	SELECT
 		p.id,
@@ -108,7 +115,8 @@ func (q *QuestionnaireRepository) ReadAllQuestionnaireByID(postID int) (Question
 		q.link,
 		q.reward,
 		(SELECT COUNT(*) FROM post_likes WHERE post_id = p.id) AS total_like,
-		(SELECT COUNT(*) FROM comments WHERE post_id = p.id) AS total_comment
+		(SELECT COUNT(*) FROM comments WHERE post_id = p.id) AS total_comment,
+		(SELECT EXISTS (SELECT 1 FROM post_likes WHERE post_id = p.id AND user_id = ?)) AS is_like
 	FROM posts p
 	LEFT JOIN users u ON p.author_id = u.id
 	LEFT JOIN user_details ud ON u.id = ud.user_id
@@ -116,7 +124,7 @@ func (q *QuestionnaireRepository) ReadAllQuestionnaireByID(postID int) (Question
 	INNER JOIN questionnaires q ON p.id = q.post_id
 	WHERE p.id = ?;`
 
-	row := q.db.QueryRow(sqlStmt, postID)
+	row := q.db.QueryRow(sqlStmt, userID, postID)
 
 	var questionnaire Questionnaire
 	err := row.Scan(
@@ -138,11 +146,15 @@ func (q *QuestionnaireRepository) ReadAllQuestionnaireByID(postID int) (Question
 		&questionnaire.Reward,
 		&questionnaire.TotalLike,
 		&questionnaire.TotalComment,
+		&questionnaire.IsLike,
 	)
 	switch err {
 	case sql.ErrNoRows:
 		return Questionnaire{}, nil
 	case nil:
+		if questionnaire.Author.Id == userID {
+			questionnaire.IsAuthor = true
+		}
 		return questionnaire, nil
 	default:
 		return Questionnaire{}, err

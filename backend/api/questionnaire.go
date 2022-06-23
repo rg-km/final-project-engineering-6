@@ -67,16 +67,25 @@ func (api *API) ReadAllQuestionnaires(c *gin.Context) {
 		return
 	}
 
-	if me {
-		userID, err := api.getUserIdFromToken(c)
+	userID := -1
+	if c.GetHeader("Authorization") != "" {
+		userID, err = api.getUserIdFromToken(c)
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-		filterQuery = fmt.Sprintf("%s AND author_id = %d", filterQuery, userID)
 	}
 
-	questionnaires, err := api.questionnaireRepo.ReadAllQuestionnaires(filterQuery, sortBy)
+	if me {
+		if userID != -1 {
+			filterQuery = fmt.Sprintf("%s AND author_id = %d", filterQuery, userID)
+		} else {
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "invalid token"})
+			return
+		}
+	}
+
+	questionnaires, err := api.questionnaireRepo.ReadAllQuestionnaires(userID, filterQuery, sortBy)
 	if err != nil {
 		c.AbortWithStatusJSON(
 			http.StatusInternalServerError,
@@ -101,7 +110,16 @@ func (api *API) ReadAllQuestionnaireByID(c *gin.Context) {
 		return
 	}
 
-	questionnaire, err := api.questionnaireRepo.ReadAllQuestionnaireByID(postID)
+	userID := -1
+	if c.GetHeader("Authorization") != "" {
+		userID, err = api.getUserIdFromToken(c)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+	}
+
+	questionnaire, err := api.questionnaireRepo.ReadAllQuestionnaireByID(userID, postID)
 	if err != nil {
 		c.AbortWithStatusJSON(
 			http.StatusInternalServerError,
@@ -225,7 +243,7 @@ func (api *API) UpdateQuestionnaire(c *gin.Context) {
 		return
 	}
 
-	questionnaire, err := api.questionnaireRepo.ReadAllQuestionnaireByID(updateQuestionnaireRequest.ID)
+	questionnaire, err := api.questionnaireRepo.ReadAllQuestionnaireByID(userID, updateQuestionnaireRequest.ID)
 	if err != nil {
 		c.AbortWithStatusJSON(
 			http.StatusInternalServerError,
@@ -287,7 +305,7 @@ func (api *API) DeleteQuestionnaire(c *gin.Context) {
 		return
 	}
 
-	questionnaire, err := api.questionnaireRepo.ReadAllQuestionnaireByID(postID)
+	questionnaire, err := api.questionnaireRepo.ReadAllQuestionnaireByID(userID, postID)
 	if err != nil {
 		c.AbortWithStatusJSON(
 			http.StatusInternalServerError,
