@@ -17,18 +17,19 @@ func NewCommentRepository(db *sql.DB) *CommentRepository {
 	}
 }
 
-func (c *CommentRepository) SelectAllCommentsByParentCommentID(out chan<- []Comment, errOut chan<- error, parentCommentID int) {
+func (c *CommentRepository) SelectAllCommentsByParentCommentID(out chan<- []Comment, errOut chan<- error, userID, parentCommentID int) {
 	sqlStmt := `
 	SELECT
 		c.*,
 		u.name as author_name,
-		(SELECT COUNT(*) FROM comment_likes WHERE comment_id = c.id) AS total_like
+		(SELECT COUNT(*) FROM comment_likes WHERE comment_id = c.id) AS total_like,
+		(SELECT EXISTS (SELECT 1 FROM comment_likes WHERE comment_id = c.id AND user_id = ?)) AS is_like
 	FROM comments c
 	LEFT JOIN users u ON c.author_id = u.id
 	WHERE c.comment_id = ?
 	ORDER BY c.created_at;`
 
-	rows, err := c.db.Query(sqlStmt, parentCommentID)
+	rows, err := c.db.Query(sqlStmt, userID, parentCommentID)
 	if err != nil {
 		errOut <- err
 		return
@@ -51,13 +52,14 @@ func (c *CommentRepository) SelectAllCommentsByParentCommentID(out chan<- []Comm
 			&comment.CreatedAt,
 			&comment.AuthorName,
 			&comment.TotalLike,
+			&comment.IsLike,
 		)
 		if err != nil {
 			errOut <- err
 			return
 		}
 
-		go c.SelectAllCommentsByParentCommentID(ch, errCh, comment.ID)
+		go c.SelectAllCommentsByParentCommentID(ch, errCh, userID, comment.ID)
 		err = <-errCh
 		if err != nil {
 			errOut <- err
@@ -68,6 +70,10 @@ func (c *CommentRepository) SelectAllCommentsByParentCommentID(out chan<- []Comm
 		comment.Reply = reply
 		comment.TotalReply = len(reply)
 
+		if comment.AuthorID == userID {
+			comment.IsAuthor = true
+		}
+
 		comments = append(comments, comment)
 	}
 
@@ -77,18 +83,19 @@ func (c *CommentRepository) SelectAllCommentsByParentCommentID(out chan<- []Comm
 	close(ch)
 }
 
-func (c *CommentRepository) SelectAllCommentsByPostID(postID int) ([]Comment, error) {
+func (c *CommentRepository) SelectAllCommentsByPostID(userID, postID int) ([]Comment, error) {
 	sqlStmt := `
 	SELECT
 		c.*,
 		u.name as author_name,
-		(SELECT COUNT(*) FROM comment_likes WHERE comment_id = c.id) AS total_like
+		(SELECT COUNT(*) FROM comment_likes WHERE comment_id = c.id) AS total_like,
+		(SELECT EXISTS (SELECT 1 FROM comment_likes WHERE comment_id = c.id AND user_id = ?)) AS is_like
 	FROM comments c
 	LEFT JOIN users u ON c.author_id = u.id
 	WHERE c.post_id = ? AND c.comment_id ISNULL
 	ORDER BY c.created_at;`
 
-	rows, err := c.db.Query(sqlStmt, postID)
+	rows, err := c.db.Query(sqlStmt, userID, postID)
 	if err != nil {
 		return nil, err
 	}
@@ -110,12 +117,13 @@ func (c *CommentRepository) SelectAllCommentsByPostID(postID int) ([]Comment, er
 			&comment.CreatedAt,
 			&comment.AuthorName,
 			&comment.TotalLike,
+			&comment.IsLike,
 		)
 		if err != nil {
 			return nil, err
 		}
 
-		go c.SelectAllCommentsByParentCommentID(ch, errCh, comment.ID)
+		go c.SelectAllCommentsByParentCommentID(ch, errCh, userID, comment.ID)
 		err = <-errCh
 		if err != nil {
 			return nil, err
@@ -124,6 +132,10 @@ func (c *CommentRepository) SelectAllCommentsByPostID(postID int) ([]Comment, er
 		reply := <-ch
 		comment.Reply = reply
 		comment.TotalReply = len(reply)
+
+		if comment.AuthorID == userID {
+			comment.IsAuthor = true
+		}
 
 		comments = append(comments, comment)
 	}
