@@ -34,9 +34,6 @@
     .words {
       display: flex;
       justify-content: center;
-      // @include breakpoint(md) {
-      //   margin-top: 10vh;
-      // }
       .title {
         padding: 5rem;
         @include breakpoint(md) {
@@ -46,7 +43,7 @@
           color: $TitleText;
           font-size: 4.2rem;
           @include breakpoint(md) {
-            font-size: 2.5rem;
+            font-size: 2rem;
           }
         }
         p {
@@ -54,6 +51,8 @@
           padding: 2rem 0;
           @include breakpoint(md) {
             padding: 1rem 0;
+            font-size: 0.8rem;
+            line-height: 1rem;
           }
           font-weight: 400;
         }
@@ -95,22 +94,20 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    // padding: 8rem;
     @include breakpoint(md) {
       padding: 0;
-      // display: none;
-      // margin-top: 40vh;
       background-size: contain;
       background-position: center;
       background-position: top;
       flex-direction: column;
       height: 100%;
-      // background-color: aqua;
     }
     .gambar {
       img {
         width: 30rem;
+        margin-left: 10rem;
         @include breakpoint(md) {
+          margin-left: 0rem;
           width: 15rem;
         }
       }

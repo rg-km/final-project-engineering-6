@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import FormInput from "../../components/FormInput/FormInput";
-import Button from "../../components/Button/Button";
 import "./Login.scss";
 
 const Login = () => {
@@ -57,9 +56,6 @@ const Login = () => {
               <p>Show Password</p>
             </div>
             <div className="button-container">
-              {/* <Button variant={"login"} type="submit" disabled={isNameError}>
-                Login
-              </Button> */}
               <button type="submit" className="submit-btn" disabled={isNameError || isPwdError}>
                 login
               </button>

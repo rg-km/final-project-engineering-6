@@ -152,11 +152,15 @@
       right: 0;
       bottom: 0;
       gap: 1rem;
+      display: none;
 
       .like-info,
       .comment-info {
         @include section-style();
         font-weight: bold;
+        @include breakpoint(md) {
+          display: none;
+        }
 
         svg {
           font-size: 2rem;

@@ -1,12 +1,15 @@
 import React from "react";
 import "./Sidebar.scss";
 import { MenuSidebar } from "./MenuSidebar";
+import { Link } from "react-router-dom";
 import Logo from "../../images/logo.svg";
 
 const Sidebar = ({ Sidebar }) => {
   return (
     <aside className={Sidebar ? "sidebar sidebar-open" : "sidebar"}>
-      <img src={Logo} alt="" />
+      <Link to="/">
+        <img src={Logo} alt="" />
+      </Link>
       <ul className="SidebarList">
         {MenuSidebar.map((item, index) => {
           return (
