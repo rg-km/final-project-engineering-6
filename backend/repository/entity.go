@@ -38,6 +38,8 @@ type Questionnaire struct {
 	Reward       string     `json:"reward"`
 	TotalLike    int        `json:"total_like"`
 	TotalComment int        `json:"total_comment"`
+	IsLike       bool       `json:"is_like"`
+	IsAuthor     bool       `json:"is_author"`
 }
 
 type Notification struct {
