@@ -44,6 +44,7 @@ type DetailPostResponse struct {
 
 type PostResponse struct {
 	ID           int                `json:"id"`
+	IsAuthor     bool               `json:"is_author"`
 	Author       AuthorPostResponse `json:"author"`
 	CategoryID   int                `json:"category_id"`
 	Title        string             `json:"title"`
@@ -194,6 +195,8 @@ func (api *API) uploadPostImages(ctx *gin.Context) {
 }
 
 func (api *API) readPosts(ctx *gin.Context) {
+	authorID := api.getUserIDAvoidPanic(ctx)
+
 	offset, err := strconv.Atoi(ctx.DefaultQuery("offset", "0"))
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, ErrorPostResponse{Message: "Invalid Offset"})
@@ -296,7 +299,8 @@ func (api *API) readPosts(ctx *gin.Context) {
 			}
 
 			postsDetail[post.ID] = PostResponse{
-				ID: post.ID,
+				ID:       post.ID,
+				IsAuthor: authorID == post.AuthorID,
 				Author: AuthorPostResponse{
 					ID:           post.AuthorID,
 					Name:         post.AuthorName,
@@ -348,6 +352,8 @@ func (api *API) readPost(ctx *gin.Context) {
 		postID int
 		err    error
 	)
+
+	authorID := api.getUserIDAvoidPanic(ctx)
 
 	if postID, err = strconv.Atoi(ctx.Param("id")); err != nil {
 		ctx.JSON(http.StatusBadRequest, ErrorPostResponse{Message: "Invalid Post ID"})
@@ -415,7 +421,8 @@ func (api *API) readPost(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, DetailPostResponse{
 		PostResponse: PostResponse{
-			ID: posts[0].ID,
+			ID:       posts[0].ID,
+			IsAuthor: posts[0].AuthorID == authorID,
 			Author: AuthorPostResponse{
 				ID:           posts[0].AuthorID,
 				Name:         posts[0].AuthorName,
@@ -509,4 +516,15 @@ func (api *API) deletePost(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, SuccessPostResponse{Message: "Post Deleted"})
+}
+
+func (api *API) getUserIDAvoidPanic(ctx *gin.Context) (authorID int) {
+	defer func() {
+		if err := recover(); err != nil {
+			log.Println("recover from panic")
+		}
+	}()
+
+	authorID, _ = api.getUserIdFromToken(ctx)
+	return
 }
