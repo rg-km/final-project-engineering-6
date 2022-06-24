@@ -84,8 +84,8 @@ const Login = () => {
               />
             </div>
             <div className='show-pwd'>
-              <input type='checkbox' className='check-pwd' onClick={showPwd} />
-              Show password
+              <input type='checkbox' className='' onClick={showPwd} />
+              <p>Show Password</p>
             </div>
             <div className='button-container'>
               <button

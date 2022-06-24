@@ -1,7 +1,7 @@
 @import "../../App.scss";
 
 .user {
-  @include page();
+  // @include page();
   position: relative;
 
   @include breakpoint(md) {

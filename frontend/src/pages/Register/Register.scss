@@ -58,8 +58,7 @@
   .gambar {
     width: 60%;
     height: 100vh;
-    background-image: url('./register.svg');
-    background-size: cover;
+    background-position-y: 9vh;
     @include breakpoint(md) {
       display: none;
     }

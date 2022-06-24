@@ -2,13 +2,16 @@ import React from 'react';
 import './Sidebar.scss';
 import { MenuSidebar } from './MenuSidebar';
 import { Link, useLocation } from 'react-router-dom';
+import Logo from '../../images/logo.svg';
 
 const Sidebar = ({ Sidebar }) => {
   const location = useLocation();
 
   return (
     <aside className={Sidebar ? 'sidebar sidebar-open' : 'sidebar'}>
-      <h3 className='judul'>BASIS__</h3>
+      <Link to='/'>
+        <img src={Logo} alt='' />
+      </Link>
       <ul className='SidebarList'>
         {MenuSidebar.map((item, index) => {
           return (

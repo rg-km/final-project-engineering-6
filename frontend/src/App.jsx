@@ -13,6 +13,7 @@ import DetailPage from './pages/DetailPage/DetailPage';
 import ProfilePage from './pages/ProfilePage/ProfilePage';
 import NotificationsPage from './pages/NotificationsPage/NotificationsPage';
 import useTokenStore from './Store';
+import HomePage from './pages/HomePage/HomePage';
 
 function App() {
   const [sidebar, setSidebar] = useState(false);
@@ -34,11 +35,7 @@ function App() {
         {token && <Button variant={'add-post'}>+</Button>}
 
         <Routes>
-          <Route
-            path='/'
-            default
-            element={<PostPage page={'forum'} type={'post'} />}
-          />
+          <Route path='/' default element={<HomePage />} />
           <Route path='register' element={<Register />} />
           <Route path='login' element={<Login />} />
           <Route path='forum'>

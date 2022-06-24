@@ -8,6 +8,7 @@ import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import './PostContent.scss';
 import useTokenStore from '../../Store';
 import { useAPI } from '../../api';
+import Photo from '../../images/img-profile.png';
 
 const PostContent = ({ data, page, type }) => {
   const [likeClicked, setLikeClicked] = useState(false);
@@ -96,6 +97,12 @@ const PostContent = ({ data, page, type }) => {
       }
     }
   };
+  const imgStyle = {
+    width: '4rem',
+    height: '4.3rem',
+    borderRadius: '50%',
+  };
+
   return (
     <div className='content-container'>
       <div
@@ -105,7 +112,7 @@ const PostContent = ({ data, page, type }) => {
         {type !== 'post' && (
           <div className='user-section'>
             <div className='user-avatar'>
-              <img src='' alt='user' />
+              <img src={Photo} alt='user' width={'50rem'} style={imgStyle} />
             </div>
             <div className='user-info'>
               <div className='user-name'>
@@ -169,7 +176,7 @@ const PostContent = ({ data, page, type }) => {
         {type === 'post' && (
           <div className='user-section'>
             <div className='user-avatar'>
-              <img src='' alt='user' />
+              <img src={Photo} alt='user' />
             </div>
             <div className='user-info'>
               <div className='user-name'>{data.author.name}</div>

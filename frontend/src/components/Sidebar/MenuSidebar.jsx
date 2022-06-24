@@ -4,7 +4,7 @@ import PollIcon from '@mui/icons-material/Poll';
 import EventIcon from '@mui/icons-material/Event';
 
 export const MenuSidebar = [
-  { title: 'Home', icon: <HomeIcon />, link: '/forum' },
+  { title: 'Forum', icon: <HomeIcon />, link: '/forum' },
 
   {
     title: 'Survey',

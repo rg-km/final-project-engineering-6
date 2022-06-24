@@ -8,6 +8,8 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import useTokenStore from '../../Store';
 
+import Logo from '../../images/logo.svg';
+
 const Navbar = ({ openSidebar }) => {
   const token = useTokenStore((state) => state.token);
 
@@ -19,7 +21,9 @@ const Navbar = ({ openSidebar }) => {
             <MenuIcon />
           </div>
           <div className='logo'>
-            <Link to='/forum'>BASIS___</Link>
+            <Link to='/'>
+              <img src={Logo} alt='' />
+            </Link>
           </div>
           {token ? (
             <div className='link'>
