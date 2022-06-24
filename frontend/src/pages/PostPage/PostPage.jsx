@@ -4,8 +4,8 @@ import ForumForm from '../../components/ForumForm/ForumForm';
 import PostCard from '../../components/PostCard/PostCard';
 import SearchIcon from '@mui/icons-material/Search';
 import './PostPage.scss';
-import { useGet } from '../../config';
-import useTokenStore from '../../Store';
+import { useGet } from '../../config/config';
+import useTokenStore from '../../config/Store';
 
 const PostPage = ({ page, type }) => {
   const token = useTokenStore((state) => state.token);

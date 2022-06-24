@@ -6,7 +6,7 @@ import Button from '../Button/Button';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import useTokenStore from '../../Store';
+import useTokenStore from '../../config/Store';
 
 import Logo from '../../images/logo.svg';
 

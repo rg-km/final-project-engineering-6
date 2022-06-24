@@ -6,8 +6,8 @@ import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import LinkIcon from '@mui/icons-material/Link';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import './PostContent.scss';
-import useTokenStore from '../../Store';
-import { useAPI } from '../../api';
+import useTokenStore from '../../config/Store';
+import { useAPI } from '../../config/api';
 import Photo from '../../images/img-profile.png';
 
 const PostContent = ({ data, page, type }) => {

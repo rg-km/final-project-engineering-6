@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import FormInput from '../../components/FormInput/FormInput';
 import './Login.scss';
-import { useAPI } from '../../api';
-import useTokenStore from '../../Store';
+import { useAPI } from '../../config/api';
+import useTokenStore from '../../config/Store';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {

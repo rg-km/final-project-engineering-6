@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import FormInput from '../../components/FormInput/FormInput';
 import './Register.scss';
-import useTokenStore from '../../Store';
-import { useAPI } from '../../api';
+import useTokenStore from '../../config/Store';
+import { useAPI } from '../../config/api';
 import { useNavigate } from 'react-router-dom';
 
 const Register = () => {

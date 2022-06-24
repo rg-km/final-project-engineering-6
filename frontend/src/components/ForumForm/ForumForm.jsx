@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAPI } from '../../api';
-import { useGet } from '../../config';
-import useTokenStore from '../../Store';
+import { useAPI } from '../../config/api';
+import { useGet } from '../../config/config';
+import useTokenStore from '../../config/Store';
 import Button from '../Button/Button';
 import FormInput from '../FormInput/FormInput';
 import './ForumForm.scss';

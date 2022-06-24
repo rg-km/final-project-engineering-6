@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import useTokenStore from '../../Store';
+import useTokenStore from '../../config/Store';
 import PostContent from '../Post Content/PostContent';
 import './PostCard.scss';
 
