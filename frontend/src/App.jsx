@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./App.scss";
 import { BrowserRouter } from "react-router-dom";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar/Navbar";
 import Sidebar from "./components/Sidebar/Sidebar";
 import Backdrop from "./components/Sidebar/Backdrop";
@@ -13,12 +13,21 @@ import DetailPage from "./pages/DetailPage/DetailPage";
 import ProfilePage from "./pages/ProfilePage/ProfilePage";
 import NotificationsPage from "./pages/NotificationsPage/NotificationsPage";
 import HomePage from "./pages/HomePage/HomePage";
+import PageNotFound from "./pages/PageNotFound/PageNotFound";
 
 function App() {
   const [sidebar, setSidebar] = useState(false);
   const toogleSidebar = () => {
     setSidebar((prevState) => !prevState);
   };
+
+  // const ProtectedRoute = ({ children }) => {
+  //   const { token } = useAuth();
+  //   if (!token) {
+  //     return <Navigate to="/" />;
+  //   }
+  //   return children;
+  // };
 
   return (
     <div className="App">
@@ -44,6 +53,7 @@ function App() {
           {/* <Route path="/profile" element={<PostPage page={"forum"} type={"post"} />} /> */}
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/notifications" element={<NotificationsPage />} />
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
       </BrowserRouter>
     </div>

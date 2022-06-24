@@ -27,7 +27,7 @@ const PostContent = ({ page, type }) => {
               <img src={Photo} alt="user" width={"50rem"} style={imgStyle} />
             </div>
             <div className="user-info">
-              <div className="user-name">Name</div>
+              <div className="user-name">Carissa Xaviera Ranjana</div>
               <div className="user-detail">
                 <p>Tipe User</p>
                 <p>Universitas</p>
@@ -44,9 +44,9 @@ const PostContent = ({ page, type }) => {
           )}
           <p className="content-description">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi quos est harum modi enim corporis alias error tempora perspiciatis quaerat. Harum sequi modi at quod obcaecati veritatis. Illo, obcaecati tempore, voluptate consectetur non
-            veritatis deserunt ipsa dolore praesentium vel maiores quod, nostrum cumque officiis? Odio cum voluptas distinctio quibusdam delectus fugiat, perferendis earum, assumenda ab quasi omnis velit quia cumque, qui nobis obcaecati! Ut voluptate
-            animi officia minima numquam ducimus facere totam ullam hic aperiam voluptatibus, sed, nostrum quasi debitis mollitia dolorum tenetur soluta iste earum. Officia delectus itaque ipsam, odio ratione animi incidunt est voluptate voluptatum
-            natus mollitia tempore.
+            veritatis deserunt ipsa dolore praesentium vel maiores quod, nostrum cumque officiis? Odio cum voluptas distinctio quibusdam delectus fugiat, perferendis earum, assumenda ab quasi omnis velit quia cumque, qui nobis obcaecati! Ut
+            voluptate. animi officia minima numquam ducimus facere totam ullam hic aperiam voluptatibus, sed, nostrum quasi debitis mollitia dolorum tenetur soluta iste earum. Officia delectus itaque ipsam, odio ratione animi incidunt est voluptate
+            voluptatum natus mollitia tempore.
           </p>
           {page === "survey" && type === "detail" && (
             <>
@@ -71,10 +71,10 @@ const PostContent = ({ page, type }) => {
               <img src={Photo} alt="user" />
             </div>
             <div className="user-info">
-              <div className="user-name">Name</div>
+              <div className="user-name">Carissa Xaviera Ranjana</div>
               <div className="user-detail">
-                <p>Tipe User</p>
-                <p>Universitas</p>
+                <p>Mahasiswa</p>
+                <p>Universitas Bunga Indonesia</p>
               </div>
             </div>
           </div>

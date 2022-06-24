@@ -2,6 +2,8 @@
 
 .content-container {
   @include post-container();
+  @include breakpoint(md) {
+  }
 
   #top-section.post-content {
     display: flex;
@@ -44,7 +46,7 @@
 
       @include breakpoint(md) {
         align-items: flex-start;
-        flex-direction: column;
+        flex-direction: row;
       }
 
       .user-avatar {
@@ -59,10 +61,17 @@
         display: flex;
         flex-direction: column;
         gap: 0.3rem;
+        .user-name {
+          color: $TitleText;
+        }
 
         .user-detail {
           display: flex;
-          gap: 0.5rem;
+          // gap: 0.5rem;
+          flex-direction: column;
+          @include breakpoint(md) {
+            gap: 0;
+          }
         }
       }
     }
@@ -103,13 +112,16 @@
       font-size: 0.9rem;
       flex: 1;
       align-items: flex-start;
+      @include breakpoint(md) {
+        flex-direction: row;
+        align-items: center;
+      }
 
       .user-info {
         display: flex;
         flex-direction: column;
         text-align: left;
         gap: 0.3rem;
-
         .user-detail {
           color: $SubTitleText;
         }
@@ -152,14 +164,13 @@
       right: 0;
       bottom: 0;
       gap: 1rem;
-      display: none;
+      // display: none;
 
       .like-info,
       .comment-info {
         @include section-style();
         font-weight: bold;
         @include breakpoint(md) {
-          display: none;
         }
 
         svg {
@@ -193,7 +204,7 @@
       flex: 1;
 
       @include breakpoint(md) {
-        display: none;
+        // display: none;
       }
     }
 

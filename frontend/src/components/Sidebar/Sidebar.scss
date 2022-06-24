@@ -8,12 +8,10 @@
   height: 90vh;
   border-right: 1px solid $Border;
   img {
-    padding: 2rem;
-    // display: none;
-    text-align: center;
-    line-height: 5rem;
+    padding: 1.2rem;
     display: none;
     @include breakpoint(md) {
+      width: 10rem;
       display: block;
     }
   }
