@@ -20,6 +20,7 @@ export const useAPI = create(
     get: async (url, token) => {
       try {
         const res = await defaultAxios.get(url, headers(token));
+        // console.log(res);
         return res;
       } catch (error) {
         return error;
@@ -47,6 +48,14 @@ export const useAPI = create(
     put: async (url, data, token) => {
       try {
         const res = await defaultAxios.put(url, data, headers(token));
+        return res;
+      } catch (error) {
+        return error;
+      }
+    },
+    patch: async (url, data, token) => {
+      try {
+        const res = await defaultAxios.patch(url, data, headers(token));
         return res;
       } catch (error) {
         return error;
@@ -149,86 +158,6 @@ export const deleteSurvey = async (id, token) => {
   try {
     const res = await axios.delete(`${API_URL}/api/questionnaires/${id}`, {
       headers: { Authorization: `${token}` },
-    });
-    console.log(res);
-    if (res.status === 200) return res;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-};
-
-export const getNotifications = async (token) => {
-  try {
-    const res = await axios.get(`${API_URL}/api/notifications`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    console.log(res);
-    if (res.status === 200) return res;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-};
-
-export const readNotifications = async (data, token) => {
-  // data notif_id
-  try {
-    const res = await axios.put(`${API_URL}/api/notifications/read`, data, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    console.log(res);
-    if (res.status === 200) return res;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-};
-
-export const getProfile = async (token) => {
-  try {
-    const res = await axios.get(`${API_URL}/api/profile`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    console.log(res);
-    if (res.status === 200) return res;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-};
-
-export const updateProfile = async (data, token) => {
-  // data name, email
-  try {
-    const res = await axios.put(`${API_URL}/api/profile`, data, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    console.log(res);
-    if (res.status === 200) return res;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-};
-
-export const getPostByMe = async (token) => {
-  try {
-    const res = await axios.get(`${API_URL}/api/post?me=true`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    console.log(res);
-    if (res.status === 200) return res;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-};
-
-export const getSurveyByMe = async (token) => {
-  try {
-    const res = await axios.get(`${API_URL}/api/questionnaires?me=true`, {
-      headers: { Authorization: `Bearer ${token}` },
     });
     console.log(res);
     if (res.status === 200) return res;

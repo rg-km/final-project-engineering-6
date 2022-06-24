@@ -15,7 +15,7 @@ const DetailPage = ({ page, type }) => {
       : page === 'survey' && `questionnaires/${id}`,
     token
   );
-  const [comments, commentStatus] = useGet(`comments?postID=${id}`);
+  const [comments, commentStatus] = useGet(`comments?postID=${id}`, token);
 
   return (
     <div className='detail-page'>

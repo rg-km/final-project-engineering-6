@@ -8,7 +8,7 @@ import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import './PostContent.scss';
 import useTokenStore from '../../config/Store';
 import { useAPI } from '../../config/api';
-import Photo from '../../images/img-profile.png';
+import Photo from '../../images/img-profile.jpg';
 
 const PostContent = ({ data, page, type }) => {
   const [likeClicked, setLikeClicked] = useState(false);
@@ -112,7 +112,16 @@ const PostContent = ({ data, page, type }) => {
         {type !== 'post' && (
           <div className='user-section'>
             <div className='user-avatar'>
-              <img src={Photo} alt='user' width={'50rem'} style={imgStyle} />
+              <img
+                src={
+                  data.profile_image
+                    ? `http://167.172.84.216:8080/${data.profile_image}`
+                    : Photo
+                }
+                alt='user'
+                width={'50rem'}
+                style={imgStyle}
+              />
             </div>
             <div className='user-info'>
               <div className='user-name'>
@@ -144,7 +153,7 @@ const PostContent = ({ data, page, type }) => {
               ? data.comment
               : data.description}
           </p>
-          {type === 'detail' && data?.images[0] && (
+          {type === 'detail' && page === 'forum' && data.images[0] && (
             <img
               src={`http://167.172.84.216:8080/${data.images[0].url}`}
               alt='Description'
@@ -176,7 +185,14 @@ const PostContent = ({ data, page, type }) => {
         {type === 'post' && (
           <div className='user-section'>
             <div className='user-avatar'>
-              <img src={Photo} alt='user' />
+              <img
+                src={
+                  data.profile_image
+                    ? `http://167.172.84.216:8080/${data.profile_image}`
+                    : Photo
+                }
+                alt='user'
+              />
             </div>
             <div className='user-info'>
               <div className='user-name'>{data.author.name}</div>
@@ -192,7 +208,7 @@ const PostContent = ({ data, page, type }) => {
         )}
 
         <div className='activity-section'>
-          {data.reward && (
+          {data.reward && type === 'post' && (
             <p className='reward-info'>
               <EmojiEventsIcon />
               {data.reward}

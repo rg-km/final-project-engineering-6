@@ -1,4 +1,4 @@
-@import "../../App.scss";
+@import '../../App.scss';
 
 .content-container {
   @include post-container();
@@ -161,15 +161,11 @@
       right: 0;
       bottom: 0;
       gap: 1rem;
-      display: none;
 
       .like-info,
       .comment-info {
         @include section-style();
         font-weight: bold;
-        @include breakpoint(md) {
-          display: none;
-        }
 
         svg {
           font-size: 2rem;
@@ -200,10 +196,6 @@
 
     .flex-1 {
       flex: 1;
-
-      @include breakpoint(md) {
-        display: none;
-      }
     }
 
     .flex-9 {

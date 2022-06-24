@@ -6,7 +6,6 @@ import './PostCard.scss';
 
 const PostCard = ({ data, page, type }) => {
   const token = useTokenStore((state) => state.token);
-  const replies = data.reply;
 
   return type === 'post' ? (
     token ? (
@@ -34,7 +33,7 @@ const PostCard = ({ data, page, type }) => {
       <PostContent data={data} page={page} type={type} />
       <div className='reply'>
         {type === 'comment' &&
-          replies.map((reply) => {
+          data.reply.map((reply) => {
             return (
               <PostContent
                 key={reply.id}
@@ -50,13 +49,3 @@ const PostCard = ({ data, page, type }) => {
 };
 
 export default PostCard;
-// author_id: 1
-// author_name: "Radit"
-// comment: "Comment 2"
-// created_at: "2022-06-11T19:33:02.3861157+07:00"
-// id: 2
-// parent_comment_id: 1
-// post_id: 1
-// reply: []
-// total_like: 0
-// total_reply: 0

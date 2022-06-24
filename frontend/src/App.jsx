@@ -12,7 +12,7 @@ import PostPage from './pages/PostPage/PostPage';
 import DetailPage from './pages/DetailPage/DetailPage';
 import ProfilePage from './pages/ProfilePage/ProfilePage';
 import NotificationsPage from './pages/NotificationsPage/NotificationsPage';
-import useTokenStore from './Store';
+import useTokenStore from './config/Store';
 import HomePage from './pages/HomePage/HomePage';
 
 function App() {

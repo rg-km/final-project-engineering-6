@@ -1,4 +1,4 @@
-@import "../../App.scss";
+@import '../../App.scss';
 
 .profile-page {
   position: relative;
@@ -24,7 +24,6 @@
     }
     p {
       color: $SubTitleText;
-      margin-bottom: 2rem;
     }
   }
   .profile {

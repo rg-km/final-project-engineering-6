@@ -143,7 +143,6 @@ const Register = () => {
             <div className='button-container'>
               <button
                 className='btn'
-                variant={'login'}
                 disabled={isEmailError || isPwdError}
                 onClick={registerClick}
               >
