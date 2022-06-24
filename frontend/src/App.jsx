@@ -28,18 +28,16 @@ function App() {
   //   }
   //   return children;
   // };
-
   return (
     <div className="App">
       <BrowserRouter>
+        {/* <Alerts severity="success" message="This is a warning aler" /> */}
         <Navbar openSidebar={toogleSidebar} />
         <div style={{ display: "flex" }}>
           <Backdrop Sidebar={sidebar} closeSidebar={toogleSidebar} />
           <Sidebar Sidebar={sidebar} />
         </div>
-
         <Button variant={"add-post"}>+</Button>
-
         <Routes>
           <Route path="/" default element={<HomePage />} />
           <Route path="/forum" default element={<PostPage page={"forum"} type={"post"} />} />
