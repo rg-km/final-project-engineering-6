@@ -114,10 +114,13 @@
     }
 
     .explain {
-      padding-left: 20rem;
+      padding: 10rem;
       line-height: 2rem;
+      text-align: justify;
+      // background-color: aqua;
       @include breakpoint(md) {
         padding: 1rem;
+        line-height: 1.5rem;
       }
       h2 {
         font-size: 2.5rem;

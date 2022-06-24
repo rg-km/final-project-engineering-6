@@ -75,7 +75,7 @@ const ProfilePage = () => {
   return (
     <div className="profile-page">
       <div className="post-user">
-        <p>My Post</p>
+        <p className="profile-page-post">My Post</p>
         <Tabs>
           <TabPane name="Post" key="1">
             <div className="post">

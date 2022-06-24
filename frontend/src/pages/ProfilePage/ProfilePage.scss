@@ -10,8 +10,8 @@
     justify-content: center;
     width: 100%;
     margin: 10vh 0;
-    margin-top: -6vh;
-    gap: 3rem;
+    margin-top: 0;
+    // gap: 3rem;
   }
 
   .post-user {
@@ -22,9 +22,10 @@
     @include breakpoint(md) {
       width: 100%;
     }
-    p {
+    .profile-page-post {
+      // @include card-style();
       color: $SubTitleText;
-      margin-bottom: 2rem;
+      margin-bottom: 1.6rem;
     }
   }
   .profile {
