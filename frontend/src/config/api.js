@@ -20,15 +20,12 @@ export const useAPI = create(
     get: async (url, token) => {
       try {
         const res = await defaultAxios.get(url, headers(token));
-        // console.log(res);
         return res;
       } catch (error) {
         return error;
       }
     },
     post: async (url, data, token) => {
-      console.log(data);
-
       if (!token) {
         try {
           const res = await defaultAxios.post(url, data);
@@ -46,7 +43,6 @@ export const useAPI = create(
       }
     },
     put: async (url, data, token) => {
-      console.log(data);
       try {
         const res = await defaultAxios.put(url, data, headers(token));
         return res;
@@ -87,19 +83,5 @@ export const uploadAvatar = async (data, token) => {
   }
 };
 
-export const updateComment = async (data, token) => {
-  // data comment_id, comment
-  try {
-    const res = await axios.put(`${API_URL}/api/comments`, data, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    console.log(res);
-    if (res.status === 200) return res;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-};
-
 // yang belum
-// terapin alert, post foto, post avatar, update comment, clear search, created_at, is_like post
+// terapin post foto, post avatar, is_like post, post not found

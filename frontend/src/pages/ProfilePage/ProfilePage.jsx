@@ -9,8 +9,6 @@ import Btn from '../../components/Button/Button';
 import Tabs from '../../components/Tabs/Tabs';
 import TabPane from '../../components/Tabs/TabPane';
 
-import { Link } from 'react-router-dom';
-
 import PropTypes from 'prop-types';
 // import Button from "@mui/material/Button";
 import { styled } from '@mui/material/styles';
@@ -21,7 +19,7 @@ import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { useGet } from '../../config/config';
-import useTokenStore from '../../config/Store';
+import useTokenStore, { useAlertStore } from '../../config/Store';
 import { useAPI } from '../../config/api';
 // import Typography from "@mui/material/Typography";
 
@@ -73,6 +71,9 @@ const ProfilePage = () => {
   const [open, setOpen] = React.useState(false);
   const { put, patch } = useAPI((state) => state);
   const uploadData = new FormData();
+  const setShow = useAlertStore((state) => state.setShow);
+  const setSucceed = useAlertStore((state) => state.setSucceed);
+  const setMessage = useAlertStore((state) => state.setMessage);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -110,11 +111,14 @@ const ProfilePage = () => {
     if (userData.image) {
       const imageResult = await put(`profile/avatar`, uploadData, token);
 
+      setShow(true);
       if (imageResult.status === 200) {
-        window.alert('Profile Updated 1');
+        setMessage('Profile updated, please refresh');
+        setSucceed(true);
         setOpen(false);
       } else {
-        window.alert('Update Failed 1');
+        setMessage('Error in updating profile');
+        setSucceed(false);
         return;
       }
     }
@@ -166,9 +170,9 @@ const ProfilePage = () => {
   }, [profileResult, open]);
 
   return (
-    <div className="profile-page">
-      <div className="post-user">
-        <p className="profile-page-post">My Post</p>
+    <div className='profile-page'>
+      <div className='post-user'>
+        <p className='profile-page-post'>My Post</p>
         <Tabs>
           <TabPane name='Post' key='1'>
             <div className='post'>
@@ -200,9 +204,6 @@ const ProfilePage = () => {
                 );
               })}
           </TabPane>
-          <TabPane name='Event' key='3'>
-            You've never done a post event
-          </TabPane>
         </Tabs>
       </div>
       <div className='profile'>
@@ -227,8 +228,9 @@ const ProfilePage = () => {
               </p>
               <hr />
               <p className='institute'>
-                {profileResult.institute} - {profileResult.major} -{' '}
-                {profileResult.batch}
+                {profileResult.institute}
+                {profileResult.major && ` - ${profileResult.major}`}
+                {profileResult.batch && ` - ${profileResult.batch}`}
               </p>
               <hr />
               <p className='email'>{profileResult.email}</p>
@@ -298,25 +300,8 @@ const ProfilePage = () => {
                   name={'email'}
                   value={userData.email ? userData.email : ''}
                 />
-                {/* <FormInput
-                  type={'password'}
-                  placeholder={'Old Password'}
-                  onChange={handleChange}
-                  name={'password'}
-                  value={userData.password ? userData.password : ''}
-                />
-                <FormInput
-                  type={'password'}
-                  placeholder={'New Password'}
-                  onChange={handleChange}
-                  name={'password'}
-                  value={userData.password ? userData.password : ''}
-                /> */}
               </DialogContent>
               <DialogActions>
-                {/* <Button autoFocus onClick={handleClose} variant="login">
-                  Save changes
-                </Button> */}
                 <div style={{ width: '100%' }} onClick={handleClick}>
                   <Btn variant='login'>Save Changes</Btn>
                 </div>

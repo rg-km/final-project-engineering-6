@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAPI } from '../../config/api';
 import { useGet } from '../../config/config';
-import useTokenStore from '../../config/Store';
+import useTokenStore, { useAlertStore } from '../../config/Store';
 import Button from '../Button/Button';
 import FormInput from '../FormInput/FormInput';
 import './ForumForm.scss';
@@ -11,6 +11,9 @@ const ForumForm = ({ page }) => {
   const [tab, setTab] = useState(false);
   const token = useTokenStore((state) => state.token);
   const { post, put } = useAPI((state) => state);
+  const setShow = useAlertStore((state) => state.setShow);
+  const setSucceed = useAlertStore((state) => state.setSucceed);
+  const setMessage = useAlertStore((state) => state.setMessage);
   const uploadData = new FormData();
   let navigate = useNavigate();
   const location = useLocation();
@@ -47,6 +50,7 @@ const ForumForm = ({ page }) => {
     // data category_id, title, description
     e.preventDefault();
 
+    if (userData === {}) return;
     if (userData.image) uploadData.append('images', userData.image);
 
     const data = {
@@ -63,6 +67,7 @@ const ForumForm = ({ page }) => {
       token
     );
 
+    setShow(true);
     if (result.status === 200) {
       // data images
       if (page === 'forum' && userData.image) {
@@ -73,19 +78,20 @@ const ForumForm = ({ page }) => {
         );
 
         if (imageResult.status === 200) {
-          window.alert('Post Submitted');
+          setSucceed(true);
           navigate('/forum');
         } else {
-          window.alert('Submit Failed 1');
+          setSucceed(false);
+          return;
         }
       }
 
-      window.alert(
-        `${page === 'forum' ? 'Post Submitted' : 'Survey Submitted'}`
-      );
+      setSucceed(true);
+      setMessage(`${page === 'forum' ? 'Forum' : 'Survey'} posted`);
       navigate(`${page === 'forum' ? '/forum' : '/survey'}`);
     } else {
-      window.alert('Submit Failed');
+      setSucceed(false);
+      setMessage(`Error in posting ${page === 'forum' ? 'forum' : 'survey'}`);
     }
   };
 
@@ -93,6 +99,7 @@ const ForumForm = ({ page }) => {
     // data category_id, title, description
     e.preventDefault();
 
+    if (userData === {}) return;
     if (userData.image) uploadData.append('images', userData.image);
     const data = {
       id: userData.id,
@@ -109,6 +116,7 @@ const ForumForm = ({ page }) => {
       token
     );
 
+    setShow(true);
     if (result.status === 200) {
       // data images
       if (page === 'forum' && userData.image) {
@@ -119,17 +127,22 @@ const ForumForm = ({ page }) => {
         );
 
         if (imageResult.status === 200) {
-          window.alert('Edit Submitted');
+          setSucceed(true);
+          setMessage('Edit successful');
           navigate('/forum');
         } else {
-          window.alert('Edit Failed 1');
+          setMessage('Error in updating image');
+          setSucceed(false);
+          return;
         }
       }
 
-      window.alert(`${page === 'forum' ? 'Post Edited' : 'Survey Edited'}`);
+      setSucceed(true);
+      setMessage('Edit successful');
       navigate(`${page === 'forum' ? '/forum' : '/survey'}`);
     } else {
-      window.alert('Edit Failed');
+      setMessage(`Error in updating ${page === 'forum' ? 'forum' : 'survey'}`);
+      setSucceed(false);
     }
   };
 
@@ -147,7 +160,7 @@ const ForumForm = ({ page }) => {
 
   return (
     <form
-      onSubmit={location.state.state === 'edit' ? handleEdit : handleSubmit}
+      onSubmit={location.state?.state === 'edit' ? handleEdit : handleSubmit}
       id='submitForm'
       className='forum-form'
     >

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import FormInput from '../../components/FormInput/FormInput';
 import './Register.scss';
-import useTokenStore from '../../config/Store';
+import useTokenStore, { useAlertStore } from '../../config/Store';
 import { useAPI } from '../../config/api';
 import { useNavigate } from 'react-router-dom';
 
@@ -12,14 +12,9 @@ const Register = () => {
   const setToken = useTokenStore((state) => state.setToken);
   const { post } = useAPI((state) => state);
   let navigate = useNavigate();
-
-  const check = (event) => {
-    if (event.target.selectedIndex === 2) {
-      document.getElementById('other-input').style.display = 'block';
-    } else {
-      document.getElementById('other-input').style.display = 'none';
-    }
-  };
+  const setShow = useAlertStore((state) => state.setShow);
+  const setSucceed = useAlertStore((state) => state.setSucceed);
+  const setMessage = useAlertStore((state) => state.setMessage);
 
   const handleChange = (eventValue, eventName) => {
     if (eventName === 'email') {
@@ -48,12 +43,15 @@ const Register = () => {
       batch: Number(userData.batch),
     });
 
+    setShow(true);
     if (result.status === 200) {
       setToken(result.data.token);
-      window.alert('Register success');
+      setMessage('Register successful');
+      setSucceed(true);
       navigate('/');
     } else {
-      window.alert('Register failed');
+      setMessage('Register successful');
+      setSucceed(false);
     }
   };
 
@@ -99,7 +97,6 @@ const Register = () => {
                 id='role'
                 defaultValue=''
                 onChange={(e) => {
-                  check(e);
                   handleChange(e.target.value, e.target.name);
                 }}
                 name={'role'}
@@ -111,7 +108,37 @@ const Register = () => {
                 <option value='mahasiswa'>Mahasiswa</option>
               </select>
             </div>
-            <div id='other-input' style={{ display: 'none' }}>
+            {userData.role === 'mahasiswa' ? (
+              <div>
+                <div className='input-container'>
+                  <FormInput
+                    type={'text'}
+                    placeholder={'Institute'}
+                    onChange={handleChange}
+                    name={'institute'}
+                    value={userData.institute ? userData.institute : ''}
+                  />
+                </div>
+                <div className='input-container'>
+                  <FormInput
+                    type={'text'}
+                    placeholder={'Major'}
+                    onChange={handleChange}
+                    name={'major'}
+                    value={userData.major ? userData.major : ''}
+                  />
+                </div>
+                <div className='input-container'>
+                  <FormInput
+                    type={'number'}
+                    placeholder={'Batch'}
+                    onChange={handleChange}
+                    name={'batch'}
+                    value={userData.batch ? userData.batch : ''}
+                  />
+                </div>
+              </div>
+            ) : (
               <div className='input-container'>
                 <FormInput
                   type={'text'}
@@ -121,25 +148,7 @@ const Register = () => {
                   value={userData.institute ? userData.institute : ''}
                 />
               </div>
-              <div className='input-container'>
-                <FormInput
-                  type={'text'}
-                  placeholder={'Major'}
-                  onChange={handleChange}
-                  name={'major'}
-                  value={userData.major ? userData.major : ''}
-                />
-              </div>
-              <div className='input-container'>
-                <FormInput
-                  type={'number'}
-                  placeholder={'Batch'}
-                  onChange={handleChange}
-                  name={'batch'}
-                  value={userData.batch ? userData.batch : ''}
-                />
-              </div>
-            </div>
+            )}
             <div className='button-container'>
               <button
                 className='btn'

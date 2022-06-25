@@ -9,7 +9,7 @@ const Button = (props) => {
   const location = useLocation();
 
   useEffect(() => {
-    if (location.pathname === '/forum' || location.pathname === '/') {
+    if (location.pathname === '/forum') {
       setShowButton(true);
       setLink('/forum/form');
     } else if (location.pathname === '/survey') {

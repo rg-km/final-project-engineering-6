@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
@@ -6,7 +6,11 @@ import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import LinkIcon from '@mui/icons-material/Link';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import './PostContent.scss';
-import useTokenStore from '../../config/Store';
+import useTokenStore, {
+  useAlertStore,
+  useConfirmStore,
+  useEditStore,
+} from '../../config/Store';
 import { useAPI } from '../../config/api';
 import Photo from '../../images/img-profile.jpg';
 
@@ -16,14 +20,24 @@ const PostContent = ({ data, page, type }) => {
       ? data.total_like
       : data.like_count
   );
-  const [commentClicked, setCommentClicked] = useState(false);
-  const [userData, setUserData] = useState({});
   const token = useTokenStore((state) => state.token);
-  const { post, del } = useAPI((state) => state);
+  const { post, del, put } = useAPI((state) => state);
   const [likeClicked, setLikeClicked] = useState(
     data.is_like ? data.is_like : false
   );
-  console.log(data);
+  const setShow = useAlertStore((state) => state.setShow);
+  const setSucceed = useAlertStore((state) => state.setSucceed);
+  const setMessage = useAlertStore((state) => state.setMessage);
+  const editData = useEditStore((state) => state.data);
+  const click = useEditStore((state) => state.click);
+  const [userData, setUserData] = useState(
+    editData.comment ? { comment: editData.comment } : {}
+  );
+  const [commentClicked, setCommentClicked] = useState(click ? click : false);
+  const setClick = useEditStore((state) => state.setClick);
+  const editType = useConfirmStore((state) => state.page);
+  const [date, setDate] = useState('');
+
   const handleChange = (eventValue, eventName) => {
     setUserData((previousValues) => {
       return {
@@ -36,6 +50,8 @@ const PostContent = ({ data, page, type }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     // data post_id, comment, parent_comment_id
+
+    // if (!userData.comment) return;
     const input = document.getElementsByClassName('comment-input');
     const body = {
       comment: userData.comment,
@@ -46,19 +62,61 @@ const PostContent = ({ data, page, type }) => {
       body.post_id = data.post_id;
       body.parent_comment_id = data.id;
     }
-    console.log(body);
+    let result = null;
 
-    const result = await post('comments', body, token);
+    if (click) {
+      body.comment_id = data.id;
+      result = await put('comments', body, token);
+    } else {
+      result = await post('comments', body, token);
+    }
 
+    setShow(true);
     if (result.status === 200) {
       setUserData({});
       input[0].value = '';
-      window.alert('Comment Submitted');
+      setSucceed(true);
       setCommentClicked(false);
+      if (click) {
+        setClick(false);
+        setMessage('Comment edited, please refresh');
+      } else {
+        setMessage('Comment posted, please refresh');
+      }
     } else {
-      window.alert('Submit Failed');
+      setMessage('Error in posting comment');
+      setSucceed(false);
     }
   };
+
+  useEffect(() => {
+    const changeDate = () => {
+      const year = new Date().getFullYear();
+      const postYear = new Date(data.created_at).getFullYear();
+
+      if (year > postYear) {
+        setDate(`posted ${year - postYear} years ago`);
+        return;
+      }
+
+      const month = new Date().getMonth();
+      const postMonth = new Date(data.created_at).getMonth();
+
+      if (month > postMonth) {
+        setDate(`posted ${month - postMonth} months ago`);
+        return;
+      }
+
+      const date = new Date().getDate();
+      const postDate = new Date(data.created_at).getDate();
+
+      if (date > postDate) {
+        setDate(`posted ${date - postDate} days ago`);
+        return;
+      }
+    };
+    changeDate();
+  }, [data.created_at]);
 
   const clickLike = async () => {
     if (!likeClicked) {
@@ -66,7 +124,6 @@ const PostContent = ({ data, page, type }) => {
         const result = await post(`post/${data.id}/likes`, {}, token);
 
         if (result.status === 200) {
-          window.alert('Post Liked');
           setTotalLike(totalLike + 1);
           setLikeClicked(true);
         }
@@ -74,7 +131,6 @@ const PostContent = ({ data, page, type }) => {
         const result = await post(`comments/${data.id}/likes`, {}, token);
 
         if (result.status === 200) {
-          window.alert('Comment Liked');
           setTotalLike(totalLike + 1);
           setLikeClicked(true);
         }
@@ -84,7 +140,6 @@ const PostContent = ({ data, page, type }) => {
         const result = await del(`post/${data.id}/likes`, token);
 
         if (result.status === 200) {
-          window.alert('Post Disliked');
           setTotalLike(totalLike - 1);
           setLikeClicked(false);
         }
@@ -92,7 +147,6 @@ const PostContent = ({ data, page, type }) => {
         const result = await del(`comments/${data.id}/likes`, token);
 
         if (result.status === 200) {
-          window.alert('Comment Disliked');
           setTotalLike(totalLike - 1);
           setLikeClicked(false);
         }
@@ -105,6 +159,14 @@ const PostContent = ({ data, page, type }) => {
     height: '4.3rem',
     borderRadius: '50%',
   };
+
+  useEffect(() => {
+    if (editType === type && data.id === editData.id) {
+      console.log('data');
+      setCommentClicked(click);
+      handleChange(editData.comment, 'comment');
+    }
+  }, [click]);
 
   return (
     <div className='content-container'>
@@ -148,7 +210,7 @@ const PostContent = ({ data, page, type }) => {
           {(type !== 'comment' || type !== 'reply') && (
             <>
               <h2 className='content-title'>{data.title}</h2>
-              <div className='content-info'>{data.created_at}</div>
+              <div className='content-info'>{date}</div>
             </>
           )}
           <p className='content-description'>
@@ -162,7 +224,6 @@ const PostContent = ({ data, page, type }) => {
               alt='Description'
             />
           )}
-          {/* {console.log(data)} */}
 
           {page === 'survey' && type === 'detail' && (
             <>
@@ -231,6 +292,7 @@ const PostContent = ({ data, page, type }) => {
               <ChatBubbleIcon
                 onClick={() => {
                   type !== 'post' && setCommentClicked(false);
+                  type !== 'post' && setClick(false);
                 }}
               />
             ) : (

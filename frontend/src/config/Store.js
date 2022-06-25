@@ -32,4 +32,36 @@ const useTokenStore = create((set) => ({
   },
 }));
 
+export const useAlertStore = create((set) => ({
+  show: false,
+  setShow: (input) => set(() => ({ show: input })),
+  succeed: false,
+  setSucceed: (input) => set(() => ({ succeed: input })),
+  message: '',
+  setMessage: (input) => set(() => ({ message: input })),
+}));
+
+export const useConfirmStore = create((set) => ({
+  show: false,
+  setShow: (input) => set(() => ({ show: input })),
+  page: '',
+  setPage: (input) => set(() => ({ page: input })),
+  message: '',
+  setMessage: (input) => set(() => ({ message: input })),
+  type: '',
+  setType: (input) => set(() => ({ type: input })),
+}));
+
+export const useEditStore = create((set) => ({
+  data: {},
+  setData: (input) => set(() => ({ data: input })),
+  click: false,
+  setClick: (input) => set(() => ({ click: input })),
+}));
+
+export const useDeleteStore = create((set) => ({
+  id: 0,
+  setId: (input) => set(() => ({ id: input })),
+}));
+
 export default useTokenStore;
