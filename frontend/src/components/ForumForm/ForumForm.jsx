@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useAPI } from '../../config/api';
-import { useGet } from '../../config/config';
-import useTokenStore, { useAlertStore } from '../../config/Store';
-import Button from '../Button/Button';
-import FormInput from '../FormInput/FormInput';
-import './ForumForm.scss';
+import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useAPI } from "../../config/api";
+import { useGet } from "../../config/config";
+import useTokenStore, { useAlertStore } from "../../config/Store";
+import Button from "../Button/Button";
+import FormInput from "../FormInput/FormInput";
+import "./ForumForm.scss";
 
 const ForumForm = ({ page }) => {
   const [tab, setTab] = useState(false);
@@ -23,19 +23,15 @@ const ForumForm = ({ page }) => {
           id: location.state.data.id,
           title: location.state.data.title,
           description: location.state.data.description,
-          category: location.state.data.category_id
-            ? location.state.data.category_id
-            : location.state.data.category.id,
-          image: location.state.data.images
-            ? location.state.data.images[0]
-            : '',
+          category: location.state.data.category_id ? location.state.data.category_id : location.state.data.category.id,
+          image: location.state.data.images ? location.state.data.images[0] : "",
           link: location.state.data.link,
           reward: location.state.data.reward,
         }
       : {}
   );
 
-  const [categories, getStatus] = useGet('category', token);
+  const [categories, getStatus] = useGet("category", token);
 
   const handleChange = (eventValue, eventName) => {
     setUserData((previousValues) => {
@@ -51,35 +47,27 @@ const ForumForm = ({ page }) => {
     e.preventDefault();
 
     if (userData === {}) return;
-    if (userData.image) uploadData.append('images', userData.image);
+    if (userData.image) uploadData.append("images", userData.image);
 
     const data = {
       category_id: Number(userData.category),
       title: userData.title,
       description: userData.description,
     };
-    if (page === 'survey') data.link = userData.link;
+    if (page === "survey") data.link = userData.link;
     if (userData.reward) data.reward = userData.reward;
 
-    const result = await post(
-      page === 'forum' ? `post` : page === 'survey' && `questionnaires`,
-      data,
-      token
-    );
+    const result = await post(page === "forum" ? `post` : page === "survey" && `questionnaires`, data, token);
 
     setShow(true);
     if (result.status === 200) {
       // data images
-      if (page === 'forum' && userData.image) {
-        const imageResult = await post(
-          `post/images/${result.data.id}`,
-          uploadData,
-          token
-        );
+      if (page === "forum" && userData.image) {
+        const imageResult = await post(`post/images/${result.data.id}`, uploadData, token);
 
         if (imageResult.status === 200) {
           setSucceed(true);
-          navigate('/forum');
+          navigate("/forum");
         } else {
           setSucceed(false);
           return;
@@ -87,11 +75,11 @@ const ForumForm = ({ page }) => {
       }
 
       setSucceed(true);
-      setMessage(`${page === 'forum' ? 'Forum' : 'Survey'} posted`);
-      navigate(`${page === 'forum' ? '/forum' : '/survey'}`);
+      setMessage(`${page === "forum" ? "Forum" : "Survey"} posted`);
+      navigate(`${page === "forum" ? "/forum" : "/survey"}`);
     } else {
       setSucceed(false);
-      setMessage(`Error in posting ${page === 'forum' ? 'forum' : 'survey'}`);
+      setMessage(`Error in posting ${page === "forum" ? "forum" : "survey"}`);
     }
   };
 
@@ -100,118 +88,87 @@ const ForumForm = ({ page }) => {
     e.preventDefault();
 
     if (userData === {}) return;
-    if (userData.image) uploadData.append('images', userData.image);
+    if (userData.image) uploadData.append("images", userData.image);
     const data = {
       id: userData.id,
       category_id: Number(userData.category),
       title: userData.title,
       description: userData.description,
     };
-    if (page === 'survey') data.link = userData.link;
+    if (page === "survey") data.link = userData.link;
     if (userData.reward) data.reward = userData.reward;
 
-    const result = await put(
-      page === 'forum' ? `post` : page === 'survey' && `questionnaires`,
-      data,
-      token
-    );
+    const result = await put(page === "forum" ? `post` : page === "survey" && `questionnaires`, data, token);
 
     setShow(true);
     if (result.status === 200) {
       // data images
-      if (page === 'forum' && userData.image) {
-        const imageResult = await post(
-          `post/images/${result.data.id}`,
-          uploadData,
-          token
-        );
+      if (page === "forum" && userData.image) {
+        const imageResult = await post(`post/images/${result.data.id}`, uploadData, token);
 
         if (imageResult.status === 200) {
           setSucceed(true);
-          setMessage('Edit successful');
-          navigate('/forum');
+          setMessage("Edit successful");
+          navigate("/forum");
         } else {
-          setMessage('Error in updating image');
+          setMessage("Error in updating image");
           setSucceed(false);
           return;
         }
       }
 
       setSucceed(true);
-      setMessage('Edit successful');
-      navigate(`${page === 'forum' ? '/forum' : '/survey'}`);
+      setMessage("Edit successful");
+      navigate(`${page === "forum" ? "/forum" : "/survey"}`);
     } else {
-      setMessage(`Error in updating ${page === 'forum' ? 'forum' : 'survey'}`);
+      setMessage(`Error in updating ${page === "forum" ? "forum" : "survey"}`);
       setSucceed(false);
     }
   };
 
   const tabClick = (e) => {
-    console.log('object');
+    console.log("object");
     e.preventDefault();
     setTab(!tab);
     setUserData((previousValues) => {
       return {
         ...previousValues,
-        image: '',
+        image: "",
       };
     });
   };
 
   return (
-    <form
-      onSubmit={location.state?.state === 'edit' ? handleEdit : handleSubmit}
-      id='submitForm'
-      className='forum-form'
-    >
-      <div className='input-section'>
-        <div className='input-container'>
+    <form onSubmit={location.state?.state === "edit" ? handleEdit : handleSubmit} id="submitForm" className="forum-form">
+      <div className="input-section">
+        <div className="input-container">
           <label>Title</label>
           <span>*</span>
-          <FormInput
-            type={'text'}
-            placeholder={'Title'}
-            name={'title'}
-            onChange={handleChange}
-            value={userData.title ? userData.title : ''}
-          />
+          <FormInput type={"text"} placeholder={"Title"} name={"title"} onChange={handleChange} value={userData.title ? userData.title : ""} />
         </div>
-        <div className='input-container'>
+        <div className="input-container">
           <label>Description</label>
           <span>*</span>
-          <textarea
-            type='text'
-            name='description'
-            placeholder='Description'
-            rows='5'
-            onChange={(e) => handleChange(e.target.value, e.target.name)}
-            value={userData.description ? userData.description : ''}
-          ></textarea>
+          <textarea type="text" name="description" placeholder="Description" rows="5" onChange={(e) => handleChange(e.target.value, e.target.name)} value={userData.description ? userData.description : ""}></textarea>
         </div>
-        {page === 'survey' && (
-          <div className='input-container'>
+        {page === "survey" && (
+          <div className="input-container">
             <label>Survey Link</label>
             <span>*</span>
-            <FormInput
-              type={'text'}
-              placeholder={'Survey Link'}
-              name={'link'}
-              onChange={handleChange}
-              value={userData.link ? userData.link : ''}
-            />
+            <FormInput type={"text"} placeholder={"Survey Link"} name={"link"} onChange={handleChange} value={userData.link ? userData.link : ""} />
           </div>
         )}
-        <div className='input-container'>
+        <div className="input-container">
           <label>Category</label>
           <span>*</span>
           <select
-            name='category'
-            id='category'
+            name="category"
+            id="category"
             // defaultValue=''
             onChange={(e) => handleChange(e.target.value, e.target.name)}
-            value={userData.category ? userData.category : ''}
+            value={userData.category ? userData.category : ""}
           >
-            <option value='' disabled>
+            <option value="" disabled>
               Choose a Category
             </option>
             {getStatus &&
@@ -224,59 +181,35 @@ const ForumForm = ({ page }) => {
               })}
           </select>
         </div>
-        {page === 'survey' && (
-          <div className='input-container'>
+        {page === "survey" && (
+          <div className="input-container">
             <label>Reward</label>
-            <FormInput
-              type={'number'}
-              placeholder={'Reward'}
-              name={'reward'}
-              onChange={handleChange}
-              value={userData.reward ? userData.reward : ''}
-            />
+            <FormInput type={"number"} placeholder={"Reward"} name={"reward"} onChange={handleChange} value={userData.reward ? userData.reward : ""} />
           </div>
         )}
-        {page === 'forum' && (
-          <div className='input-container'>
+        {page === "forum" && (
+          <div className="input-container">
             <label>
-              Image{' '}
-              <div className='tab'>
-                <div
-                  onClick={tabClick}
-                  className={tab ? 'active-tab' : undefined}
-                >
+              Image{" "}
+              <div className="tab">
+                <div onClick={tabClick} className={tab ? "active-tab" : undefined}>
                   Link
                 </div>
-                <div
-                  className={!tab ? 'active-tab' : undefined}
-                  onClick={tabClick}
-                >
+                <div className={!tab ? "active-tab" : undefined} onClick={tabClick}>
                   Upload
                 </div>
               </div>
             </label>
             {tab ? (
-              <FormInput
-                type={'text'}
-                placeholder={'Image Link'}
-                name={'image'}
-                onChange={handleChange}
-                value={userData.image ? userData.image : ''}
-              />
+              <FormInput type={"text"} placeholder={"Image Link"} name={"image"} onChange={handleChange} value={userData.image ? userData.image : ""} />
             ) : (
-              <input
-                type='file'
-                name='image'
-                accept='image/png, image/jpeg'
-                onChange={(e) => handleChange(e.target.value, e.target.name)}
-                value={userData.image ? userData.image : ''}
-              />
+              <input type="file" name="image" accept="image/png, image/jpeg" onChange={(e) => handleChange(e.target.value, e.target.name)} value={userData.image ? userData.image : ""} />
             )}
           </div>
         )}
       </div>
-      <div className='button-container'>
-        <Button variant={'submit'}>Submit</Button>
+      <div className="button-container">
+        <Button variant={"submit"}>Submit</Button>
       </div>
     </form>
   );
