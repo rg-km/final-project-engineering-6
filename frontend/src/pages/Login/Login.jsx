@@ -1,22 +1,25 @@
-import React, { useState } from "react";
-import FormInput from "../../components/FormInput/FormInput";
-import "./Login.scss";
+import React, { useState } from 'react';
+import FormInput from '../../components/FormInput/FormInput';
+import './Login.scss';
+import { useAPI } from '../../config/api';
+import useTokenStore from '../../config/Store';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [userData, setUserData] = useState({});
-  const [isNameError, setIsNameError] = useState(true);
+  const [isEmailError, setIsEmailError] = useState(true);
   const [isPwdError, setIsPwdError] = useState(true);
-  // const [isConfirmPwdError, setIsConfirmPwdError] = useState(true);
+  const setToken = useTokenStore((state) => state.setToken);
+  const { post } = useAPI((state) => state);
+  let navigate = useNavigate();
 
   const handleInputChange = (eventValue, eventName) => {
-    console.log(eventName, eventValue);
-    if (eventName === "username") {
-      setIsNameError(!eventValue.match(/^[a-zA-Z0-9]*$/));
+    if (eventName === 'email') {
+      setIsEmailError(!eventValue.match(/^[a-zA-Z0-9]+@+[a-z]+\.com$/));
     }
 
-    if (eventName === "password") {
-      // setIsPwdError(!eventValue.match(/^(?=.[a-z])(?=.[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/));
-      setIsPwdError(!eventValue.match(/^[a-zA-Z0-9]*$/));
+    if (eventName === 'password') {
+      setIsPwdError(!eventValue.match(/^[a-zA-Z]*$/));
       setIsPwdError(eventValue.length < 8);
     }
 
@@ -28,10 +31,24 @@ const Login = () => {
     });
   };
 
+  const loginClick = async (e) => {
+    e.preventDefault();
+    // data email, password
+
+    const result = await post('login', userData);
+
+    if (result.status === 200) {
+      setToken(result.data.token);
+      window.alert('Login success');
+      navigate('/');
+    } else {
+      window.alert('Login failed');
+    }
+  };
+
   const showPwd = () => {
-    const pwd = document.getElementById("pwd");
-    // console.log(pwd);
-    pwd.type === "password" ? (pwd.type = "text") : (pwd.type = "password");
+    const pwd = document.getElementById('pwd');
+    pwd.type === 'password' ? (pwd.type = 'text') : (pwd.type = 'password');
   };
 
   const handleSubmit = (e) => {
@@ -39,31 +56,51 @@ const Login = () => {
   };
 
   return (
-    <div className="container">
-      <div className="form-login">
-        <div className="form">
+    <div className='container'>
+      <div className='form-login'>
+        <div className='form'>
           <h2>We’ve missed you!</h2>
           <p>More than 150 questions are waiting for your wise suggestions!</p>
-          <form id="loginForm" onSubmit={(e) => handleSubmit(e)}>
-            <div className="input-container">
-              <FormInput className="username" type={"username"} placeholder={"username"} onChange={handleInputChange} name={"username"} value={userData.username ? userData.username : ""} />
+          <form id='loginForm' onSubmit={(e) => handleSubmit(e)}>
+            <div className='input-container'>
+              <FormInput
+                className='username'
+                type={'email'}
+                placeholder={'Email'}
+                onChange={handleInputChange}
+                name={'email'}
+                value={userData.email ? userData.email : ''}
+              />
             </div>
-            <div className="input-container">
-              <FormInput className="pwd" id={"pwd"} type={"password"} name={"password"} placeholder={"Password"} onChange={handleInputChange} value={userData.password ? userData.password : ""} />
+            <div className='input-container'>
+              <FormInput
+                className='pwd'
+                id={'pwd'}
+                type={'password'}
+                name={'password'}
+                placeholder={'Password'}
+                onChange={handleInputChange}
+                value={userData.password ? userData.password : ''}
+              />
             </div>
-            <div className="show-pwd">
-              <input type="checkbox" className="" onClick={showPwd} />
+            <div className='show-pwd'>
+              <input type='checkbox' className='' onClick={showPwd} />
               <p>Show Password</p>
             </div>
-            <div className="button-container">
-              <button type="submit" className="submit-btn" disabled={isNameError || isPwdError}>
-                login
+            <div className='button-container'>
+              <button
+                type='submit'
+                className='submit-btn'
+                disabled={isEmailError || isPwdError}
+                onClick={loginClick}
+              >
+                Login
               </button>
             </div>
           </form>
         </div>
       </div>
-      <div className="gambar"></div>
+      <div className='gambar'></div>
     </div>
   );
 };

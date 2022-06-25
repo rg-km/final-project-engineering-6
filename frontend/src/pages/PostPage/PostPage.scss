@@ -1,4 +1,4 @@
-@import "../../App.scss";
+@import '../../App.scss';
 
 .page {
   @include page();
@@ -34,14 +34,6 @@
         border-radius: 0;
         margin-bottom: 0;
         outline: none;
-      }
-
-      svg {
-        margin: 0 0.8rem;
-
-        &:hover {
-          cursor: pointer;
-        }
       }
     }
 

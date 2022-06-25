@@ -1,20 +1,20 @@
-import React from "react";
-import HomeIcon from "@mui/icons-material/Home";
-import PollIcon from "@mui/icons-material/Poll";
-import EventIcon from "@mui/icons-material/Event";
+import React from 'react';
+import HomeIcon from '@mui/icons-material/Home';
+import PollIcon from '@mui/icons-material/Poll';
+import EventIcon from '@mui/icons-material/Event';
 
 export const MenuSidebar = [
-  { title: "Forum", icon: <HomeIcon />, link: "/forum" },
+  { title: 'Forum', icon: <HomeIcon />, link: '/forum' },
 
   {
-    title: "Survey",
+    title: 'Survey',
     icon: <PollIcon />,
-    link: "/survey",
+    link: '/survey',
   },
 
   {
-    title: "Event",
+    title: 'Event',
     icon: <EventIcon />,
-    link: "/event",
+    link: '/event',
   },
 ];

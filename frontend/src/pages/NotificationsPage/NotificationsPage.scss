@@ -1,6 +1,6 @@
-@import "../../App.scss";
+@import '../../App.scss';
 
-@import "../../App.scss";
+@import '../../App.scss';
 
 .notif {
   // margin-left: 18%;
@@ -47,11 +47,11 @@
     }
 
     .badge {
+      position: absolute;
       width: 0.6rem;
       height: 0.6rem;
       background-color: $Secondary;
       border-radius: 50%;
-      margin-right: -2.3rem;
     }
   }
   .info-read {

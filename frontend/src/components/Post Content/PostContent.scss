@@ -1,14 +1,14 @@
-@import "../../App.scss";
+@import '../../App.scss';
 
 .content-container {
   @include post-container();
-  @include breakpoint(md) {
-  }
+  position: relative;
 
   #top-section.post-content {
     display: flex;
     justify-content: space-between;
     gap: 1rem;
+    width: 100%;
 
     .content {
       display: flex;
@@ -18,10 +18,10 @@
       .content-info {
         color: $SubTitleText;
         font-size: 0.9rem;
-        margin-bottom: 0.8rem;
       }
 
       .content-description {
+        margin-top: 0.8rem;
         overflow: hidden;
         text-overflow: ellipsis;
         display: -webkit-box;
@@ -100,6 +100,7 @@
     display: flex;
     justify-content: space-between;
     gap: 2rem;
+    width: 100%;
 
     @include breakpoint(md) {
       flex-direction: column;
@@ -122,8 +123,12 @@
         flex-direction: column;
         text-align: left;
         gap: 0.3rem;
+        
         .user-detail {
           color: $SubTitleText;
+          display: flex;
+          flex-direction: column;
+          gap: 0.3rem;
         }
       }
     }
@@ -133,6 +138,10 @@
       flex-direction: column;
       gap: 0.5rem;
       flex: 9;
+
+      img {
+        width: 100%;
+      }
 
       .content-info {
         color: $SubTitleText;
@@ -164,14 +173,11 @@
       right: 0;
       bottom: 0;
       gap: 1rem;
-      // display: none;
 
       .like-info,
       .comment-info {
         @include section-style();
         font-weight: bold;
-        @include breakpoint(md) {
-        }
 
         svg {
           font-size: 2rem;
@@ -202,10 +208,6 @@
 
     .flex-1 {
       flex: 1;
-
-      @include breakpoint(md) {
-        // display: none;
-      }
     }
 
     .flex-9 {

@@ -1,4 +1,4 @@
-@import "../../App.scss";
+@import '../../App.scss';
 
 .profile-page {
   position: relative;
@@ -80,6 +80,7 @@
         opacity: 0.5;
         &:hover {
           opacity: 1;
+          cursor: pointer;
         }
       }
 
