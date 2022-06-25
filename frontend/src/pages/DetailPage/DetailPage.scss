@@ -14,10 +14,6 @@
     .comment-container {
       @include post-container();
       gap: 1rem;
-
-      .detail-card {
-        gap: 2rem;
-      }
     }
   }
 }

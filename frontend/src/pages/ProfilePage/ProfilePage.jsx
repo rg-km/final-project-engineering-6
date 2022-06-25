@@ -106,7 +106,7 @@ const ProfilePage = () => {
 
     if (userData.image) uploadData.append('avatar', userData.image);
 
-    console.log(uploadData);
+    // console.log(uploadData);
     if (userData.image) {
       const imageResult = await put(`profile/avatar`, uploadData, token);
 
@@ -235,9 +235,7 @@ const ProfilePage = () => {
             </>
           )}
           <div className='edit'>
-            <Link to>
-              <EditIcon style={{ color: 'f48023' }} onClick={handleClickOpen} />
-            </Link>
+            <EditIcon style={{ color: 'f48023' }} onClick={handleClickOpen} />
           </div>
 
           <div className='modal'>

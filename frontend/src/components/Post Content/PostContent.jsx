@@ -97,6 +97,7 @@ const PostContent = ({ data, page, type }) => {
       }
     }
   };
+
   const imgStyle = {
     width: '4rem',
     height: '4.3rem',
@@ -159,6 +160,7 @@ const PostContent = ({ data, page, type }) => {
               alt='Description'
             />
           )}
+          {/* {console.log(data)} */}
 
           {page === 'survey' && type === 'detail' && (
             <>

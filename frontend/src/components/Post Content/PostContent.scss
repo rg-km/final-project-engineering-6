@@ -2,6 +2,7 @@
 
 .content-container {
   @include post-container();
+  position: relative;
 
   #top-section.post-content {
     display: flex;

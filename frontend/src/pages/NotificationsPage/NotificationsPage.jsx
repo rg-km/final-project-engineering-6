@@ -27,15 +27,15 @@ const NotificationsPage = () => {
       return;
     }
 
-    const res = await put('notifications/read', {}, token);
+    // const res = await put('notifications/read', {}, token);
 
-    if (res.status === 200) {
-      window.alert('Berhasil Read');
-      results.splice(results.indexOf(id), 1);
-      setRead(false);
-    } else {
-      window.alert('Read Gagal');
-    }
+    // if (res.status === 200) {
+    //   window.alert('Berhasil Read');
+    //   results.splice(results.indexOf(id), 1);
+    //   setRead(false);
+    // } else {
+    //   window.alert('Read Gagal');
+    // }
   };
 
   useEffect(() => {

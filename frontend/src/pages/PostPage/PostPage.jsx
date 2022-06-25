@@ -61,14 +61,17 @@ const PostPage = ({ page, type }) => {
   };
 
   useEffect(() => {
+    if (type === 'form') return;
     getData();
   }, [url]);
 
   useEffect(() => {
+    if (type === 'form') return;
     doSearch();
   }, [searchData, page]);
 
   useEffect(() => {
+    if (type === 'form') return;
     setSearchData({});
     setUrl('');
     document.getElementById('searchInput').childNodes[0].value = '';

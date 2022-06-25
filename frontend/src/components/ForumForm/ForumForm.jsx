@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAPI } from '../../config/api';
 import { useGet } from '../../config/config';
 import useTokenStore from '../../config/Store';
@@ -8,12 +8,29 @@ import FormInput from '../FormInput/FormInput';
 import './ForumForm.scss';
 
 const ForumForm = ({ page }) => {
-  const [userData, setUserData] = useState({});
   const [tab, setTab] = useState(false);
   const token = useTokenStore((state) => state.token);
-  const { post } = useAPI((state) => state);
+  const { post, put } = useAPI((state) => state);
   const uploadData = new FormData();
   let navigate = useNavigate();
+  const location = useLocation();
+  const [userData, setUserData] = useState(
+    location.state
+      ? {
+          id: location.state.data.id,
+          title: location.state.data.title,
+          description: location.state.data.description,
+          category: location.state.data.category_id
+            ? location.state.data.category_id
+            : location.state.data.category.id,
+          image: location.state.data.images
+            ? location.state.data.images[0]
+            : '',
+          link: location.state.data.link,
+          reward: location.state.data.reward,
+        }
+      : {}
+  );
 
   const [categories, getStatus] = useGet('category', token);
 
@@ -72,6 +89,50 @@ const ForumForm = ({ page }) => {
     }
   };
 
+  const handleEdit = async (e) => {
+    // data category_id, title, description
+    e.preventDefault();
+
+    if (userData.image) uploadData.append('images', userData.image);
+    const data = {
+      id: userData.id,
+      category_id: Number(userData.category),
+      title: userData.title,
+      description: userData.description,
+    };
+    if (page === 'survey') data.link = userData.link;
+    if (userData.reward) data.reward = userData.reward;
+
+    const result = await put(
+      page === 'forum' ? `post` : page === 'survey' && `questionnaires`,
+      data,
+      token
+    );
+
+    if (result.status === 200) {
+      // data images
+      if (page === 'forum' && userData.image) {
+        const imageResult = await post(
+          `post/images/${result.data.id}`,
+          uploadData,
+          token
+        );
+
+        if (imageResult.status === 200) {
+          window.alert('Edit Submitted');
+          navigate('/forum');
+        } else {
+          window.alert('Edit Failed 1');
+        }
+      }
+
+      window.alert(`${page === 'forum' ? 'Post Edited' : 'Survey Edited'}`);
+      navigate(`${page === 'forum' ? '/forum' : '/survey'}`);
+    } else {
+      window.alert('Edit Failed');
+    }
+  };
+
   const tabClick = (e) => {
     console.log('object');
     e.preventDefault();
@@ -85,7 +146,11 @@ const ForumForm = ({ page }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} id='submitForm' className='forum-form'>
+    <form
+      onSubmit={location.state.state === 'edit' ? handleEdit : handleSubmit}
+      id='submitForm'
+      className='forum-form'
+    >
       <div className='input-section'>
         <div className='input-container'>
           <label>Title</label>

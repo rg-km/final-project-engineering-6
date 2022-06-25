@@ -46,6 +46,7 @@ export const useAPI = create(
       }
     },
     put: async (url, data, token) => {
+      console.log(data);
       try {
         const res = await defaultAxios.put(url, data, headers(token));
         return res;
@@ -86,33 +87,6 @@ export const uploadAvatar = async (data, token) => {
   }
 };
 
-export const updatePost = async (data, token) => {
-  // data id, author_id, category_id, title, description
-  try {
-    const res = await axios.put(`${API_URL}/api/post`, data, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    console.log(res);
-    if (res.status === 200) return res;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-};
-
-export const deletePost = async (id, token) => {
-  try {
-    const res = await axios.delete(`${API_URL}/api/post/${id}`, {
-      headers: { Authorization: `${token}` },
-    });
-    console.log(res);
-    if (res.status === 200) return res;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-};
-
 export const updateComment = async (data, token) => {
   // data comment_id, comment
   try {
@@ -127,42 +101,5 @@ export const updateComment = async (data, token) => {
   }
 };
 
-export const deleteComment = async (id, token) => {
-  try {
-    const res = await axios.delete(`${API_URL}/api/comment${id}`, {
-      headers: { Authorization: `${token}` },
-    });
-    console.log(res);
-    if (res.status === 200) return res;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-};
-
-export const updateSurvey = async (data, token) => {
-  // data id, category_id, title, description, link
-  try {
-    const res = await axios.put(`${API_URL}/api/questionnaires`, data, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    console.log(res);
-    if (res.status === 200) return res;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-};
-
-export const deleteSurvey = async (id, token) => {
-  try {
-    const res = await axios.delete(`${API_URL}/api/questionnaires/${id}`, {
-      headers: { Authorization: `${token}` },
-    });
-    console.log(res);
-    if (res.status === 200) return res;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-};
+// yang belum
+// terapin alert, post foto, post avatar, update comment, clear search
