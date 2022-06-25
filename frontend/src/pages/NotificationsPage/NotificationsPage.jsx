@@ -8,43 +8,33 @@ import { useAPI } from '../../config/api';
 const NotificationsPage = () => {
   const token = useTokenStore((state) => state.token);
   const [results, status] = useGet('notifications', token);
-  const [read, setRead] = useState(false);
-  const [data, setData] = useState([]);
   const { put } = useAPI((state) => state);
   const uploadData = new FormData();
 
   const handleClick = async (id) => {
-    if (id) {
+    console.log(typeof id);
+    if (typeof id === 'number') {
       uploadData.append('notif_id', id);
       const res = await put('notifications/read', uploadData, token);
 
       if (res.status === 200) {
         window.alert('Berhasil Read 1');
-        results.splice(results.indexOf(id), 1);
+        // results.splice(results.indexOf(id), 1);
       } else {
         window.alert('Read Gagal 1');
       }
       return;
     }
 
-    // const res = await put('notifications/read', {}, token);
+    const res = await put('notifications/read', {}, token);
 
-    // if (res.status === 200) {
-    //   window.alert('Berhasil Read');
-    //   results.splice(results.indexOf(id), 1);
-    //   setRead(false);
-    // } else {
-    //   window.alert('Read Gagal');
-    // }
+    if (res.status === 200) {
+      window.alert('Berhasil Read');
+      // setRead(false);
+    } else {
+      window.alert('Read Gagal');
+    }
   };
-
-  useEffect(() => {
-    setData(results);
-  }, [results]);
-
-  useEffect(() => {
-    setRead(data.already_read);
-  }, [data.already_read]);
 
   return (
     <div className='notif'>
@@ -56,20 +46,22 @@ const NotificationsPage = () => {
       </div>
       {status &&
         results.map((result) => {
-          console.log(result);
+          console.log(result.already_read);
           return (
             <div
-              className={read ? 'notif-info' : 'notif-info info-read'}
-              onClick={() => handleClick(result.id)}
+              className={
+                result.already_read ? 'notif-info' : 'notif-info info-read'
+              }
+              onClick={() => !result.already_read && handleClick(result.id)}
             >
-              {!read && <span className='badge'></span>}
+              {!result.already_read && <span className='badge'></span>}
 
               <NotificationImportantIcon />
               <div className='info-info'>
                 <p>
-                  <span className='user'> User212 </span>{' '}
+                  <span className='user'>{result.name}</span>{' '}
                   <span className='user-komen'>mengomentari Postingan</span>{' '}
-                  <a href='forum-detail'>Apa itu DevOps!</a>
+                  <span>{result.post_title}</span>
                 </p>
                 <p className='time'>{result.created_at}</p>
               </div>

@@ -11,7 +11,6 @@ import { useAPI } from '../../config/api';
 import Photo from '../../images/img-profile.jpg';
 
 const PostContent = ({ data, page, type }) => {
-  const [likeClicked, setLikeClicked] = useState(false);
   const [totalLike, setTotalLike] = useState(
     type === 'comment' || page === 'survey' || type === 'reply'
       ? data.total_like
@@ -21,7 +20,10 @@ const PostContent = ({ data, page, type }) => {
   const [userData, setUserData] = useState({});
   const token = useTokenStore((state) => state.token);
   const { post, del } = useAPI((state) => state);
-
+  const [likeClicked, setLikeClicked] = useState(
+    data.is_like ? data.is_like : false
+  );
+  console.log(data);
   const handleChange = (eventValue, eventName) => {
     setUserData((previousValues) => {
       return {

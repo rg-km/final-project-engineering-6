@@ -102,4 +102,4 @@ export const updateComment = async (data, token) => {
 };
 
 // yang belum
-// terapin alert, post foto, post avatar, update comment, clear search
+// terapin alert, post foto, post avatar, update comment, clear search, created_at, is_like post
