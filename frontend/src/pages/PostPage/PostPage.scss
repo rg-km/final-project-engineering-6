@@ -57,5 +57,13 @@
 
   .post-container {
     @include post-container();
+    .image {
+      img {
+        width: 20rem;
+        @include breakpoint(md) {
+          width: 10rem;
+        }
+      }
+    }
   }
 }

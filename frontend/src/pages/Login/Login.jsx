@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import FormInput from '../../components/FormInput/FormInput';
 import './Login.scss';
 import { useAPI } from '../../config/api';
-import useTokenStore from '../../config/Store';
+import useTokenStore, { useAlertStore } from '../../config/Store';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
@@ -12,6 +12,9 @@ const Login = () => {
   const setToken = useTokenStore((state) => state.setToken);
   const { post } = useAPI((state) => state);
   let navigate = useNavigate();
+  const setShow = useAlertStore((state) => state.setShow);
+  const setSucceed = useAlertStore((state) => state.setSucceed);
+  const setMessage = useAlertStore((state) => state.setMessage);
 
   const handleInputChange = (eventValue, eventName) => {
     if (eventName === 'email') {
@@ -37,12 +40,15 @@ const Login = () => {
 
     const result = await post('login', userData);
 
+    setShow(true);
     if (result.status === 200) {
       setToken(result.data.token);
-      window.alert('Login success');
+      setMessage('Login successful');
+      setSucceed(true);
       navigate('/');
     } else {
-      window.alert('Login failed');
+      setMessage('Login failed');
+      setSucceed(false);
     }
   };
 
@@ -61,6 +67,7 @@ const Login = () => {
         <div className='form'>
           <h2>We’ve missed you!</h2>
           <p>More than 150 questions are waiting for your wise suggestions!</p>
+
           <form id='loginForm' onSubmit={(e) => handleSubmit(e)}>
             <div className='input-container'>
               <FormInput

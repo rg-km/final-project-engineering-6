@@ -1,58 +1,56 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import useTokenStore from '../../config/Store';
+import { Link } from 'react-router-dom';
+import useTokenStore, {
+  useConfirmStore,
+  useDeleteStore,
+  useEditStore,
+} from '../../config/Store';
 import PostContent from '../Post Content/PostContent';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import './PostCard.scss';
-import { useAPI } from '../../config/api';
 
 const PostCard = ({ data, page, type }) => {
   const token = useTokenStore((state) => state.token);
-  const { del } = useAPI((state) => state);
-  let navigate = useNavigate();
+  const setShowConfirm = useConfirmStore((state) => state.setShow);
+  const setConfirmData = useEditStore((state) => state.setData);
+  const setConfirmType = useConfirmStore((state) => state.setType);
+  const setMessageConfirm = useConfirmStore((state) => state.setMessage);
+  const setConfirmPage = useConfirmStore((state) => state.setPage);
+  const setId = useDeleteStore((state) => state.setId);
 
   const clickEdit = async (check, datum) => {
+    setConfirmType('edit');
     if (check === 'comment' || check === 'reply') {
-      if (window.confirm('Edit this comment?') === true) {
-        // const result = await del(`comments/${datum.id}`, token);
-        // if (result.status === 200) {
-        //   window.alert('Delete Succeed');
-        // }
-      }
+      setMessageConfirm('Edit this comment?');
+      setShowConfirm(true);
+      setConfirmData(datum);
+      setConfirmPage('comment');
       return;
     }
-    if (window.confirm('Edit this post?') === true) {
-      navigate(
-        page === 'forum' ? '/forum/form' : page === 'survey' && '/survey/form',
-        { state: { data, state: 'edit' } }
-      );
-    }
+
+    setMessageConfirm('Edit this post?');
+    setShowConfirm(true);
+    setConfirmPage(page);
+    setConfirmData(data);
   };
 
   const clickDelete = async (check, datum) => {
+    setConfirmType('delete');
     if (check === 'comment' || check === 'reply') {
-      if (window.confirm('Delete this comment?') === true) {
-        const result = await del(`comments/${datum.id}`, token);
-
-        if (result.status === 200) {
-          window.alert('Delete Succeed');
-        }
-      }
+      setMessageConfirm('Delete this comment?');
+      setShowConfirm(true);
+      setId(datum.id);
+      setConfirmPage('comment');
       return;
     }
-    if (window.confirm('Delete this post?') === true) {
-      const result = await del(
-        page === 'forum'
-          ? `post/${data.id}`
-          : page === 'survey' && `questionnaires/${data.id}`,
-        token
-      );
 
-      if (result.status === 200) {
-        window.alert('Delete Succeed');
-      }
-    }
+    setMessageConfirm('Delete this post?');
+    setShowConfirm(true);
+    setId(data.id);
+    setConfirmPage(
+      page === 'forum' ? `post` : page === 'survey' && `questionnaires`
+    );
   };
 
   return type === 'post' ? (

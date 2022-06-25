@@ -15,6 +15,13 @@
       flex-direction: column;
       gap: 0.5rem;
 
+      .content-title {
+        @include breakpoint(md) {
+          font-size: 1.2rem;
+          width: 70%;
+        }
+      }
+
       .content-info {
         color: $SubTitleText;
         font-size: 0.9rem;
@@ -51,7 +58,7 @@
 
       .user-avatar {
         img {
-          width: 3rem;
+          width: 3.5rem;
           height: 3.5rem;
           border-radius: 50%;
         }
@@ -123,7 +130,7 @@
         flex-direction: column;
         text-align: left;
         gap: 0.3rem;
-        
+
         .user-detail {
           color: $SubTitleText;
           display: flex;
@@ -138,6 +145,12 @@
       flex-direction: column;
       gap: 0.5rem;
       flex: 9;
+
+      .content-title {
+        @include breakpoint(md) {
+          font-size: 1.2rem;
+        }
+      }
 
       img {
         width: 100%;

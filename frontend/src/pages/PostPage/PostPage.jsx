@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import FormInput from '../../components/FormInput/FormInput';
 import ForumForm from '../../components/ForumForm/ForumForm';
 import PostCard from '../../components/PostCard/PostCard';
-import SearchIcon from '@mui/icons-material/Search';
+import NotFound from '../../images/not-found.svg';
 import './PostPage.scss';
 import { useGet } from '../../config/config';
 import useTokenStore from '../../config/Store';
@@ -45,47 +45,35 @@ const PostPage = ({ page, type }) => {
     });
   };
 
-  const doSearch = () => {
-    const { search = '', sort = '', filter = '' } = searchData;
-
-    setUrl(
-      page === 'forum'
-        ? `post?${search && `search_title=${search}`}${
-            sort && `${search && '&'}sort_by=${sort}`
-          }${filter && `${(search || sort) && '&'}category_id=${filter}`}`
-        : page === 'survey' &&
-            `questionnaires?${search && `search_title=${search}`}${
-              sort && `${search && '&'}sort_by=${sort}`
-            }${filter && `${(search || sort) && '&'}category_id=${filter}`}`
-    );
-  };
-
   useEffect(() => {
     if (type === 'form') return;
     getData();
-  }, [url]);
+  }, [url, type]);
 
   useEffect(() => {
     if (type === 'form') return;
+    const doSearch = () => {
+      const { search = '', sort = '', filter = '' } = searchData;
+
+      setUrl(
+        page === 'forum'
+          ? `post?${search && `search_title=${search}`}${
+              sort && `${search && '&'}sort_by=${sort}`
+            }${filter && `${(search || sort) && '&'}category_id=${filter}`}`
+          : page === 'survey' &&
+              `questionnaires?${search && `search_title=${search}`}${
+                sort && `${search && '&'}sort_by=${sort}`
+              }${filter && `${(search || sort) && '&'}category_id=${filter}`}`
+      );
+    };
     doSearch();
-  }, [searchData, page]);
-
-  useEffect(() => {
-    if (type === 'form') return;
-    setSearchData({});
-    setUrl('');
-    document.getElementById('searchInput').childNodes[0].value = '';
-    document.getElementsByClassName('search-container')[0].childNodes[1].value =
-      '';
-    document.getElementsByClassName('search-container')[0].childNodes[2].value =
-      '';
-  }, [page]);
+  }, [searchData, page, type]);
 
   return (
     <div className='page'>
       {type === 'post' && (
         <div className='search-container'>
-          <div className='search-bar' id='searchInput'>
+          <div className='search-bar'>
             <FormInput
               type={'text'}
               placeholder={'Search for post title'}
@@ -94,7 +82,7 @@ const PostPage = ({ page, type }) => {
               onChange={handleChange}
             />
           </div>
-          <div className="search-dropdown">
+          <div className='search-dropdown'>
             <select
               name='sort'
               id='sort'
@@ -133,24 +121,30 @@ const PostPage = ({ page, type }) => {
         </div>
       )}
       <div className='post-container'>
-        {type === 'post' ? (
-          status ? (
-            results.map((result) => {
-              return (
-                <PostCard
-                  page={page}
-                  type={type}
-                  data={result}
-                  key={result.id}
-                />
-              );
-            })
-          ) : (
-            <div className='not-found'>Post Not Found</div>
-          )
-        ) : (
-          type === 'form' && <ForumForm page={page} />
-        )}
+        {type === 'post'
+          ? status &&
+            (results ? (
+              results.map((result) => {
+                return (
+                  <PostCard
+                    page={page}
+                    type={type}
+                    data={result}
+                    key={result.id}
+                  />
+                );
+              })
+            ) : (
+              <>
+                <div className='image'>
+                  <img src={NotFound} alt='' />
+                </div>
+                <div className='text'>
+                  <h1>Post not found</h1>
+                </div>
+              </>
+            ))
+          : type === 'form' && <ForumForm page={page} />}
       </div>
     </div>
   );
