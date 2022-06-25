@@ -33,7 +33,7 @@ const PostPage = ({ page, type }) => {
       setStatus(false);
     }
   };
-
+  console.log(results);
   const [categories, getStatus] = useGet('category', token);
 
   const handleChange = (eventValue, eventName) => {
@@ -123,7 +123,7 @@ const PostPage = ({ page, type }) => {
       <div className='post-container'>
         {type === 'post'
           ? status &&
-            (results ? (
+            (results[0] ? (
               results.map((result) => {
                 return (
                   <PostCard

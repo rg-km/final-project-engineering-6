@@ -30,10 +30,8 @@ const PostContent = ({ data, page, type }) => {
   const setMessage = useAlertStore((state) => state.setMessage);
   const editData = useEditStore((state) => state.data);
   const click = useEditStore((state) => state.click);
-  const [userData, setUserData] = useState(
-    editData.comment ? { comment: editData.comment } : {}
-  );
-  const [commentClicked, setCommentClicked] = useState(click ? click : false);
+  const [userData, setUserData] = useState({});
+  const [commentClicked, setCommentClicked] = useState(false);
   const setClick = useEditStore((state) => state.setClick);
   const editType = useConfirmStore((state) => state.page);
   const [date, setDate] = useState('');
@@ -280,8 +278,12 @@ const PostContent = ({ data, page, type }) => {
             </p>
           )}
           <div className='like-info'>
-            {likeClicked ? (
-              <FavoriteIcon onClick={clickLike} />
+            {type !== 'post' ? (
+              likeClicked ? (
+                <FavoriteIcon onClick={clickLike} />
+              ) : (
+                <FavoriteBorderIcon onClick={clickLike} />
+              )
             ) : (
               <FavoriteBorderIcon onClick={clickLike} />
             )}

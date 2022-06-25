@@ -84,4 +84,4 @@ export const uploadAvatar = async (data, token) => {
 };
 
 // yang belum
-// terapin post foto, post avatar, is_like post, post not found
+// terapin post foto, post avatar
