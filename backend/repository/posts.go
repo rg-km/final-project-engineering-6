@@ -11,6 +11,7 @@ import (
 
 type PostDetail struct {
 	ID                int            `db:"id"`
+	IsLike            bool           `db:"is_like"`
 	AuthorID          int            `db:"author_id"`
 	AuthorName        string         `db:"author_name"`
 	AuthorRole        string         `db:"author_role"`
@@ -100,11 +101,12 @@ func (p *PostRepository) InsertPostImage(postID int, path string) error {
 	return nil
 }
 
-func (p *PostRepository) FetchAllPost(limit, offset int, orderBy, filter string) ([]PostDetail, error) {
+func (p *PostRepository) FetchAllPost(limit, offset, authorID int, orderBy, filter string) ([]PostDetail, error) {
 	sqlStatement := fmt.Sprintf(
 		`
 		SELECT 
 		up.id,
+		(SELECT EXISTS (SELECT 1 FROM post_likes WHERE post_id = up.id AND user_id = %d)) AS is_like,
 		up.author_id,
 		up.author_name,
 		up.author_role,
@@ -153,7 +155,7 @@ func (p *PostRepository) FetchAllPost(limit, offset int, orderBy, filter string)
 			LIMIT %d OFFSET %d
 		) up
 		LEFT JOIN post_images pi ON up.id = pi.post_id;`,
-		filter, orderBy, limit, offset)
+		authorID, filter, orderBy, limit, offset)
 
 	tx, err := p.db.Begin()
 
@@ -175,7 +177,7 @@ func (p *PostRepository) FetchAllPost(limit, offset int, orderBy, filter string)
 	for rows.Next() {
 		var post PostDetail
 		err := rows.Scan(
-			&post.ID,
+			&post.ID, &post.IsLike,
 			&post.AuthorID, &post.AuthorName, &post.AuthorRole, &post.AuthorAvatar,
 			&post.AuthorInstitution, &post.AuthorMajor, &post.AuthorBatch,
 			&post.CategoryID, &post.Title, &post.Description, &post.CreatedAt, &post.CommentCount, &post.LikeCount,
@@ -195,7 +197,7 @@ func (p *PostRepository) FetchAllPost(limit, offset int, orderBy, filter string)
 	return posts, nil
 }
 
-func (p *PostRepository) FetchPostByID(postID int) ([]PostDetail, error) {
+func (p *PostRepository) FetchPostByID(postID, authorID int) ([]PostDetail, error) {
 	var (
 		posts        []PostDetail
 		sqlStatement string
@@ -204,6 +206,7 @@ func (p *PostRepository) FetchPostByID(postID int) ([]PostDetail, error) {
 	sqlStatement = `
 		SELECT 
 			p.id as id,
+			(SELECT EXISTS (SELECT 1 FROM post_likes WHERE post_id = p.id AND user_id = ?)) AS is_like,
 			u.id as author_id,
 			u.name as author_name,
 			u.role as author_role,
@@ -232,7 +235,7 @@ func (p *PostRepository) FetchPostByID(postID int) ([]PostDetail, error) {
 
 	defer tx.Rollback()
 
-	rows, err := tx.Query(sqlStatement, postID)
+	rows, err := tx.Query(sqlStatement, authorID, postID)
 
 	if err != nil {
 		return nil, err
@@ -243,7 +246,7 @@ func (p *PostRepository) FetchPostByID(postID int) ([]PostDetail, error) {
 	for rows.Next() {
 		var post PostDetail
 		err := rows.Scan(
-			&post.ID,
+			&post.ID, &post.IsLike,
 			&post.AuthorID, &post.AuthorName, &post.AuthorRole, &post.AuthorAvatar,
 			&post.AuthorInstitution, &post.AuthorMajor, &post.AuthorBatch,
 			&post.CategoryID, &post.Title, &post.Description, &post.CreatedAt,
