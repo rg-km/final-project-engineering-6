@@ -12,6 +12,17 @@ const PostPage = ({ page, type }) => {
 
   return (
     <div className="page">
+      {page === "survey" && (
+        <div>
+          <h3>Post Survey</h3>
+        </div>
+      )}
+      {page === "forum" && (
+        <div>
+          <h3>Post Forum</h3>
+        </div>
+      )}
+
       {type === "post" && (
         <div className="search-container">
           <div className="search-bar">

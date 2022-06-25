@@ -5,7 +5,14 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1rem;
+  h3 {
+    margin-top: -2rem;
+    color: $SubTitleText;
+    @include breakpoint(md) {
+      margin: 0;
+    }
+  }
 
   @include breakpoint(md) {
     margin-left: 0;
