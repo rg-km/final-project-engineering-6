@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"mime/multipart"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -167,7 +168,8 @@ func (api *API) changeAvatar(c *gin.Context) {
 	}
 
 	splitFilename := strings.Split(input.Avatar.Filename, ".")
-	filePath := filepath.Join(folderPath, fmt.Sprintf("%s_%d.%s", userData.Name, time.Now().Unix(), splitFilename[len(splitFilename)-1]))
+	fileName := fmt.Sprintf("%s_%d.%s", userData.Name, time.Now().Unix(), splitFilename[len(splitFilename)-1])
+	filePath := filepath.Join(folderPath, fileName)
 	err = c.SaveUploadedFile(input.Avatar, filePath)
 
 	if err != nil {
@@ -184,8 +186,18 @@ func (api *API) changeAvatar(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-
-	c.JSON(http.StatusOK, gin.H{"message": "success"})
+	scheme := "http"
+	if c.Request.TLS != nil {
+		scheme = "https"
+	}
+	imgUrl := fmt.Sprintf("%s://%s/%s/%s", scheme, c.Request.Host, folderPath, url.PathEscape(fileName))
+	c.JSON(http.StatusOK, gin.H{"message": "success",
+		"data": struct {
+			Avatar string `json:"avatar"`
+		}{
+			Avatar: imgUrl,
+		},
+	})
 
 }
 

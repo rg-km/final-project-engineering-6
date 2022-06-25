@@ -19,7 +19,7 @@ const HomePage = () => {
             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus consequuntur odit quam sint sapiente aspernatur omnis accusamus rerum asperiores ipsam.</p>
             <div className="btn">
               <Link to="/forum">
-                <Button variant="login">Join Forum</Button>
+                <Button variant="login">Gabung Forum</Button>
               </Link>
             </div>
           </div>

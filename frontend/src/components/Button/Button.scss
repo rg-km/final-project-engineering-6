@@ -20,4 +20,9 @@
   border-radius: 50px;
   padding: 0;
   z-index: 20;
+  
+  @include breakpoint(md) {
+    bottom: 8rem;
+    right: 2rem;
+  }
 }

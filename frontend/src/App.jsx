@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './App.scss';
 import { BrowserRouter } from 'react-router-dom';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar/Navbar';
 import Sidebar from './components/Sidebar/Sidebar';
 import Backdrop from './components/Sidebar/Backdrop';
@@ -14,6 +14,7 @@ import ProfilePage from './pages/ProfilePage/ProfilePage';
 import NotificationsPage from './pages/NotificationsPage/NotificationsPage';
 import useTokenStore from './config/Store';
 import HomePage from './pages/HomePage/HomePage';
+import PageNotFound from "./pages/PageNotFound/PageNotFound";
 
 function App() {
   const [sidebar, setSidebar] = useState(false);
@@ -23,9 +24,17 @@ function App() {
     setSidebar((prevState) => !prevState);
   };
 
+  // const ProtectedRoute = ({ children }) => {
+  //   const { token } = useAuth();
+  //   if (!token) {
+  //     return <Navigate to="/" />;
+  //   }
+  //   return children;
+  // };
   return (
     <div className='App'>
       <BrowserRouter>
+        {/* <Alerts severity="success" message="This is a warning aler" /> */}
         <Navbar openSidebar={toogleSidebar} />
         <div style={{ display: 'flex' }}>
           <Backdrop Sidebar={sidebar} closeSidebar={toogleSidebar} />
@@ -62,6 +71,7 @@ function App() {
           </Route>
           <Route path='/profile' element={<ProfilePage />} />
           <Route path='/notifications' element={<NotificationsPage />} />
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
       </BrowserRouter>
     </div>

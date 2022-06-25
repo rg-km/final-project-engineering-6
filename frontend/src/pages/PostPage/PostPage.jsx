@@ -94,40 +94,42 @@ const PostPage = ({ page, type }) => {
               onChange={handleChange}
             />
           </div>
-          <select
-            name='sort'
-            id='sort'
-            defaultValue=''
-            onChange={(e) => handleChange(e.target.value, e.target.name)}
-          >
-            <option value='' disabled>
-              Sort by
-            </option>
-            <option value=''>Default</option>
-            <option value='newest'>Newest</option>
-            <option value='oldest'>Oldest</option>
-            <option value='most_commented'>By Most Comments</option>
-            <option value='most_liked'>By Most Likes</option>
-          </select>
-          <select
-            name='filter'
-            id='filter'
-            defaultValue=''
-            onChange={(e) => handleChange(e.target.value, e.target.name)}
-          >
-            <option value='' disabled>
-              Filter by Category
-            </option>
-            <option value=''>All Category</option>
-            {getStatus &&
-              categories.map((category) => {
-                return (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                );
-              })}
-          </select>
+          <div className="search-dropdown">
+            <select
+              name='sort'
+              id='sort'
+              defaultValue=''
+              onChange={(e) => handleChange(e.target.value, e.target.name)}
+            >
+              <option value='' disabled>
+                Sort by
+              </option>
+              <option value=''>Default</option>
+              <option value='newest'>Newest</option>
+              <option value='oldest'>Oldest</option>
+              <option value='most_commented'>By Most Comments</option>
+              <option value='most_liked'>By Most Likes</option>
+            </select>
+            <select
+              name='filter'
+              id='filter'
+              defaultValue=''
+              onChange={(e) => handleChange(e.target.value, e.target.name)}
+            >
+              <option value='' disabled>
+                Filter by Category
+              </option>
+              <option value=''>All Category</option>
+              {getStatus &&
+                categories.map((category) => {
+                  return (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  );
+                })}
+            </select>
+          </div>
         </div>
       )}
       <div className='post-container'>

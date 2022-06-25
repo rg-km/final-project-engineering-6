@@ -51,6 +51,11 @@ body {
   margin-top: 10vh;
   margin-left: 18%;
   padding: 3rem;
+  text-align: justify;
+  text-justify: inter-word;
+  @include breakpoint(md) {
+    padding: 1rem;
+  }
 }
 
 @mixin post-container() {

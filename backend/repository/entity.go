@@ -49,6 +49,7 @@ type Notification struct {
 	Name        string    `json:"name"`
 	CommentID   int       `json:"comment_id"`
 	PostID      int       `json:"post_id"`
+	PostTitle   string    `json:"post_title"`
 	AlreadyRead bool      `json:"already_read"`
 	CreatedAt   time.Time `json:"created_at"`
 }
