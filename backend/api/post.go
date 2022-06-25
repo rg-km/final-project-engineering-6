@@ -44,6 +44,7 @@ type DetailPostResponse struct {
 
 type PostResponse struct {
 	ID           int                `json:"id"`
+	IsLike       bool               `json:"is_like"`
 	IsAuthor     bool               `json:"is_author"`
 	Author       AuthorPostResponse `json:"author"`
 	CategoryID   int                `json:"category_id"`
@@ -247,15 +248,10 @@ func (api *API) readPosts(ctx *gin.Context) {
 	}
 
 	if me {
-		userID, err := api.getUserIdFromToken(ctx)
-		if err != nil {
-			ctx.JSON(http.StatusBadRequest, ErrorPostResponse{Message: err.Error()})
-			return
-		}
-		filterQuery = fmt.Sprintf("%sAND author_id = %d", filterQuery, userID)
+		filterQuery = fmt.Sprintf("%sAND author_id = %d", filterQuery, authorID)
 	}
 
-	posts, err := api.postRepo.FetchAllPost(limit, offset, sortBy, filterQuery)
+	posts, err := api.postRepo.FetchAllPost(limit, offset, authorID, sortBy, filterQuery)
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, ErrorPostResponse{Message: "Internal Server Error"})
@@ -263,7 +259,7 @@ func (api *API) readPosts(ctx *gin.Context) {
 	}
 
 	if len(posts) == 0 {
-		ctx.JSON(http.StatusNotFound, ErrorPostResponse{Message: "Post Not Found"})
+		ctx.JSON(http.StatusOK, []string{})
 		return
 	}
 
@@ -300,6 +296,7 @@ func (api *API) readPosts(ctx *gin.Context) {
 
 			postsDetail[post.ID] = PostResponse{
 				ID:       post.ID,
+				IsLike:   post.IsLike,
 				IsAuthor: authorID == post.AuthorID,
 				Author: AuthorPostResponse{
 					ID:           post.AuthorID,
@@ -360,7 +357,7 @@ func (api *API) readPost(ctx *gin.Context) {
 		return
 	}
 
-	posts, err := api.postRepo.FetchPostByID(postID)
+	posts, err := api.postRepo.FetchPostByID(postID, authorID)
 
 	if err != nil {
 		fmt.Println(err.Error())
@@ -422,6 +419,7 @@ func (api *API) readPost(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, DetailPostResponse{
 		PostResponse: PostResponse{
 			ID:       posts[0].ID,
+			IsLike:   posts[0].IsLike,
 			IsAuthor: posts[0].AuthorID == authorID,
 			Author: AuthorPostResponse{
 				ID:           posts[0].AuthorID,

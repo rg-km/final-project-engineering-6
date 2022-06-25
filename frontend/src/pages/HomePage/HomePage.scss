@@ -1,4 +1,4 @@
-@import "../../App.scss";
+@import '../../App.scss';
 
 .home-page {
   width: 100%;
@@ -20,7 +20,7 @@
     justify-content: center;
     background-color: $Light;
     padding: 5rem;
-    background-image: url("../../images/bg-banner.svg");
+    background-image: url('../../images/bg-banner.svg');
     background-repeat: no-repeat;
     background-size: cover;
     @include breakpoint(md) {
@@ -88,7 +88,7 @@
     width: 100%;
     margin: 0 auto;
     height: 150vh;
-    background-image: url("../../images/bg-basis.svg");
+    background-image: url('../../images/bg-basis.svg');
     background-repeat: no-repeat;
     background-size: cover;
     display: flex;
@@ -183,7 +183,7 @@
   .footer {
     width: 100%;
     min-height: 10vh;
-    background-image: url("../../images/wave.svg");
+    background-image: url('../../images/wave.svg');
     background-repeat: no-repeat;
     background-size: cover;
     display: flex;
