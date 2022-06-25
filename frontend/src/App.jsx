@@ -1,27 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import './App.scss';
-import { useNavigate } from 'react-router-dom';
-import { Routes, Route, Navigate } from 'react-router-dom';
-import Navbar from './components/Navbar/Navbar';
-import Sidebar from './components/Sidebar/Sidebar';
-import Backdrop from './components/Sidebar/Backdrop';
-import Register from './pages/Register/Register';
-import Login from './pages/Login/Login';
-import Button from './components/Button/Button';
-import PostPage from './pages/PostPage/PostPage';
-import DetailPage from './pages/DetailPage/DetailPage';
-import ProfilePage from './pages/ProfilePage/ProfilePage';
-import NotificationsPage from './pages/NotificationsPage/NotificationsPage';
-import useTokenStore, {
-  useAlertStore,
-  useConfirmStore,
-  useDeleteStore,
-  useEditStore,
-} from './config/Store';
-import HomePage from './pages/HomePage/HomePage';
-import PageNotFound from './pages/PageNotFound/PageNotFound';
-import { Alert } from '@mui/material';
-import { useAPI } from './config/api';
+import React, { useEffect, useState } from "react";
+import "./App.scss";
+import { useNavigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
+import Navbar from "./components/Navbar/Navbar";
+import Sidebar from "./components/Sidebar/Sidebar";
+import Backdrop from "./components/Sidebar/Backdrop";
+import Register from "./pages/Register/Register";
+import Login from "./pages/Login/Login";
+import Button from "./components/Button/Button";
+import PostPage from "./pages/PostPage/PostPage";
+import DetailPage from "./pages/DetailPage/DetailPage";
+import ProfilePage from "./pages/ProfilePage/ProfilePage";
+import NotificationsPage from "./pages/NotificationsPage/NotificationsPage";
+import useTokenStore, { useAlertStore, useConfirmStore, useDeleteStore, useEditStore } from "./config/Store";
+import HomePage from "./pages/HomePage/HomePage";
+import PageNotFound from "./pages/PageNotFound/PageNotFound";
+import { Alert } from "@mui/material";
+import { useAPI } from "./config/api";
 
 function App() {
   const [sidebar, setSidebar] = useState(false);
@@ -62,15 +57,15 @@ function App() {
   }, [show, setShow]);
 
   const clickDelete = async () => {
-    if (confirmPage === 'comment') {
+    if (confirmPage === "comment") {
       const result = await del(`comments/${id}`, token);
 
       setShow(true);
       if (result.status === 200) {
-        setMessage('Comment has been deleted, please refresh');
+        setMessage("Comment has been deleted, please refresh");
         setSucceed(true);
       } else {
-        setMessage('Error in deleting comment');
+        setMessage("Error in deleting comment");
         setSucceed(false);
       }
       return;
@@ -80,44 +75,45 @@ function App() {
 
     setShow(true);
     if (result.status === 200) {
-      setMessage('Post has been deleted, please refresh');
+      setMessage("Post has been deleted, please refresh");
       setSucceed(true);
     } else {
-      setMessage('Error in deleting post');
+      setMessage("Error in deleting post");
       setSucceed(false);
     }
   };
 
   const clickEdit = async () => {
-    if (confirmPage === 'comment') {
+    if (confirmPage === "comment") {
       setClick(true);
       return;
     }
-    navigate(`/${confirmPage}/form`, { state: { data, state: 'edit' } });
+    navigate(`/${confirmPage}/form`, { state: { data, state: "edit" } });
   };
 
-  // const ProtectedRoute = ({ children }) => {
-  //   if (!token) {
-  //     return <Navigate to="/" />;
-  //   }
-  //   return children;
-  // };
+  const ProtectedRoute = ({ children }) => {
+    if (!token) {
+      return <Navigate to="/login" />;
+    }
+    return children;
+  };
+
   return (
-    <div className='App'>
+    <div className="App">
       <Navbar openSidebar={toogleSidebar} />
-      <div style={{ display: 'flex' }}>
+      <div style={{ display: "flex" }}>
         <Backdrop Sidebar={sidebar} closeSidebar={toogleSidebar} />
         <Sidebar Sidebar={sidebar} />
       </div>
 
       {show && (
         <Alert
-          severity={succeed ? 'success' : 'error'}
+          severity={succeed ? "success" : "error"}
           style={{
-            marginBottom: '1rem',
-            position: 'fixed',
-            bottom: '3rem',
-            left: '3rem',
+            marginBottom: "1rem",
+            position: "fixed",
+            bottom: "3rem",
+            left: "3rem",
             zIndex: 20,
             opacity: 0.9,
           }}
@@ -125,18 +121,18 @@ function App() {
           {message}
         </Alert>
       )}
-      {token && <Button variant={'add-post'}>+</Button>}
+      {token && <Button variant={"add-post"}>+</Button>}
 
       {showConfirm && (
-        <div id='confirmOverlay'>
-          <div id='confirmBox'>
+        <div id="confirmOverlay">
+          <div id="confirmBox">
             <h2>{messageConfirm}</h2>
 
-            <div id='confirmButtons'>
+            <div id="confirmButtons">
               <button
                 onClick={() => {
                   setShowConfirm(false);
-                  if (type === 'edit') {
+                  if (type === "edit") {
                     clickEdit();
                   } else {
                     clickDelete();
@@ -158,34 +154,64 @@ function App() {
       )}
 
       <Routes>
-        <Route path='/' default element={<HomePage />} />
-        <Route path='register' element={<Register />} />
-        <Route path='login' element={<Login />} />
-        <Route path='forum'>
-          <Route index element={<PostPage page={'forum'} type={'post'} />} />
+        <Route path="/" default element={<HomePage />} />
+        <Route path="register" element={<Register />} />
+        <Route path="login" element={<Login />} />
+        <Route path="forum">
+          <Route index element={<PostPage page={"forum"} type={"post"} />} />
           <Route
-            path=':id'
-            element={<DetailPage page={'forum'} type={'detail'} />}
+            path=":id"
+            element={
+              <ProtectedRoute>
+                <DetailPage page={"forum"} type={"detail"} />
+              </ProtectedRoute>
+            }
           />
           <Route
-            path='form'
-            element={<PostPage page={'forum'} type={'form'} />}
-          />
-        </Route>
-        <Route path='survey'>
-          <Route index element={<PostPage page={'survey'} type={'post'} />} />
-          <Route
-            path=':id'
-            element={<DetailPage page={'survey'} type={'detail'} />}
-          />
-          <Route
-            path='form'
-            element={<PostPage page={'survey'} type={'form'} />}
+            path="form"
+            element={
+              <ProtectedRoute>
+                <PostPage page={"forum"} type={"form"} />
+              </ProtectedRoute>
+            }
           />
         </Route>
-        <Route path='/profile' element={<ProfilePage />} />
-        <Route path='/notifications' element={<NotificationsPage />} />
-        <Route path='*' element={<PageNotFound />} />
+        <Route path="survey">
+          <Route index element={<PostPage page={"survey"} type={"post"} />} />
+          <Route
+            path=":id"
+            element={
+              <ProtectedRoute>
+                <DetailPage page={"survey"} type={"detail"} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="form"
+            element={
+              <ProtectedRoute>
+                <PostPage page={"survey"} type={"form"} />
+              </ProtectedRoute>
+            }
+          />
+        </Route>
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/notifications"
+          element={
+            <ProtectedRoute>
+              <NotificationsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
     </div>
   );
