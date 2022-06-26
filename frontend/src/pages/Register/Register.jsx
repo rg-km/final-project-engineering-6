@@ -37,20 +37,20 @@ const Register = () => {
   const registerClick = async (e) => {
     e.preventDefault();
     // data name, email, password, role, institute, major, batch
-
+    console.log(userData);
     const result = await post('register', {
       ...userData,
       batch: Number(userData.batch),
     });
-
+    console.log(result);
     setShow(true);
     if (result.status === 200) {
       setToken(result.data.token);
-      setMessage('Register successful');
+      setMessage('Registration successful');
       setSucceed(true);
       navigate('/');
     } else {
-      setMessage('Register successful');
+      setMessage('Registration failed');
       setSucceed(false);
     }
   };
@@ -139,15 +139,17 @@ const Register = () => {
                 </div>
               </div>
             ) : (
-              <div className='input-container'>
-                <FormInput
-                  type={'text'}
-                  placeholder={'Institute'}
-                  onChange={handleChange}
-                  name={'institute'}
-                  value={userData.institute ? userData.institute : ''}
-                />
-              </div>
+              userData.role === 'siswa' && (
+                <div className='input-container'>
+                  <FormInput
+                    type={'text'}
+                    placeholder={'Institute'}
+                    onChange={handleChange}
+                    name={'institute'}
+                    value={userData.institute ? userData.institute : ''}
+                  />
+                </div>
+              )
             )}
             <div className='button-container'>
               <button
