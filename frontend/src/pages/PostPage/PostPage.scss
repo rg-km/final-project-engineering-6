@@ -1,4 +1,4 @@
-@import '../../App.scss';
+@import "../../App.scss";
 
 .page {
   @include page();
@@ -6,7 +6,7 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  h3 {
+  .title {
     margin-top: -2rem;
     color: $SubTitleText;
     @include breakpoint(md) {
