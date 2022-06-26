@@ -4,25 +4,22 @@ import './Navbar.scss';
 import Button from '../Button/Button';
 
 import MenuIcon from '@mui/icons-material/Menu';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import useTokenStore, { useAlertStore } from '../../config/Store';
 
 // for menu logout
 import Box from '@mui/material/Box';
-import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
-import PersonAdd from '@mui/icons-material/PersonAdd';
-import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
+import FotoProfile from '../../images/img-profile.jpg';
 
 import Logo from '../../images/logo.svg';
+import { useGet } from '../../config/config';
 
 const Navbar = ({ openSidebar }) => {
   const token = useTokenStore((state) => state.token);
@@ -30,6 +27,7 @@ const Navbar = ({ openSidebar }) => {
   const setShow = useAlertStore((state) => state.setShow);
   const setSucceed = useAlertStore((state) => state.setSucceed);
   const setMessage = useAlertStore((state) => state.setMessage);
+  const [profileResult, profileStatus] = useGet('profile', token);
 
   const logout = () => {
     setShow(true);
@@ -91,7 +89,21 @@ const Navbar = ({ openSidebar }) => {
                         aria-haspopup='true'
                         aria-expanded={open ? 'true' : undefined}
                       >
-                        <Avatar sx={{ width: 32, height: 32 }}></Avatar>
+                        <img
+                          src={
+                            profileStatus
+                              ? profileResult.avatar
+                                ? `http://167.172.84.216:8080/${profileResult.avatar}`
+                                : FotoProfile
+                              : FotoProfile
+                          }
+                          alt='profile'
+                          style={{
+                            width: '32px',
+                            height: '32px',
+                            borderRadius: '50%',
+                          }}
+                        />
                       </IconButton>
                     </Tooltip>
                   </Box>

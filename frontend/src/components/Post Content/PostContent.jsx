@@ -216,12 +216,18 @@ const PostContent = ({ data, page, type }) => {
               ? data.comment
               : data.description}
           </p>
-          {type === 'detail' && page === 'forum' && data.images[0] && (
-            <img
-              src={`http://167.172.84.216:8080/${data.images[0].url}`}
-              alt='Description'
-            />
-          )}
+          {type === 'detail' &&
+            page === 'forum' &&
+            data.images[0] &&
+            data.images.map((image, index) => {
+              return (
+                <img
+                  key={index}
+                  src={`http://167.172.84.216:8080/${data.images[0].url}`}
+                  alt='Description'
+                />
+              );
+            })}
 
           {page === 'survey' && type === 'detail' && (
             <>
@@ -250,8 +256,8 @@ const PostContent = ({ data, page, type }) => {
             <div className='user-avatar'>
               <img
                 src={
-                  data.profile_image
-                    ? `http://167.172.84.216:8080/${data.profile_image}`
+                  data.author.profile_image
+                    ? `http://167.172.84.216:8080/${data.author.profile_image}`
                     : Photo
                 }
                 alt='user'

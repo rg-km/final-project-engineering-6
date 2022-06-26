@@ -2,8 +2,6 @@ import axios from 'axios';
 import create from 'zustand';
 import { devtools } from 'zustand/middleware';
 
-const API_URL = 'http://167.172.84.216:8080';
-
 const defaultAxios = axios.create({
   baseURL: 'http://167.172.84.216:8080/api/',
   timeout: 5000,
@@ -68,20 +66,3 @@ export const useAPI = create(
     },
   }))
 );
-
-export const uploadAvatar = async (data, token) => {
-  // data avatar
-  try {
-    const res = await axios.put(`${API_URL}/api/profile/avatar`, data, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    console.log(res);
-    if (res.status === 200) return res;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-};
-
-// yang belum
-// terapin post foto, post avatar

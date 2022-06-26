@@ -108,37 +108,35 @@ const ProfilePage = () => {
     if (userData.image) uploadData.append('avatar', userData.image);
 
     // console.log(uploadData);
-    if (userData.image) {
-      const imageResult = await put(`profile/avatar`, uploadData, token);
+    const result = await patch(
+      'profile',
+      {
+        name: userData.name,
+        email: userData.email,
+      },
+      token
+    );
 
-      setShow(true);
-      if (imageResult.status === 200) {
-        setMessage('Profile updated, please refresh');
-        setSucceed(true);
-        setOpen(false);
-      } else {
-        setMessage('Error in updating profile');
-        setSucceed(false);
-        return;
+    if (result.status === 200) {
+      if (userData.image) {
+        const imageResult = await put(`profile/avatar`, uploadData, token);
+
+        setShow(true);
+        if (imageResult.status === 200) {
+          setMessage('Profile updated, please refresh');
+          setSucceed(true);
+          setOpen(false);
+        } else {
+          setMessage('Error in updating profile');
+          setSucceed(false);
+          return;
+        }
       }
+    } else {
+      setMessage('Please update all data');
+      setSucceed(false);
+      return;
     }
-    // const result = await patch(
-    //   'profile',
-    //   {
-    //     name: userData.name,
-    //     email: userData.email,
-    //   },
-    //   token
-    // );
-
-    // if (result.status === 200) {
-    //   // data images
-
-    //   window.alert('Profile Updated');
-    //   setOpen(false);
-    // } else {
-    //   window.alert('Update Failed');
-    // }
   };
 
   const [profileResult, profileStatus] = useGet('profile', token);
