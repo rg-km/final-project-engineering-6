@@ -1,4 +1,4 @@
-@import '../../App.scss';
+@import "../../App.scss";
 
 .content-container {
   @include post-container();
@@ -145,6 +145,8 @@
       flex-direction: column;
       gap: 0.5rem;
       flex: 9;
+      text-align: left;
+      // display: none;
 
       .content-title {
         @include breakpoint(md) {

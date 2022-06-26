@@ -1,4 +1,4 @@
-@import '../../App.scss';
+@import "../../App.scss";
 
 .btn-login,
 .btn-submit {
@@ -23,7 +23,7 @@
   box-shadow: 0 5px 10px 2px rgba($color: #000000, $alpha: 0.3);
 
   @include breakpoint(md) {
-    bottom: 8rem;
+    bottom: 2rem;
     right: 2rem;
   }
 }
