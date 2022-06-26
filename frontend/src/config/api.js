@@ -6,7 +6,7 @@ const API_URL = 'http://167.172.84.216:8080';
 
 const defaultAxios = axios.create({
   baseURL: 'http://167.172.84.216:8080/api/',
-  timeout: 2000,
+  timeout: 5000,
 });
 
 const headers = (token) => {

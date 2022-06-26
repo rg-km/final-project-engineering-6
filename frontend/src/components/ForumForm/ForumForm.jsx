@@ -47,7 +47,12 @@ const ForumForm = ({ page }) => {
     e.preventDefault();
 
     if (userData === {}) return;
-    if (userData.image) uploadData.append("images", userData.image);
+    if (userData.image) {
+      console.log(userData.image)
+      for(let i=0;i<userData.image.length;i++){
+        uploadData.append("images", userData.image[i]);
+      }
+    }
 
     const data = {
       category_id: Number(userData.category),
@@ -203,7 +208,7 @@ const ForumForm = ({ page }) => {
             {tab ? (
               <FormInput type={"text"} placeholder={"Image Link"} name={"image"} onChange={handleChange} value={userData.image ? userData.image : ""} />
             ) : (
-              <input type="file" name="image" accept="image/png, image/jpeg" onChange={(e) => handleChange(e.target.value, e.target.name)} value={userData.image ? userData.image : ""} />
+              <input type="file" name="image" multiple accept="image/png, image/jpeg" onChange={(e) => handleChange(e.target.files, e.target.name)}/>
             )}
           </div>
         )}
