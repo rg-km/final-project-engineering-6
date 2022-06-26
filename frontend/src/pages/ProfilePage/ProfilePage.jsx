@@ -281,9 +281,8 @@ const ProfilePage = () => {
                     name='image'
                     accept='image/png, image/jpeg'
                     onChange={(e) =>
-                      handleChange(e.target.value, e.target.name)
+                      handleChange(e.target.files[0], e.target.name)
                     }
-                    value={userData.image ? userData.image : ''}
                   />
                 )}
                 <FormInput
