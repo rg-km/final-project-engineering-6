@@ -10,6 +10,7 @@ type Comment struct {
 	CreatedAt       *time.Time `json:"created_at"`
 	AuthorID        int        `json:"author_id"`
 	AuthorName      string     `json:"author_name" db:"author_name"`
+	AuthorAvatar    *string    `json:"author_avatar"`
 	TotalLike       int        `json:"total_like"`
 	TotalReply      int        `json:"total_reply"`
 	IsLike          bool       `json:"is_like"`
