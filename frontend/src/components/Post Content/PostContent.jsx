@@ -172,13 +172,16 @@ const PostContent = ({ data, page, type }) => {
         id='top-section'
         className={type === 'post' ? 'post-content' : 'detail-content'}
       >
+        {type === 'detail' && console.log(data)}
         {type !== 'post' && (
           <div className='user-section'>
             <div className='user-avatar'>
               <img
                 src={
-                  data.profile_image
-                    ? `http://167.172.84.216:8080/${data.profile_image}`
+                  type === 'detail'
+                    ? data.author.profile_image
+                      ? `http://167.172.84.216/${data.author.profile_image}`
+                      : Photo
                     : Photo
                 }
                 alt='user'
@@ -223,7 +226,7 @@ const PostContent = ({ data, page, type }) => {
               return (
                 <img
                   key={index}
-                  src={`http://167.172.84.216:8080/${data.images[0].url}`}
+                  src={`http://167.172.84.216/${data.images[0].url}`}
                   alt='Description'
                 />
               );
@@ -257,7 +260,7 @@ const PostContent = ({ data, page, type }) => {
               <img
                 src={
                   data.author.profile_image
-                    ? `http://167.172.84.216:8080/${data.author.profile_image}`
+                    ? `http://167.172.84.216/${data.author.profile_image}`
                     : Photo
                 }
                 alt='user'

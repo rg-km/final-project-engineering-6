@@ -209,7 +209,7 @@ const ProfilePage = () => {
           <img
             src={
               profileResult.avatar
-                ? `http://167.172.84.216:8080/${profileResult.avatar}`
+                ? `http://167.172.84.216/${profileResult.avatar}`
                 : FotoProfile
             }
             alt='profile'
@@ -254,7 +254,7 @@ const ProfilePage = () => {
                 <img
                   src={
                     profileResult.avatar
-                      ? `http://167.172.84.216:8080/${profileResult.avatar}`
+                      ? `http://167.172.84.216/${profileResult.avatar}`
                       : FotoProfile
                   }
                   alt='Profile'
