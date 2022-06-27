@@ -22,6 +22,7 @@ func (c *CommentRepository) SelectAllCommentsByParentCommentID(out chan<- []Comm
 	SELECT
 		c.*,
 		u.name as author_name,
+		u.avatar as author_avatar,
 		(SELECT COUNT(*) FROM comment_likes WHERE comment_id = c.id) AS total_like,
 		(SELECT EXISTS (SELECT 1 FROM comment_likes WHERE comment_id = c.id AND user_id = ?)) AS is_like
 	FROM comments c
@@ -51,6 +52,7 @@ func (c *CommentRepository) SelectAllCommentsByParentCommentID(out chan<- []Comm
 			&comment.Comment,
 			&comment.CreatedAt,
 			&comment.AuthorName,
+			&comment.AuthorAvatar,
 			&comment.TotalLike,
 			&comment.IsLike,
 		)
@@ -88,6 +90,7 @@ func (c *CommentRepository) SelectAllCommentsByPostID(userID, postID int) ([]Com
 	SELECT
 		c.*,
 		u.name as author_name,
+		u.avatar as author_avatar,
 		(SELECT COUNT(*) FROM comment_likes WHERE comment_id = c.id) AS total_like,
 		(SELECT EXISTS (SELECT 1 FROM comment_likes WHERE comment_id = c.id AND user_id = ?)) AS is_like
 	FROM comments c
@@ -116,6 +119,7 @@ func (c *CommentRepository) SelectAllCommentsByPostID(userID, postID int) ([]Com
 			&comment.Comment,
 			&comment.CreatedAt,
 			&comment.AuthorName,
+			&comment.AuthorAvatar,
 			&comment.TotalLike,
 			&comment.IsLike,
 		)
