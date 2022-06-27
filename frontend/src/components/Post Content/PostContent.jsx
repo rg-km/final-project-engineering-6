@@ -223,12 +223,12 @@ const PostContent = ({ data, page, type }) => {
           </p>
           {type === 'detail' &&
             page === 'forum' &&
-            data.images[0] &&
+            data.images &&
             data.images.map((image, index) => {
               return (
                 <img
                   key={index}
-                  src={`http://167.172.84.216/${data.images[0].url}`}
+                  src={`http://167.172.84.216/${image.url}`}
                   alt='Description'
                 />
               );
