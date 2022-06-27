@@ -172,6 +172,7 @@ const PostContent = ({ data, page, type }) => {
         id='top-section'
         className={type === 'post' ? 'post-content' : 'detail-content'}
       >
+        {type === 'comment' && console.log(data)}
         {type !== 'post' && (
           <div className='user-section'>
             <div className='user-avatar'>
@@ -181,6 +182,8 @@ const PostContent = ({ data, page, type }) => {
                     ? data.author.profile_image
                       ? `http://167.172.84.216/${data.author.profile_image}`
                       : Photo
+                    : data.author_avatar
+                    ? `http://167.172.84.216/${data.author_avatar}`
                     : Photo
                 }
                 alt='user'
