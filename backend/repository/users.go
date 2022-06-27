@@ -44,23 +44,31 @@ func (u *UserRepository) GetUserData(id int) (*User, error) {
 func (u *UserRepository) UpdateUserData(id int, name, email string) error {
 	statement := "UPDATE users SET name = ?, email = ? WHERE id = ?"
 
-	isAvailable, err := u.CheckEmail(email)
+	user, err := u.GetUserData(id)
 	if err != nil {
 		return err
 	}
 
-	if !isAvailable {
-		return errors.New("email has been used")
-	}
+	if user.Email != email {
+		isAvailable, err := u.CheckEmail(email)
 
-	regex, err := regexp.Compile("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")
-	if err != nil {
-		return err
-	}
+		if err != nil {
+			return err
+		}
 
-	isValid := regex.Match([]byte(email))
-	if !isValid {
-		return errors.New("invalid email")
+		if !isAvailable {
+			return errors.New("email has been used")
+		}
+
+		regex, err := regexp.Compile("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")
+		if err != nil {
+			return err
+		}
+
+		isValid := regex.Match([]byte(email))
+		if !isValid {
+			return errors.New("invalid email")
+		}
 	}
 
 	_, err = u.db.Exec(statement, name, email, id)
