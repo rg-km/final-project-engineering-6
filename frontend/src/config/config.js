@@ -7,6 +7,7 @@ export const useGet = (url, token) => {
   const { get } = useAPI((state) => state);
 
   useEffect(() => {
+    if (!token) return;
     const fetchData = async () => {
       const res = await get(url, token);
       if (res.status === 200) {

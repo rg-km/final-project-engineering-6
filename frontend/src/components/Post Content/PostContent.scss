@@ -1,4 +1,4 @@
-@import "../../App.scss";
+@import '../../App.scss';
 
 .content-container {
   @include post-container();
@@ -16,6 +16,8 @@
       gap: 0.5rem;
 
       .content-title {
+        width: 85%;
+
         @include breakpoint(md) {
           font-size: 1.2rem;
           width: 70%;

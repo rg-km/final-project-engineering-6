@@ -117,11 +117,11 @@ const ProfilePage = () => {
       token
     );
 
+    setShow(true);
     if (result.status === 200) {
       if (userData.image) {
         const imageResult = await put(`profile/avatar`, uploadData, token);
 
-        setShow(true);
         if (imageResult.status === 200) {
           setMessage('Profile updated, please refresh');
           setSucceed(true);
@@ -132,6 +132,9 @@ const ProfilePage = () => {
           return;
         }
       }
+      setMessage('Profile updated, please refresh');
+      setSucceed(true);
+      setOpen(false);
     } else {
       setMessage('Please update all data');
       setSucceed(false);
