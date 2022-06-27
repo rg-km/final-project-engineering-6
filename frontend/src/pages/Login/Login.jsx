@@ -45,7 +45,7 @@ const Login = () => {
       setToken(result.data.token);
       setMessage('Login successful');
       setSucceed(true);
-      navigate('/');
+      navigate('/forum');
     } else {
       setMessage('Login failed');
       setSucceed(false);

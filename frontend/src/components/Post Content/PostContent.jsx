@@ -172,7 +172,6 @@ const PostContent = ({ data, page, type }) => {
         id='top-section'
         className={type === 'post' ? 'post-content' : 'detail-content'}
       >
-        {type === 'detail' && console.log(data)}
         {type !== 'post' && (
           <div className='user-section'>
             <div className='user-avatar'>
