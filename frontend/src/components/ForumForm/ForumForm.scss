@@ -28,30 +28,6 @@
           font-family: $Roboto;
         }
       }
-
-      label {
-        .tab {
-          width: fit-content;
-          display: flex;
-          border-radius: 5px;
-          overflow: hidden;
-          margin: 0.5rem 0;
-
-          div {
-            display: flex;
-            background-color: $Secondary;
-            border: none;
-            width: 5rem;
-            height: 2rem;
-            color: $Light;
-            justify-content: center;
-            align-items: center;
-          }
-          .active-tab {
-            background-color: darken($color: $Secondary, $amount: 8);
-          }
-        }
-      }
     }
   }
 }

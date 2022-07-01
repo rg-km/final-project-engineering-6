@@ -65,7 +65,6 @@ BootstrapDialogTitle.propTypes = {
 // End Modals Edit Profile
 
 const ProfilePage = () => {
-  const [tab, setTab] = useState(false);
   const [userData, setUserData] = useState({});
   const token = useTokenStore((state) => state.token);
   const [open, setOpen] = React.useState(false);
@@ -78,19 +77,9 @@ const ProfilePage = () => {
   const handleClickOpen = () => {
     setOpen(true);
   };
+
   const handleClose = () => {
     setOpen(false);
-  };
-
-  const tabClick = (e) => {
-    e.preventDefault();
-    setTab(!tab);
-    setUserData((previousValues) => {
-      return {
-        ...previousValues,
-        avatar: '',
-      };
-    });
   };
 
   const handleChange = (eventValue, eventName) => {
@@ -147,20 +136,6 @@ const ProfilePage = () => {
   const [forumResult, forumStatus] = useGet('post?me=true', token);
 
   const [surveyResult, surveyStatus] = useGet('questionnaires?me=true', token);
-  // console.log(profileResult);
-
-  const activeStyle = {
-    display: 'flex',
-    backgroundColor: '#1682fd',
-    border: 'none',
-    width: '7rem',
-    height: '2rem',
-    color: ' white',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: '5px',
-    margin: '0.5rem 0',
-  };
 
   useEffect(() => {
     setUserData({
@@ -265,27 +240,14 @@ const ProfilePage = () => {
                   height={'65px'}
                   style={{ borderRadius: '50%' }}
                 />
-                <div style={activeStyle} onClick={tabClick}>
-                  {tab ? 'Upload Image' : 'Input Link'}
-                </div>
-                {tab ? (
-                  <FormInput
-                    type={'text'}
-                    placeholder={'Image Link'}
-                    name={'image'}
-                    onChange={handleChange}
-                    value={userData.image ? userData.image : ''}
-                  />
-                ) : (
-                  <input
-                    type='file'
-                    name='image'
-                    accept='image/png, image/jpeg'
-                    onChange={(e) =>
-                      handleChange(e.target.files[0], e.target.name)
-                    }
-                  />
-                )}
+                <input
+                  type='file'
+                  name='image'
+                  accept='image/png, image/jpeg'
+                  onChange={(e) =>
+                    handleChange(e.target.files[0], e.target.name)
+                  }
+                />
                 <FormInput
                   type={'text'}
                   placeholder={'Name'}
