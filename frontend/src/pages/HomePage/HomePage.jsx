@@ -15,8 +15,8 @@ const HomePage = () => {
       <div className="container">
         <div className="words">
           <div className="title">
-            <h1>Don’t wanna Make you have A bad day</h1>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus consequuntur odit quam sint sapiente aspernatur omnis accusamus rerum asperiores ipsam.</p>
+            <h1>Go enhance your school and college life</h1>
+            <p>Join other students around Indonesia. Do you want to ask something about school and college things? Just post it and other users will answer it.</p>
             <div className="btn">
               <Link to="/forum">
                 <Button variant="login">Open Forum</Button>
@@ -33,12 +33,14 @@ const HomePage = () => {
           <img src={Basis} alt="" />
         </div>
         <div className="explain">
-          <h2>Get quality, hyper-focused, uninterrupted work done </h2>
+          <h2>Go post forum or place your survey link </h2>
           <p>
-            Endless to-do lists and constant distractions from coworkers, calendars and cuddly pets means that you’re probably wasting a lot of time. Seque helps you to plan, focus and optimize your time so that you can get more done in less time.
+          We try to create a forum platform that students around Indonesia can use. They can ask about anything, share about anything, and expand their connections with other students.  
           </p>
           <br />
-          <p>Work distraction-free immersed in deep focus blocks, one task at a time. Increase your productivity by knowing exactly how and when you get the most done.</p>
+          <p>We also provide a place that can be used for sharing survey links. By placing your survey links in BASIS, another user can fill your survey links and you don't need to find other respondents.</p>
+          <br />
+          <p>we plan to expand our features so we can provide many services that can make your school or college life easier. So stay tuned.</p>
         </div>
       </div>
       <div className="fitur">
