@@ -11,10 +11,10 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/rg-km/final-project-engineering-6/helper"
 	"github.com/rg-km/final-project-engineering-6/repository"
+	"github.com/rg-km/final-project-engineering-6/service"
 )
 
 type CreateQuestionnaireRequest struct {
-	AuthorID    int    `json:"author_id" binding:"required"`
 	CategoryID  int    `json:"category_id" binding:"required"`
 	Title       string `json:"title" binding:"required"`
 	Description string `json:"description" binding:"required"`
@@ -32,25 +32,60 @@ type UpdateQuestionnaireRequest struct {
 }
 
 func (api *API) ReadAllQuestionnaires(c *gin.Context) {
-	var filterQuery string
-
-	me, err := strconv.ParseBool(c.DefaultQuery("me", "false"))
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	sortBy := c.DefaultQuery("sort_by", "newest")
+	switch sortBy {
+	case "newest":
+		sortBy = "created_at DESC"
+	case "oldest":
+		sortBy = "created_at"
+	case "most_liked":
+		sortBy = "total_like DESC"
+	case "most_commented":
+		sortBy = "total_comment DESC"
+	default:
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid Sort By"})
 		return
 	}
 
-	if me {
-		userID, err := api.getUserIdFromToken(c)
-		if err != nil {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-			return
-		}
+	var filterQuery string
 
-		filterQuery = fmt.Sprintf("WHERE author_id = %d", userID)
+	searchTitle := c.DefaultQuery("search_title", "")
+	filterQuery = fmt.Sprintf("title LIKE '%%%s%%'", searchTitle)
+
+	categoryId, err := strconv.Atoi(c.DefaultQuery("category_id", "0"))
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid Filter By Category ID"})
+		return
+	}
+	if categoryId != 0 {
+		filterQuery = fmt.Sprintf("%s AND category_id = %d", filterQuery, categoryId)
 	}
 
-	questionnaires, err := api.questionnaireRepo.ReadAllQuestionnaires(filterQuery)
+	me, err := strconv.ParseBool(c.DefaultQuery("me", "false"))
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid Filter By Me"})
+		return
+	}
+
+	userID := -1
+	if c.GetHeader("Authorization") != "" {
+		userID, err = api.getUserIdFromToken(c)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+	}
+
+	if me {
+		if userID != -1 {
+			filterQuery = fmt.Sprintf("%s AND author_id = %d", filterQuery, userID)
+		} else {
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "invalid token"})
+			return
+		}
+	}
+
+	questionnaires, err := api.questionnaireRepo.ReadAllQuestionnaires(userID, filterQuery, sortBy)
 	if err != nil {
 		c.AbortWithStatusJSON(
 			http.StatusInternalServerError,
@@ -75,7 +110,16 @@ func (api *API) ReadAllQuestionnaireByID(c *gin.Context) {
 		return
 	}
 
-	isExist, err := api.questionnaireRepo.CheckQuestionnaireExist(postID)
+	userID := -1
+	if c.GetHeader("Authorization") != "" {
+		userID, err = api.getUserIdFromToken(c)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+	}
+
+	questionnaire, err := api.questionnaireRepo.ReadAllQuestionnaireByID(userID, postID)
 	if err != nil {
 		c.AbortWithStatusJSON(
 			http.StatusInternalServerError,
@@ -83,19 +127,10 @@ func (api *API) ReadAllQuestionnaireByID(c *gin.Context) {
 		)
 		return
 	}
-	if !isExist {
+	if questionnaire == (repository.Questionnaire{}) {
 		c.AbortWithStatusJSON(
 			http.StatusBadRequest,
 			gin.H{"error": "No data with given id"},
-		)
-		return
-	}
-
-	questionnaire, err := api.questionnaireRepo.ReadAllQuestionnaireByID(postID)
-	if err != nil {
-		c.AbortWithStatusJSON(
-			http.StatusInternalServerError,
-			gin.H{"error": err.Error()},
 		)
 		return
 	}
@@ -131,9 +166,22 @@ func (api *API) CreateQuestionnaire(c *gin.Context) {
 		return
 	}
 
+	isTitleOK := service.GetValidationInstance().Validate(createQuestionnaireRequest.Title)
+	isDescriptionOK := service.GetValidationInstance().Validate(createQuestionnaireRequest.Description)
+	if !isTitleOK || !isDescriptionOK {
+		c.AbortWithStatusJSON(http.StatusBadRequest, ErrorPostResponse{Message: "Your post contains bad words"})
+		return
+	}
+
+	userID, err := api.getUserIdFromToken(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	err = api.questionnaireRepo.InsertQuestionnaire(repository.Questionnaire{
 		Author: repository.User{
-			Id: createQuestionnaireRequest.AuthorID,
+			Id: userID,
 		},
 		Category: repository.Category{
 			ID: createQuestionnaireRequest.CategoryID,
@@ -182,7 +230,20 @@ func (api *API) UpdateQuestionnaire(c *gin.Context) {
 		return
 	}
 
-	isExist, err := api.questionnaireRepo.CheckQuestionnaireExist(updateQuestionnaireRequest.ID)
+	isTitleOK := service.GetValidationInstance().Validate(updateQuestionnaireRequest.Title)
+	isDescriptionOK := service.GetValidationInstance().Validate(updateQuestionnaireRequest.Description)
+	if !isTitleOK || !isDescriptionOK {
+		c.AbortWithStatusJSON(http.StatusBadRequest, ErrorPostResponse{Message: "Your post contains bad words"})
+		return
+	}
+
+	userID, err := api.getUserIdFromToken(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	questionnaire, err := api.questionnaireRepo.ReadAllQuestionnaireByID(userID, updateQuestionnaireRequest.ID)
 	if err != nil {
 		c.AbortWithStatusJSON(
 			http.StatusInternalServerError,
@@ -190,10 +251,16 @@ func (api *API) UpdateQuestionnaire(c *gin.Context) {
 		)
 		return
 	}
-	if !isExist {
+	if questionnaire == (repository.Questionnaire{}) {
 		c.AbortWithStatusJSON(
 			http.StatusBadRequest,
 			gin.H{"error": "No data with given id"},
+		)
+		return
+	} else if questionnaire.Author.Id != userID {
+		c.AbortWithStatusJSON(
+			http.StatusForbidden,
+			gin.H{"error": "You are not the owner"},
 		)
 		return
 	}
@@ -232,7 +299,13 @@ func (api *API) DeleteQuestionnaire(c *gin.Context) {
 		return
 	}
 
-	isExist, err := api.questionnaireRepo.CheckQuestionnaireExist(postID)
+	userID, err := api.getUserIdFromToken(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	questionnaire, err := api.questionnaireRepo.ReadAllQuestionnaireByID(userID, postID)
 	if err != nil {
 		c.AbortWithStatusJSON(
 			http.StatusInternalServerError,
@@ -240,10 +313,16 @@ func (api *API) DeleteQuestionnaire(c *gin.Context) {
 		)
 		return
 	}
-	if !isExist {
+	if questionnaire == (repository.Questionnaire{}) {
 		c.AbortWithStatusJSON(
 			http.StatusBadRequest,
 			gin.H{"error": "No data with given id"},
+		)
+		return
+	} else if questionnaire.Author.Id != userID {
+		c.AbortWithStatusJSON(
+			http.StatusForbidden,
+			gin.H{"error": "You are not the owner"},
 		)
 		return
 	}

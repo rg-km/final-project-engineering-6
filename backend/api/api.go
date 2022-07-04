@@ -4,6 +4,7 @@ import (
 	"reflect"
 	"strings"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
 
@@ -42,6 +43,11 @@ func NewAPI(
 		categoryRepo:      categoryRepo,
 		questionnaireRepo: questionnaireRepo,
 	}
+	config := cors.DefaultConfig()
+	config.AllowAllOrigins = true
+	config.AllowCredentials = true
+	config.AddAllowHeaders("Authorization")
+	router.Use(cors.New(config))
 
 	// Untuk validasi request dengan mengembalikan nama dari tag json jika ada
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
@@ -74,7 +80,7 @@ func NewAPI(
 		postRouter.POST("/", api.createPost)
 		postRouter.POST("/images/:id", api.uploadPostImages)
 		postRouter.PUT("/", api.updatePost)
-		postRouter.DELETE("/", api.deletePost)
+		postRouter.DELETE("/:id", api.deletePost)
 	}
 
 	router.GET("/api/comments", api.ReadAllComment)
@@ -85,13 +91,13 @@ func NewAPI(
 		commentRoutersWithAuth.DELETE("/:id", api.DeleteComment)
 	}
 
-	postLikeRouters := router.Group("/api/post-likes", AuthMiddleware())
+	postLikeRouters := router.Group("/api/post/:id/likes", AuthMiddleware())
 	{
 		postLikeRouters.POST("/", api.CreatePostLike)
 		postLikeRouters.DELETE("/", api.DeletePostLike)
 	}
 
-	commentLikeRouters := router.Group("/api/comment-likes", AuthMiddleware())
+	commentLikeRouters := router.Group("/api/comments/:id/likes", AuthMiddleware())
 	{
 		commentLikeRouters.POST("/", api.CreateCommentLike)
 		commentLikeRouters.DELETE("/", api.DeleteCommentLike)

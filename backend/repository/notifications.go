@@ -23,8 +23,8 @@ func (n NotificationRepository) CreateNotification(userId int, commentId int) er
 	return err
 }
 
-func (n NotificationRepository) GetAllNotifications(userId int) ([]Notification, error) {
-	rows, err := n.db.Query("SELECT notifications.id, users.name, notifications.comment_id, comments.post_id, notifications.already_read, notifications.created_at FROM notifications JOIN comments ON notifications.comment_id = comments.id JOIN users ON users.id = comments.author_id WHERE user_id = ?", userId)
+func (n NotificationRepository) GetAllNotifications(userId, page, limit int) ([]Notification, error) {
+	rows, err := n.db.Query("SELECT notifications.id, users.name, notifications.comment_id, comments.post_id, posts.title, notifications.already_read, notifications.created_at FROM notifications JOIN comments ON notifications.comment_id = comments.id JOIN users ON users.id = comments.author_id JOIN posts ON posts.id = comments.post_id WHERE user_id = ? ORDER BY notifications.created_at DESC LIMIT ? OFFSET ?", userId, limit, (page-1)*limit)
 	if err != nil {
 		return nil, err
 	}
@@ -33,7 +33,7 @@ func (n NotificationRepository) GetAllNotifications(userId int) ([]Notification,
 	var notifications []Notification
 	for rows.Next() {
 		var notification Notification
-		if err := rows.Scan(&notification.ID, &notification.Name, &notification.CommentID, &notification.PostID, &notification.AlreadyRead, &notification.CreatedAt); err != nil {
+		if err := rows.Scan(&notification.ID, &notification.Name, &notification.CommentID, &notification.PostID, &notification.PostTitle, &notification.AlreadyRead, &notification.CreatedAt); err != nil {
 			return nil, err
 		}
 		notifications = append(notifications, notification)

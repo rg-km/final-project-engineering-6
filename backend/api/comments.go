@@ -9,12 +9,12 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/rg-km/final-project-engineering-6/helper"
 	"github.com/rg-km/final-project-engineering-6/repository"
+	"github.com/rg-km/final-project-engineering-6/service"
 )
 
 type CreateCommentRequest struct {
 	PostID          int    `json:"post_id" binding:"required,number"`
 	ParentCommentID *int   `json:"parent_comment_id"`
-	AuthorID        int    `json:"author_id" binding:"required,number"`
 	Comment         string `json:"comment" binding:"required"`
 }
 
@@ -33,7 +33,16 @@ func (api *API) ReadAllComment(c *gin.Context) {
 		return
 	}
 
-	comments, err := api.commentRepo.SelectAllCommentsByPostID(postID)
+	userID := -1
+	if c.GetHeader("Authorization") != "" {
+		userID, err = api.getUserIdFromToken(c)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+	}
+
+	comments, err := api.commentRepo.SelectAllCommentsByPostID(userID, postID)
 	if err != nil {
 		c.AbortWithStatusJSON(
 			http.StatusInternalServerError,
@@ -67,10 +76,22 @@ func (api API) CreateComment(c *gin.Context) {
 		return
 	}
 
+	isCommentOK := service.GetValidationInstance().Validate(createCommentRequest.Comment)
+	if !isCommentOK {
+		c.AbortWithStatusJSON(http.StatusBadRequest, ErrorPostResponse{Message: "Your comment contains bad words"})
+		return
+	}
+
+	userID, err := api.getUserIdFromToken(c)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	commentId, err := api.commentRepo.InsertComment(repository.Comment{
 		PostID:          createCommentRequest.PostID,
 		ParentCommentID: createCommentRequest.ParentCommentID,
-		AuthorID:        createCommentRequest.AuthorID,
+		AuthorID:        userID,
 		Comment:         createCommentRequest.Comment,
 	})
 	if err != nil {
@@ -81,23 +102,7 @@ func (api API) CreateComment(c *gin.Context) {
 		return
 	}
 
-	var authorId int
-
-	if createCommentRequest.ParentCommentID != nil {
-		authorId, err = api.commentRepo.FetchCommentAuthorId(*createCommentRequest.ParentCommentID)
-	} else {
-		authorId, err = api.postRepo.FetchAuthorIDByPostID(*createCommentRequest.ParentCommentID)
-	}
-
-	if err != nil {
-		c.AbortWithStatusJSON(
-			http.StatusInternalServerError,
-			gin.H{"error": err.Error()},
-		)
-		return
-	}
-
-	api.notifRepo.CreateNotification(authorId, int(commentId))
+	api.notifRepo.CreateNotification(userID, int(commentId))
 
 	c.JSON(
 		http.StatusOK,
@@ -124,13 +129,44 @@ func (api API) UpdateComment(c *gin.Context) {
 		return
 	}
 
-	codeResponse, err := api.commentRepo.UpdateComment(repository.Comment{
+	isCommentOK := service.GetValidationInstance().Validate(updateCommentRequest.Comment)
+	if !isCommentOK {
+		c.AbortWithStatusJSON(http.StatusBadRequest, ErrorPostResponse{Message: "Your comment contains bad words"})
+		return
+	}
+
+	userID, err := api.getUserIdFromToken(c)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	authorID, err := api.commentRepo.FetchCommentAuthorId(updateCommentRequest.CommentID)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	if authorID == 0 {
+		c.AbortWithStatusJSON(
+			http.StatusBadRequest,
+			gin.H{"error": "No data with given id"},
+		)
+		return
+	} else if authorID != userID {
+		c.AbortWithStatusJSON(
+			http.StatusForbidden,
+			gin.H{"error": "You are not the owner"},
+		)
+		return
+	}
+
+	err = api.commentRepo.UpdateComment(repository.Comment{
 		ID:      updateCommentRequest.CommentID,
 		Comment: updateCommentRequest.Comment,
 	})
 	if err != nil {
 		c.AbortWithStatusJSON(
-			codeResponse,
+			http.StatusInternalServerError,
 			gin.H{"error": err.Error()},
 		)
 		return
@@ -152,10 +188,35 @@ func (api *API) DeleteComment(c *gin.Context) {
 		return
 	}
 
-	codeResponse, err := api.commentRepo.DeleteComment(commentID)
+	userID, err := api.getUserIdFromToken(c)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	authorID, err := api.commentRepo.FetchCommentAuthorId(commentID)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	if authorID == 0 {
+		c.AbortWithStatusJSON(
+			http.StatusBadRequest,
+			gin.H{"error": "No data with given id"},
+		)
+		return
+	} else if authorID != userID {
+		c.AbortWithStatusJSON(
+			http.StatusForbidden,
+			gin.H{"error": "You are not the owner"},
+		)
+		return
+	}
+
+	err = api.commentRepo.DeleteComment(commentID)
 	if err != nil {
 		c.AbortWithStatusJSON(
-			codeResponse,
+			http.StatusInternalServerError,
 			gin.H{"error": err.Error()},
 		)
 		return

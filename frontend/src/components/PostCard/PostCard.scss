@@ -1,8 +1,9 @@
-@import '../../App.scss';
+@import "../../App.scss";
 
 a {
   color: black;
   text-decoration: none;
+  width: 100%;
 }
 
 .post-card {
@@ -17,4 +18,31 @@ a {
 .detail-card {
   @include card-style();
   flex-direction: column;
+  align-items: flex-end;
+  position: relative;
+  gap: 1rem;
+
+  .edit,
+  .delete {
+    opacity: 0.5;
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 10;
+
+    &:hover {
+      opacity: 1;
+      cursor: pointer;
+    }
+  }
+  .edit {
+    right: 4rem;
+  }
+
+  .reply {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
 }

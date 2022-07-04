@@ -12,6 +12,8 @@ type Comment struct {
 	AuthorName      string     `json:"author_name" db:"author_name"`
 	TotalLike       int        `json:"total_like"`
 	TotalReply      int        `json:"total_reply"`
+	IsLike          bool       `json:"is_like"`
+	IsAuthor        bool       `json:"is_author"`
 	Reply           []Comment  `json:"reply"`
 }
 
@@ -38,6 +40,8 @@ type Questionnaire struct {
 	Reward       string     `json:"reward"`
 	TotalLike    int        `json:"total_like"`
 	TotalComment int        `json:"total_comment"`
+	IsLike       bool       `json:"is_like"`
+	IsAuthor     bool       `json:"is_author"`
 }
 
 type Notification struct {
@@ -45,6 +49,7 @@ type Notification struct {
 	Name        string    `json:"name"`
 	CommentID   int       `json:"comment_id"`
 	PostID      int       `json:"post_id"`
+	PostTitle   string    `json:"post_title"`
 	AlreadyRead bool      `json:"already_read"`
 	CreatedAt   time.Time `json:"created_at"`
 }

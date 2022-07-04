@@ -1,70 +1,169 @@
-import React from "react";
-import FormInput from "../../components/FormInput/FormInput";
-import Button from "../../components/Button/Button";
-import "./Register.scss";
+import React, { useState } from 'react';
+import FormInput from '../../components/FormInput/FormInput';
+import './Register.scss';
+import useTokenStore, { useAlertStore } from '../../config/Store';
+import { useAPI } from '../../config/api';
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
-  const check = (event) => {
-    console.log(event);
-    if (event.target.selectedIndex === 2) {
-      document.getElementById("other-input").style.display = "block";
+  const [userData, setUserData] = useState({});
+  const [isEmailError, setIsEmailError] = useState(true);
+  const [isPwdError, setIsPwdError] = useState(true);
+  const setToken = useTokenStore((state) => state.setToken);
+  const { post } = useAPI((state) => state);
+  let navigate = useNavigate();
+  const setShow = useAlertStore((state) => state.setShow);
+  const setSucceed = useAlertStore((state) => state.setSucceed);
+  const setMessage = useAlertStore((state) => state.setMessage);
+
+  const handleChange = (eventValue, eventName) => {
+    if (eventName === 'email') {
+      setIsEmailError(!eventValue.match(/^[a-zA-Z0-9]+@+[a-z]+\.com$/));
+    }
+
+    if (eventName === 'password') {
+      setIsPwdError(!eventValue.match(/^[a-zA-Z]*$/));
+      setIsPwdError(eventValue.length < 8);
+    }
+
+    setUserData((previousValues) => {
+      return {
+        ...previousValues,
+        [eventName]: eventValue,
+      };
+    });
+  };
+
+  const registerClick = async (e) => {
+    e.preventDefault();
+    // data name, email, password, role, institute, major, batch
+    console.log(userData);
+    const result = await post('register', {
+      ...userData,
+      batch: Number(userData.batch),
+    });
+    console.log(result);
+    setShow(true);
+    if (result.status === 200) {
+      setToken(result.data.token);
+      setMessage('Registration successful');
+      setSucceed(true);
+      navigate('/');
     } else {
-      document.getElementById("other-input").style.display = "none";
+      setMessage('Registration failed');
+      setSucceed(false);
     }
   };
 
-  const handleChange = (event) => {
-    console.log(event.target.value);
-  };
-
   return (
-    <div className="container-reg">
-      <div className="form-register">
-        <div className="form-reg">
+    <div className='container-reg'>
+      <div className='form-register'>
+        <div className='form-reg'>
           <h2>Join Basis community</h2>
-          <p>Get more features and priviliges by joining to the most helpful community</p>
-          <form>
-            <div className="input-container">
-              <FormInput type={"text"} placeholder={"Nama"} onChange={handleChange} />
+          <p>
+            Get more features and priviliges by joining to the most helpful
+            community
+          </p>
+          <form id='register'>
+            <div className='input-container'>
+              <FormInput
+                type={'text'}
+                placeholder={'Name'}
+                onChange={handleChange}
+                name={'name'}
+                value={userData.name ? userData.name : ''}
+              />
             </div>
-            <div className="input-container">
-              <FormInput type={"email"} placeholder={"Email"} onChange={handleChange} />
+            <div className='input-container'>
+              <FormInput
+                type={'email'}
+                placeholder={'Email'}
+                onChange={handleChange}
+                name={'email'}
+                value={userData.email ? userData.email : ''}
+              />
             </div>
-            <div className="input-container">
-              <FormInput type={"password"} placeholder={"Password"} onChange={handleChange} />
+            <div className='input-container'>
+              <FormInput
+                type={'password'}
+                placeholder={'Password'}
+                onChange={handleChange}
+                name={'password'}
+                value={userData.password ? userData.password : ''}
+              />
             </div>
-            <div className="input-container">
-              <select name="role" id="role" defaultValue="" onChange={check}>
-                <option value="" disabled>
+            <div className='input-container'>
+              <select
+                id='role'
+                defaultValue=''
+                onChange={(e) => {
+                  handleChange(e.target.value, e.target.name);
+                }}
+                name={'role'}
+              >
+                <option value='' disabled>
                   Choose a Role
                 </option>
-                <option value="Siswa">Siswa</option>
-                <option value="Mahasiswa">Mahasiswa</option>
+                <option value='siswa'>Siswa</option>
+                <option value='mahasiswa'>Mahasiswa</option>
               </select>
             </div>
-            <div id="other-input" style={{ display: "none" }}>
-              <div className="input-container">
-                <FormInput type={"text"} placeholder={"Institue"} onChange={handleChange} />
+            {userData.role === 'mahasiswa' ? (
+              <div>
+                <div className='input-container'>
+                  <FormInput
+                    type={'text'}
+                    placeholder={'Institute'}
+                    onChange={handleChange}
+                    name={'institute'}
+                    value={userData.institute ? userData.institute : ''}
+                  />
+                </div>
+                <div className='input-container'>
+                  <FormInput
+                    type={'text'}
+                    placeholder={'Major'}
+                    onChange={handleChange}
+                    name={'major'}
+                    value={userData.major ? userData.major : ''}
+                  />
+                </div>
+                <div className='input-container'>
+                  <FormInput
+                    type={'number'}
+                    placeholder={'Batch'}
+                    onChange={handleChange}
+                    name={'batch'}
+                    value={userData.batch ? userData.batch : ''}
+                  />
+                </div>
               </div>
-              <div className="input-container">
-                <FormInput type={"text"} placeholder={"Mayor"} onChange={handleChange} />
-              </div>
-              <div className="input-container">
-                <FormInput type={"text"} placeholder={"Batch"} onChange={handleChange} />
-              </div>
-            </div>
-            <div className="input-container">
-              <FormInput type={"text"} placeholder={"Institue"} onChange={handleChange} />
-            </div>
-            <div className="button-container">
-              <Button className="btn" variant={"login"}>
+            ) : (
+              userData.role === 'siswa' && (
+                <div className='input-container'>
+                  <FormInput
+                    type={'text'}
+                    placeholder={'Institute'}
+                    onChange={handleChange}
+                    name={'institute'}
+                    value={userData.institute ? userData.institute : ''}
+                  />
+                </div>
+              )
+            )}
+            <div className='button-container'>
+              <button
+                className='btn'
+                disabled={isEmailError || isPwdError}
+                onClick={registerClick}
+              >
                 Register
-              </Button>
+              </button>
             </div>
           </form>
         </div>
       </div>
-      <div className="gambar"></div>
+      <div className='gambar'></div>
     </div>
   );
 };

@@ -15,6 +15,7 @@ header {
     align-items: center;
     @include breakpoint(md) {
       padding: 0 1rem;
+      height: 8vh;
     }
 
     .logo {
@@ -43,6 +44,9 @@ header {
         a {
           color: $SubTitleText;
           margin-right: 3rem;
+          @include breakpoint(md) {
+            margin-right: 1rem;
+          }
         }
       }
       .notification a {

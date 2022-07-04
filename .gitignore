@@ -30,3 +30,5 @@ yarn-error.log*
 
 # Any media that uploaded to the server
 /backend/media
+# Local Netlify folder
+.netlify

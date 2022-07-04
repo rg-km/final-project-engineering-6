@@ -2,6 +2,7 @@ package api
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -11,7 +12,6 @@ type ReadNotifRequest struct {
 }
 
 func (api API) GetAllNotifications(c *gin.Context) {
-
 	userId, err := api.getUserIdFromToken(c)
 
 	if err != nil {
@@ -19,7 +19,19 @@ func (api API) GetAllNotifications(c *gin.Context) {
 		return
 	}
 
-	notifs, err := api.notifRepo.GetAllNotifications(userId)
+	page, err := strconv.Atoi(c.DefaultQuery("page", "1"))
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	limit, err := strconv.Atoi(c.DefaultQuery("limit", "10"))
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	notifs, err := api.notifRepo.GetAllNotifications(userId, page, limit)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

@@ -6,6 +6,11 @@
   height: 100%;
   position: relative;
   z-index: 11;
+  @include breakpoint(md) {
+    // display: none;
+    // top: 40vh;
+  }
+
   .container {
     width: 100%;
     background-color: $Border;
@@ -18,23 +23,44 @@
     background-image: url("../../images/bg-banner.svg");
     background-repeat: no-repeat;
     background-size: cover;
+    @include breakpoint(md) {
+      padding: 0;
+      background-size: contain;
+      background-position: center;
+      background-position: top;
+      flex-direction: column-reverse;
+    }
 
     .words {
       display: flex;
       justify-content: center;
       .title {
         padding: 5rem;
+        @include breakpoint(md) {
+          padding: 1rem;
+        }
         h1 {
           color: $TitleText;
           font-size: 4.2rem;
+          @include breakpoint(md) {
+            font-size: 2rem;
+          }
         }
         p {
           color: $SubTitleText;
           padding: 2rem 0;
+          @include breakpoint(md) {
+            padding: 1rem 0;
+            font-size: 0.8rem;
+            line-height: 1rem;
+          }
           font-weight: 400;
         }
         .btn {
           width: 30%;
+          @include breakpoint(md) {
+            width: 50%;
+          }
         }
       }
       .btn {
@@ -44,6 +70,16 @@
     .banner {
       padding-top: 7rem;
       padding-right: 4rem;
+      @include breakpoint(md) {
+        padding-top: 0;
+      }
+      img {
+        width: 40rem;
+        @include breakpoint(md) {
+          // display: none;
+          width: 20rem;
+        }
+      }
     }
   }
 
@@ -58,57 +94,108 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8rem;
+    @include breakpoint(md) {
+      padding: 0;
+      background-size: contain;
+      background-position: center;
+      background-position: top;
+      flex-direction: column;
+      height: 100%;
+    }
     .gambar {
-      // margin-top: 5rem;
       img {
         width: 30rem;
+        margin-left: 10rem;
+        @include breakpoint(md) {
+          margin-left: 0rem;
+          width: 15rem;
+        }
       }
     }
 
     .explain {
+      padding: 10rem;
+      line-height: 2rem;
+      text-align: justify;
+      // background-color: aqua;
+      @include breakpoint(md) {
+        padding: 1rem;
+        line-height: 1.5rem;
+        padding: 2rem;
+      }
       h2 {
         font-size: 2.5rem;
         font-weight: 400;
         line-height: 3rem;
         padding: 1rem 0;
+        @include breakpoint(md) {
+          font-size: 2rem;
+        }
       }
 
       p {
         color: $SubTitleText;
       }
       // background-color: aliceblue;
-      padding-left: 20rem;
-      line-height: 2rem;
     }
   }
 
   .fitur {
-    width: 100%;
-    padding: 0 10rem 10rem 10rem;
-    // background-color: aqua;
-    display: flex;
-    gap: 5rem;
-    .card {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+    @include breakpoint(md) {
+      margin-top: 5rem;
+    }
+    .text-fitur {
       text-align: center;
+      padding: 2rem;
+      h1 {
+        @include breakpoint(md) {
+          font-size: 1.5rem;
+        }
+      }
+      p {
+        padding-bottom: 1rem;
+        font-size: 0.8;
+        color: $SubTitleText;
+      }
+    }
+    .fitur-wrapper {
+      width: 100%;
+      padding: 0 10rem 10rem 10rem;
+      // background-color: aqua;
+      display: flex;
+      gap: 5rem;
+      justify-content: center;
       align-items: center;
-      width: 30%;
-      border: 1px solid $Border;
-      opacity: 0.5;
-      // background-color: #ddcef3;
-      // height: 10vh;
-      &:hover {
-        box-shadow: 2px 1px 10px rgba(77, 41, 175, 0.2);
-        opacity: 1;
+      @include breakpoint(md) {
+        flex-direction: column;
+        // padding: 10rem 10rem 10rem 10rem;
       }
-      img {
-        width: 15rem;
-      }
-      h3 {
-        padding: 1rem;
+      .card {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+        align-items: center;
+        width: 30%;
+        border: 1px solid $Border;
+        opacity: 0.5;
+        overflow: hidden;
+        @include breakpoint(md) {
+          width: 20rem;
+        }
+        &:hover {
+          box-shadow: 2px 1px 10px rgba(77, 41, 175, 0.2);
+          opacity: 1;
+        }
+        img {
+          width: 15rem;
+          @include breakpoint(md) {
+            width: 10rem;
+          }
+        }
+        h3 {
+          padding: 1rem;
+        }
       }
     }
   }

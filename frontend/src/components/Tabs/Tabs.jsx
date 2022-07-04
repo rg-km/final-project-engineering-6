@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import TabPane from "./TabPane";
-import "./Tabs.scss";
+import React, { useEffect, useState } from 'react';
+import TabPane from './TabPane';
+import './Tabs.scss';
 
 const Tabs = (props) => {
   const { children } = props;
   const [tabHeader, setTabHeader] = useState([]);
   const [childContent, setChildConent] = useState({});
-  const [active, setActive] = useState("");
+  const [active, setActive] = useState('');
   useEffect(() => {
     const headers = [];
     const childCnt = {};
@@ -19,7 +19,6 @@ const Tabs = (props) => {
     setTabHeader(headers);
     setActive(headers[0]);
     setChildConent({ ...childCnt });
-    console.log(childCnt);
   }, [props, children]);
 
   const changeTab = (name) => {
@@ -27,18 +26,26 @@ const Tabs = (props) => {
   };
 
   return (
-    <div className="tabs">
-      <ul className="tab-header">
+    <div className='tabs'>
+      <ul className='tab-header'>
         {tabHeader.map((item) => (
-          <li onClick={() => changeTab(item)} key={item} className={item === active ? "active" : ""}>
+          <li
+            onClick={() => changeTab(item)}
+            key={item}
+            className={item === active ? 'active' : ''}
+          >
             {item}
           </li>
         ))}
       </ul>
-      <div className="tab-content">
-        {Object.keys(childContent).map((key) => {
+      <div className='tab-content'>
+        {Object.keys(childContent).map((key, index) => {
           if (key === active) {
-            return <div class="tab-child">{childContent[key]}</div>;
+            return (
+              <div className='tab-child' key={index}>
+                {childContent[key]}
+              </div>
+            );
           } else {
             return null;
           }
@@ -55,7 +62,9 @@ Tabs.propTypes = {
     let error = null;
     React.Children.forEach(prop, function (child) {
       if (child.type !== TabPane) {
-        error = new Error("`" + componentName + "` children should be of type `TabPane`.");
+        error = new Error(
+          '`' + componentName + '` children should be of type `TabPane`.'
+        );
       }
     });
     return error;
